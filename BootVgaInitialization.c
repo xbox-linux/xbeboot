@@ -25,11 +25,10 @@
 
 void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pcurrentvideomodedetails) {
 	EVIDEOSTD videoStd;
-
+	EAVTYPE avType;
 	TV_MODE_PARAMETER parameter;
 	BYTE b;
 	RIVA_HW_INST riva;
-	//int maxcounter;
 
 	videoStd = DetectVideoStd();
 
@@ -82,7 +81,8 @@ void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pcurrentvideomod
 	writeCrtNv (&riva, 0, 0x22, 0xff); // ?
 	writeCrtNv (&riva, 0, 0x33, 0x11); // ?
 
-	if (DetectAvType() == AV_VGA) {
+	avType = DetectAvType();
+	if ((avType == AV_VGA) || (avType == AV_VGA_SOG)) {
 		VGA_MODE_PARAMETER mode;
 /*
 		// Settings for 640x480@60Hz, 31.5 kHz HSync (should work on every VGA monitor)
