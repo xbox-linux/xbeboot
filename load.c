@@ -58,14 +58,14 @@ long LoadFile(PVOID Filename, long *lFileSize) {
 		die();
 	}
 
-	Buffer = MmAllocateContiguousMemoryEx(FileSize + 0x1000,
+	Buffer = MmAllocateContiguousMemoryEx(FileSize,
 			MIN_KERNEL, MAX_KERNEL, 0, PAGE_READWRITE);
 	if (!Buffer) {
 		dprintf("Error alloc memory for File %s\n",Filename);
 		die();
 	}
 
-	memset(Buffer,0xff,FileSize + 0x1000);
+	memset(Buffer,0xff,FileSize);
 	if (!ReadFile(hFile, Buffer, FileSize)) {
 		dprintf("Error loading file %s\n",Filename);
 		die();
@@ -73,7 +73,7 @@ long LoadFile(PVOID Filename, long *lFileSize) {
 
 	NtClose(hFile);
 
-	*lFileSize = FileSize + 0x1000;
+	*lFileSize = FileSize;
 
 	return (long)Buffer;
 }
