@@ -14,8 +14,8 @@ RESOURCES =
 all	: linux.iso
 
 
-linux.iso: default.xbe
-	mkisofs -udf $< vmlinuz initrd > $@
+linux.iso: default.xbe vmlinuz initrd
+	mkisofs -f -udf $< vmlinuz initrd > $@
 
 default.elf : ${OBJECTS} ${RESOURCES}
 	${LD} -o $@ ${OBJECTS} ${RESOURCES} ${LDFLAGS}
