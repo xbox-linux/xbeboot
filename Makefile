@@ -14,7 +14,6 @@ OBJECTS	 = $(TOPDIR)/header.o
 OBJECTS += $(TOPDIR)/load.o 
 OBJECTS += $(TOPDIR)/setup.o 
 OBJECTS += $(TOPDIR)/escape.o 
-OBJECTS += $(TOPDIR)/parse.o 
 OBJECTS += $(TOPDIR)/I2C_io.o 
 OBJECTS += $(TOPDIR)/BootParser.o 
 OBJECTS += $(TOPDIR)/BootString.o 

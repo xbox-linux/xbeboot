@@ -260,57 +260,7 @@ headers_end:
 .org 0x1000
 section_1_start:		// this should be 0x11000
 // kernel thunk table
-.globl MmAllocateContiguousMemoryEx
-MmAllocateContiguousMemoryEx:
-	.long	0x80000000 + 166
-.globl MmGetPhysicalAddress
-MmGetPhysicalAddress:
-	.long	0x80000000 + 173
-.globl NtAllocateVirtualMemory
-NtAllocateVirtualMemory:
-	.long	0x80000000 + 184
-.globl RtlInitAnsiString
-RtlInitAnsiString:
-	.long	0x80000000 + 289
-.globl NtCreateFile
-NtCreateFile:
-	.long	0x80000000 + 190
-.globl NtQueryInformationFile
-NtQueryInformationFile:
-	.long	0x80000000 + 211
-.globl NtClose
-NtClose:
-	.long	0x80000000 + 187
-.globl NtReadFile
-NtReadFile:
-	.long	0x80000000 + 219
-.globl MmFreeContiguousMemory
-MmFreeContiguousMemory:
-	.long	0x80000000 + 171
-.globl MmPersistContiguousMemory
-MmPersistContiguousMemory:
-	.long	0x80000000 + 178
-.globl MmQueryAllocationSize
-MmQueryAllocationSize:
-	.long	0x80000000 + 180
-.globl XeImageFileName
-XeImageFileName:
-	.long	0x80000000 + 326
-.globl XboxEEPROMKey
-XboxEEPROMKey:
-	.long	0x80000000 + 321
-.globl XboxHDKey
-XboxHDKey:
-	.long	0x80000000 + 323
-.globl RtlMoveMemory
-RtlMoveMemory:
-	.long	0x80000000 + 298
-.globl RtlZeroMemory
-RtlZeroMemory:
-	.long	0x80000000 + 320
-.globl HalWriteSMBusValue
-HalWriteSMBusValue:
-	.long	0x80000000 + 50
+#include "import.tbl"
 
 	.long	0		// end of table
 
