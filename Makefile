@@ -1,12 +1,36 @@
-# This is a quick and dirty makefile which doesn't use any
-# of the real features of "make" - anyway, it works.
-all:
-	cpp xbeboot.S -o xbeboot.s
-	as -o xbeboot.o xbeboot.s
-	ld -Ttext 0x10000 -Tdata 0x10000 -e _start -s --oformat binary -o default.xbe xbeboot.o
-	cat ../image-xbe.bin >> default.xbe
-	dd if=/dev/zero bs=1024 count=200 >> default.xbe
-	mkisofs -udf default.xbe > xbox-linux.iso
+### compilers and options
+CC	= gcc
+CFLAGS	= -g -O2
+LD	= ld
+LDFLAGS	= -s -S -T ldscript.ld
+OBJCOPY	= objcopy
 
-clean:
-	rm -f *.o *.s default.xbe xbox-linux.iso *~
+### objects
+#OBJECTS	= header.o load.o escape.o boot.o
+OBJECTS	= header.o load.o setup.o escape.o
+RESOURCES =
+
+# target:
+all	: linux.iso
+
+
+linux.iso: default.xbe
+	mkisofs -udf $< vmlinuz initrd > $@
+
+default.elf : ${OBJECTS} ${RESOURCES}
+	${LD} -o $@ ${OBJECTS} ${RESOURCES} ${LDFLAGS}
+
+clean	:
+	rm -rf *.o *~ core *.core ${OBJECTS} ${RESOURCES} default.elf default.xbe linux.iso
+
+### rules:
+%.o	: %.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
+%.o	: %.S
+	${CC} -DASSEMBLER ${CFLAGS} -o $@ -c $<
+
+%.xbe : %.elf
+	${OBJCOPY} --output-target=binary --strip-all $< $@
+	dd if=/dev/zero bs=1k count=1024 >> $@
+	@ls -l $@
