@@ -3,6 +3,13 @@
 
 #define NULL 0
 
+/* Xbox Linux XBE Bootloader
+ *
+ *  Configuration file parse code
+ *  by Michael Steil, 2002
+ *
+ *  Aho probably hates me.
+ */
 char lcase(char c) {
 	if (c>='A'&&c<='Z') return c + 32; else return c;
 }
@@ -182,13 +189,19 @@ NTSTATUS ParseConfig(char *kernel, char *initrd, char *command_line) {
 
 	parse(config, path, kernel, initrd, command_line);
 
-	/* add HDKey and EEPROMKey to kernel command line */
+	/* add "kbd-reset" to kernel command line to make the
+	 * kernel detect that there's no keyboard controller */
 	command_line_ptr = scan0(command_line);
-	copyuntil(command_line_ptr, "eepromkey=", 10);
+	copyuntil(command_line_ptr, "kbd-reset", 9);
+	command_line_ptr = scan0(command_line_ptr);
+	*command_line_ptr = ' '; command_line_ptr++;
+	/* add HDKey and EEPROMKey to kernel command line */
+	command_line_ptr = scan0(command_line_ptr);
+	copyuntil(command_line_ptr, "xboxeepromkey=", 14);
 	command_line_ptr = scan0(command_line_ptr);
 	command_line_ptr = hex256(command_line_ptr, *XboxEEPROMKey);
 	*command_line_ptr = ' '; command_line_ptr++;
-	copyuntil(command_line_ptr, "hdkey=", 7);
+	copyuntil(command_line_ptr, "xboxhdkey=", 10);
 	command_line_ptr = scan0(command_line_ptr);
 	command_line_ptr = hex256(command_line_ptr, *XboxHDKey);
 	*command_line_ptr = 0;

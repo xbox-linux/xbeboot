@@ -78,10 +78,15 @@ The Kernel Command Line
 ~~~~~~~~~~~~~~~~~~~~~~~
 The bootloader automatically adds the following parameters to the kernel
 command line:
-eepromkey=00112233445566778899AABBCCDDEEFF hdkey=00112233445566778899AABBCCDDEEFF
+xboxeepromkey=00112233445566778899AABBCCDDEEFF
+xboxhdkey=00112233445566778899AABBCCDDEEFF
 so that applications can access these resources without them having to be
 included or caculated (legal problems). Note however that the EEPROMKey might
 not be available when booting from the Dashboard or another utility application.
+The parameter:
+kbd-reset
+is also passed to the kernel to make it detect that there is no keyboard
+controller.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The NT Object Namespace
