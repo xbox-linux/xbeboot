@@ -66,6 +66,20 @@ char *my_strrchr(const char *string, int ch) {
 	return last;
 }
 
+char hex4(unsigned char n) {
+	if (n<10) return n+'0'; else return n-10+'A';
+}
+
+char *hex256(char *s, unsigned char *d) {
+	int i;
+	for (i = 0; i < 16; i++, d++) {
+		*s = hex4(*d >> 4);
+		s++;
+		*s = hex4(*d & 15);
+		s++;
+	}
+	return s;
+}
 
 int parse(char *config, char *curdir, char *kernel, char *initrd, char *command_line_mem) {
 	char root[BUFFERSIZE];
@@ -133,6 +147,7 @@ NTSTATUS ParseConfig(char *kernel, char *initrd, char *command_line) {
 	OBJECT_ATTRIBUTES ConfigFileAttributes;
 	IO_STATUS_BLOCK IoStatusBlock;
 	NTSTATUS Error;
+	char *command_line_ptr;
 
 	/* get the directory of the bootloader executable */
 	copyuntil(path, XeImageFileName->Buffer, XeImageFileName->Length);
@@ -165,6 +180,17 @@ NTSTATUS ParseConfig(char *kernel, char *initrd, char *command_line) {
 	dprintf("Read.\n");
 
 	parse(config, path, kernel, initrd, command_line);
+
+	/* add HDKey and EEPROMKey to kernel command line */
+	command_line_ptr = scan0(command_line);
+	copyuntil(command_line_ptr, "eepromkey=", 10);
+	command_line_ptr = scan0(command_line_ptr);
+	command_line_ptr = hex256(command_line_ptr, *XboxEEPROMKey);
+	*command_line_ptr = ' '; command_line_ptr++;
+	copyuntil(command_line_ptr, "hdkey=", 7);
+	command_line_ptr = scan0(command_line_ptr);
+	command_line_ptr = hex256(command_line_ptr, *XboxHDKey);
+	*command_line_ptr = 0;
 
 	dprintf("kernel \"%s\"\n", kernel);
 	dprintf("initrd \"%s\"\n", initrd);

@@ -83,11 +83,11 @@ certificate:
   .long 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 #ifdef DEBUG
-  .long 0x00000005   // allowed media types: HD or any CD/DVD
+  .long 0x40000005   // allowed media types: HD or any CD/DVD; no panic of HDD unlocked
 #else
-  .long 0x80000005   // allowed media types: HD or any CD/DVD; don't reboot on eject
+  .long 0xC0000005   // allowed media types: HD or any CD/DVD; no panic of HDD unlocked; don't reboot on eject
 #endif
-  .long 7   // game regions: all
+  .long 0x80000007   // game regions: all; don't delete eepromkey
   .long -1  // game ratings
   .long 0   // disk number
   .long 0   // version
@@ -112,7 +112,7 @@ section_headers:
   .long FILE_SIZE       // virtual size
   .long 0x1000          // file pointer to raw data
   .long FILE_SIZE       // size of raw data
-  .long 0               // address of section name *unimportant*
+  .long section_name    // address of section name
   .long 0               // unknown
   .long rc1             // head shared page reference count address *not NULL important*
   .long rc2             // tail shared page reference count address *not NULL important*
@@ -127,6 +127,8 @@ rc1:
   .word 0
 rc2:
   .word 0
+section_name:
+  .byte '.','t','e','x','t',0
 
 .align 4
 logo:
@@ -286,6 +288,12 @@ MmFreeContiguousMemory:
 .globl XeImageFileName
 XeImageFileName:
 	.long	0x80000000 + 326
+.globl XboxEEPROMKey
+XboxEEPROMKey:
+	.long	0x80000000 + 321
+.globl XboxHDKey
+XboxHDKey:
+	.long	0x80000000 + 323
 
 	.long	0		// end of table
 
