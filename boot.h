@@ -17,7 +17,7 @@
 // configuration
 
 
-#include <linux/types.h>
+
 #include "types.h"
 
 static inline double min (double a, double b)
@@ -105,6 +105,8 @@ int I2cSetFrontpanelLed(BYTE b);
 int I2CTransmitWord(BYTE bPicAddressI2cFormat, WORD wDataToWrite);
 int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWrite);
 bool I2CGetTemperature(int *, int *);
+
+
 
 void * memcpy(void *dest, const void *src,  size_t size);
 void * memset(void *dest, int data,  size_t size);

@@ -19,8 +19,7 @@
 
 #define debug
 
-
-
+#define ValueDumps	0x1000
 
 
 struct Checksumstruct {
@@ -145,14 +144,14 @@ int xbebuild (	unsigned char * xbeimage,
 	      	//printf("xxx:     : 0x%08X\n", (unsigned int)xbesize);
 	        
 	       	// We make some Allignment
-	       	xbesize = (xbesize & 0xfffffff0) + 32;
+	       	xbesize = (xbesize & 0xffffff00) + 0x100;
 	        	      
 	        //vmlinux_size = (vmlinux_size & 0xfffff800 ) + 0x400;
 	        
 #ifdef LOADXBE
 	        vmlinux_start = xbesize;
-	        memcpy(&xbe[0x1080],&vmlinux_start,4);
-		memcpy(&xbe[0x1084],&vmlinux_size,4);
+	        memcpy(&xbe[ValueDumps + 0x80],&vmlinux_start,4);
+		memcpy(&xbe[ValueDumps + 0x84],&vmlinux_size,4);
 
 	        memcpy(&xbe[vmlinux_start],vmlinuz,vmlinux_size);
 	        		
@@ -162,34 +161,34 @@ int xbebuild (	unsigned char * xbeimage,
 		
 		temp = vmlinux_size;
 		temp = (temp & 0xffff0000) + 0xffff + 0xffff;
-		memcpy(&xbe[0x1088],&temp,4);		
+		memcpy(&xbe[ValueDumps + 0x88],&temp,4);		
 		
 		xbesize = xbesize + vmlinux_size;
 		// Ok, we allign again
-		xbesize = (xbesize & 0xfffffff0) + 32;
+		xbesize = (xbesize & 0xffffff00) + 0x100;
 
 #endif
 		
 #ifdef LOADXBE		
 		initrd_start = xbesize;
-		memcpy(&xbe[0x108C],&initrd_start,4);
-		memcpy(&xbe[0x1090],&initrd_size,4);
+		memcpy(&xbe[ValueDumps + 0x8C],&initrd_start,4);
+		memcpy(&xbe[ValueDumps + 0x90],&initrd_size,4);
 		
 		memcpy(&xbe[initrd_start],initrd,initrd_size);
 		
 		xbesize = xbesize + initrd_size;	
-                xbesize = (xbesize & 0xfffffff0) + 32;
+                xbesize = (xbesize & 0xffffff00) + 0x100;
 #endif                
 
 #ifdef LOADHDD_CFGFALLBACK
                	config_start = xbesize;
-		memcpy(&xbe[0x1094],&config_start,4);
-		memcpy(&xbe[0x1098],&config_size,4);               	
+		memcpy(&xbe[ValueDumps + 0x94],&config_start,4);
+		memcpy(&xbe[ValueDumps + 0x98],&config_size,4);               	
 		
 		memcpy(&xbe[config_start],config,config_size);               	
 
 		xbesize = xbesize + config_size;	
-                xbesize = (xbesize & 0xfffffff0) + 32;
+                xbesize = (xbesize & 0xffffff00) + 0x100;
 #endif
                 			        
 		#ifdef debug
@@ -215,7 +214,7 @@ int xbebuild (	unsigned char * xbeimage,
 		
 		xbeloader_size = xbesize - 0x1000;
 		
-		xbesize = (xbesize & 0xfffffff0) + 32;
+		xbesize = (xbesize & 0xffffff00) + 0x100;
 		
 	        header->ImageSize = xbesize; 
 		
@@ -317,12 +316,12 @@ int xbeextract (	unsigned char * xbeimage )
     		fread(xbe, 1, xbesize, f);
     		fclose(f);
 
-		memcpy(&initrd_start, &xbe[0x108C],4);
-		memcpy(&initrd_size,  &xbe[0x1090],4);
-	        memcpy(&vmlinux_start,&xbe[0x1080],4);
-		memcpy(&vmlinux_size, &xbe[0x1084],4);
-		memcpy(&config_start, &xbe[0x1094],4);
-		memcpy(&config_size,  &xbe[0x1098],4);         		
+		memcpy(&initrd_start, &xbe[ValueDumps + 0x8C],4);
+		memcpy(&initrd_size,  &xbe[ValueDumps + 0x90],4);
+	        memcpy(&vmlinux_start,&xbe[ValueDumps + 0x80],4);
+		memcpy(&vmlinux_size, &xbe[ValueDumps + 0x84],4);
+		memcpy(&config_start, &xbe[ValueDumps + 0x94],4);
+		memcpy(&config_size,  &xbe[ValueDumps + 0x98],4);         		
 
 	 	printf("Linked Sections\n");
 	 	printf("Start of Linux Kernel    : 0x%08X\n", vmlinux_start);

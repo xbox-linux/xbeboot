@@ -10,8 +10,8 @@
  */
 
 #include <stdarg.h>
-#include <linux/types.h>
-#include <linux/string.h>
+
+#include "boot.h"
 
 /* haha, don't need ctype.c */
 #define isdigit(c)	((c) >= '0' && (c) <= '9')
