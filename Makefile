@@ -12,7 +12,6 @@ RESOURCES =
 # target:
 all	: linux.iso
 
-
 linux.iso: default.xbe
 	mkisofs -udf $< linuxboot.cfg vmlinuz initrd > $@
 

@@ -10,6 +10,10 @@
 #include "xboxkrnl.h"
 #include "xbox.h"
 
+#ifndef size_t
+typedef int size_t;
+#endif
+
 void __inline * memcpy(void *dest, const void *src, size_t size) {
 	__asm__  (
 		"    push %%esi    \n"
