@@ -6,6 +6,7 @@
 
 */
 
+#include <asm/io.h>
 #include "printf.c"
 #include "xboxkrnl.h"
 #include "xbox.h"
@@ -61,6 +62,13 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 	ULONG ReadSize;
 
 	int i;
+
+        /* move SMBUS IRQ from 0 to 7 */
+	outl(0x8000093c, 0xcf8);
+	outw(7,0xcfc);
+	/* Setting bus master mode for SMBUS */
+	outl(0x80000904, 0xcf8);
+	outb(inb(0xcfc) | 4, 0xcfc);
 
 	dprintf("Loading \"%s\"...", Filename);
 	/* Make an ANSI_STRING out of the kernel image filename */
