@@ -1,5 +1,5 @@
 ### compilers and options
-CC	= gcc-3.2
+CC	= gcc
 CFLAGS	= -O2 -mcpu=pentium -Wall -Werror -DXBE
 LD	= ld
 LDFLAGS	= -s -S -T ldscript.ld
