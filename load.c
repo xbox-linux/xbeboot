@@ -6,9 +6,7 @@
 
 */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <asm/io.h>
+
 #include "printf.c"
 #include "consts.h"
 #include "xboxkrnl.h"

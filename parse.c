@@ -2,18 +2,25 @@
 #include "xboxkrnl.h"
 #include "BootString.h"
 #include "BootParser.h"
-#include <string.h>
+
 
 
 NTSTATUS GetConfig(CONFIGENTRY *entry) {
-	static char path[BUFFERSIZE];
-	static char filename[BUFFERSIZE];
-	static char config[CONFIG_BUFFERSIZE];
+	char *path;
+	char *filename;
+	char *config;
+
 	ANSI_STRING ConfigFileString;
 	HANDLE ConfigFile;
 	OBJECT_ATTRIBUTES ConfigFileAttributes;
 	IO_STATUS_BLOCK IoStatusBlock;
 	NTSTATUS Error;
+	path = (char *)MmAllocateContiguousMemoryEx(BUFFERSIZE,MIN_KERNEL,   
+                                 MAX_KERNEL, 0, PAGE_READWRITE);   
+	filename = (char *)MmAllocateContiguousMemoryEx(BUFFERSIZE,MIN_KERNEL,   
+                                 MAX_KERNEL, 0, PAGE_READWRITE);   
+	config = (char *)MmAllocateContiguousMemoryEx(CONFIG_BUFFERSIZE,MIN_KERNEL,   
+                                 MAX_KERNEL, 0, PAGE_READWRITE); 
 
 	memset(path,0,BUFFERSIZE);
 	memset(config,0,CONFIG_BUFFERSIZE);
@@ -49,14 +56,17 @@ NTSTATUS GetConfig(CONFIGENTRY *entry) {
 
 	ParseConfig(path,config,entry);
 //	PrintConfig(entry);
+	MmFreeContiguousMemory(path);   
+	MmFreeContiguousMemory(filename); 
 
 	return STATUS_SUCCESS;
 }
 
 NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
-	static char path[BUFFERSIZE];
-	static char filename[BUFFERSIZE];
-	static char config[CONFIG_BUFFERSIZE];
+	char *path;
+	char *filename;
+	char *config;
+
 	ANSI_STRING ConfigFileString;
 	HANDLE ConfigFile;
 	OBJECT_ATTRIBUTES ConfigFileAttributes;
@@ -64,6 +74,12 @@ NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
 	NTSTATUS Error;
         unsigned int TempConfigStart;
         unsigned int TempConfigSize;
+	path = (char *)MmAllocateContiguousMemoryEx(BUFFERSIZE,MIN_KERNEL,   
+                                 MAX_KERNEL, 0, PAGE_READWRITE);   
+	filename = (char *)MmAllocateContiguousMemoryEx(BUFFERSIZE,MIN_KERNEL,   
+                                 MAX_KERNEL, 0, PAGE_READWRITE);   
+	config = (char *)MmAllocateContiguousMemoryEx(CONFIG_BUFFERSIZE,MIN_KERNEL,   
+                                 MAX_KERNEL, 0, PAGE_READWRITE); 
         
 	memset(path,0,BUFFERSIZE);
 	memset(config,0,CONFIG_BUFFERSIZE);
@@ -86,6 +102,8 @@ NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
 
 	ParseConfig(path,config,entry);
 //	PrintConfig(entry);
+	MmFreeContiguousMemory(path);   
+	MmFreeContiguousMemory(filename); 
 
 	return STATUS_SUCCESS;
 }
