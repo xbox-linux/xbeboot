@@ -6,6 +6,9 @@
  * and work by Johan Rydberg and Daniel Kahlin.
  *
  * $Log$
+ * Revision 1.2  2002/08/26 22:46:33  mist
+ * configuration file support, README
+ *
  * Revision 1.1  2002/08/21 17:35:46  meriac
  * Michael added generic boot screen
  *
@@ -25,9 +28,6 @@ MEMORY
 }
 
 RAM_BASE = 0x10000; /* overwrite XBE header with variables */
-
-/* this should be changed depending the actual size of the rom */
-ROM_SIZE = 1M;
 
 HEADER = 0x10000;
 HEADER_LOAD = 0;
@@ -50,6 +50,7 @@ SECTIONS {
 		*(.sdata);
 		*(.sdata2);
 		*(.got);
+		*(.*);
 		_end_data = .;
 		}
 

@@ -119,6 +119,6 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->cmd_offset = (unsigned short) cmd_line_ptr;
     kernel_setup->cmd_magic = 0xA33F;
     kernel_setup->cmd_line_ptr = 0;
-    memcpy((char*)(KernelPos+cmd_line_ptr), kernel_cmdline, 512);
+    my_memcpy((char*)(KernelPos+cmd_line_ptr), kernel_cmdline, 512);
     *(char*)(KernelPos+cmd_line_ptr+511) = 0;
 }
