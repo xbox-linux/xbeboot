@@ -9,7 +9,6 @@
  * Wirzenius wrote this portably, Torvalds fucked it up :-)
  */
 
-
 #include <stdarg.h>
 #include <linux/types.h>
 #include <linux/string.h>

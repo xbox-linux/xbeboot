@@ -6,13 +6,11 @@
 
 */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <asm/io.h>
 #include "printf.c"
 #include "consts.h"
 #include "xboxkrnl.h"
 #include "xbox.h"
+#include "boot.h"
 #include "BootString.h"
 #include "BootParser.h"
 #include "BootVideo.h"
@@ -233,8 +231,6 @@ static NTSTATUS LoadIinitrdXBE(long *FilePos, long *FileSize) {
 void die() {
 	while(1);
 }
-
-extern int I2CTransmitByteGetReturn(char bPicAddressI2cFormat, char bDataToWrite);
 
 int NewFramebuffer;
 long KernelSize;

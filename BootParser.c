@@ -1,6 +1,5 @@
 #include "xbox.h"
 #include "BootString.h"
-#include <string.h>
 #include "BootParser.h"
 
 enum {
