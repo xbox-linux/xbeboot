@@ -9,7 +9,6 @@ typedef struct _CONFIGENTRY {
         char szKernel[MAX_LINE];
         char szInitrd[MAX_LINE];
         char szAppend[MAX_LINE];
-	int vmode;
 } CONFIGENTRY, *LPCONFIGENTRY;
 
 typedef enum {

@@ -16,9 +16,6 @@
 #include "BootVideo.h"
 #include "config.h"
 
-#define ValueDumps 0x011080
-
-
 volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 int NewFramebuffer;
 long KernelSize;
@@ -58,13 +55,14 @@ long LoadFile(PVOID Filename, long *lFileSize) {
 		die();
 	}
 
-	Buffer = MmAllocateContiguousMemoryEx(FileSize,
+	Buffer = MmAllocateContiguousMemoryEx(FileSize + 0x1000,
 			MIN_KERNEL, MAX_KERNEL, 0, PAGE_READWRITE);
 	if (!Buffer) {
 		dprintf("Error alloc memory for File %s\n",Filename);
 		die();
 	}
 
+	memset(Buffer,0xff,FileSize + 0x1000);
 	if (!ReadFile(hFile, Buffer, FileSize)) {
 		dprintf("Error loading file %s\n",Filename);
 		die();
@@ -72,7 +70,7 @@ long LoadFile(PVOID Filename, long *lFileSize) {
 
 	NtClose(hFile);
 
-	*lFileSize = FileSize;
+	*lFileSize = FileSize + 0x1000;
 
 	return (long)Buffer;
 }
@@ -89,11 +87,11 @@ long LoadKernelXBE(long *FileSize) {
 	TempKernelSize = *FileSize;
 
 	// This is the Where the Real kernel Starts in the XBE
-	memcpy(&TempKernelStart,(void*)ValueDumps,4);
+	memcpy(&TempKernelStart,(void*)0x011080,4);
 	// This is the Real kernel Size
-	memcpy(&TempKernelSizev,(void*)(ValueDumps+0x04),4);
+	memcpy(&TempKernelSizev,(void*)0x011080+0x04,4);
 	// this is the kernel Size we pass to the Kernel loader
-	memcpy(&TempKernelSize,(void*)(ValueDumps+0x08),4);
+	memcpy(&TempKernelSize,(void*)0x011080+0x08,4);
 
 	*FileSize= TempKernelSize;
 
@@ -118,8 +116,8 @@ long LoadIinitrdXBE(long *FileSize) {
 	ULONGLONG TempInitrdStart;
 	ULONGLONG TempInitrdSize;
 
-	memcpy(&TempInitrdStart,(void*)ValueDumps+0xC,4);	// This is the Where the Real kernel Starts in the XBE
-	memcpy(&TempInitrdSize,(void*)ValueDumps+0x10,4);	// This is the Real kernel Size
+	memcpy(&TempInitrdStart,(void*)0x011080+0xC,4);	// This is the Where the Real kernel Starts in the XBE
+	memcpy(&TempInitrdSize,(void*)0x011080+0x10,4);	// This is the Real kernel Size
 
 	*FileSize= TempInitrdSize;
 
@@ -137,45 +135,7 @@ long LoadIinitrdXBE(long *FileSize) {
 
 #endif
 
-BYTE CMOS_READ(BYTE addr) {
-	IoOutputByte(0x70,addr); 
-	return IoInputByte(0x71);
-}
-
-void CMOS_WRITE(BYTE val, BYTE addr) { 
-	IoOutputByte(0x70,addr);
-	IoOutputByte(0x71,val); 
-}
-
-unsigned char staticbios[] = {
-	0x50,0xfd,0x38,0xed, 0x12,0xdd,0x05,0x04, 0x07,0x03,0x2d,0x02, 0x70,0x00,0x40,0x50,
-	                                                               
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	
-	0x40,0x40,0x4a,0xe0, 0x42,0xc1,0x40,0x40, 0x43,0xc2,0x40,0xd8, 0x40,0x3d,0x7e,0x20,
-	0x50,0xfd,0x38,0xed, 0x12,0xdd,0x05,0x04, 0x07,0x03,0x2d,0x02, 0x00,0x00,0x40,0x50,
-	
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-	0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa, 0x55,0xaa,0x55,0xaa,
-
-	0x40,0x40,0x4a,0xe0, 0x42,0xc1,0x40,0x40, 0x43,0xc2,0x40,0xd8, 0x40,0x3d,0x7e,0x20
-	
-		
-};
-
 void boot() {
-
-	int xres = 0;
-	int yres = 0;
 
 	long KernelPos;
 	long InitrdSize, InitrdPos;
@@ -189,15 +149,14 @@ void boot() {
 
 	CONFIGENTRY entry;
 
-
 	currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
         currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
 	currentvideomodedetails.m_dwFrameBufferStart = FRAMEBUFFER_START;
 
         BootVgaInitializationKernelNG((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
-
+	
 	framebuffer = (unsigned int*)(0xF0000000+*(unsigned int*)0xFD600800);
-	memset(framebuffer,0,640*480*4);
+	memset(framebuffer,0,SCREEN_WIDTH*SCREEN_HEIGHT*4);
 
 	memset(&entry,0,sizeof(CONFIGENTRY));
 	cx = 0;
@@ -211,22 +170,7 @@ void boot() {
 	dprintf("(C)2002 Xbox Linux Team - Licensed under the GPL\n");
 	dprintf("\n");
 
-#if 0
-      /*
-  	dprintf("RTC Init\n");
-	for(i = 0; i <= 0xff; i++) {
-		dprintf("%02x ",CMOS_READ(i));
-		if ((i%16)==15) dprintf("\n");
-	}
-        */
-	for(i = 0; i <= 0xff; i++) {
-		CMOS_WRITE(staticbios[i],i);
-	}
-    //    dprintf("RTC DONE\n");
-
-  //      while(1);
-
-#endif
+	DismountFileSystems();
 
 	if(!RemapDrive("\\??\\D:")) {
 		dprintf("Error RemapDrive\n");
@@ -295,25 +239,7 @@ void boot() {
 	memcpy(EscapeCodePos, &EscapeCode, PAGE_SIZE);
 	memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
 
-	switch(entry.vmode) {
-		case VIDEO_MODE_640x480:
-			xres = 640;
-			yres = 480;
-			break;
-		case VIDEO_MODE_800x600:
-			xres = 800;
-			yres = 600;
-			break;
-	}
-
-	currentvideomodedetails.m_nVideoModeIndex=entry.vmode;
-        currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
-        currentvideomodedetails.m_fForceEncoderLumaAndChromaToZeroInitially=0;
-
-	setup((void*)KernelPos, (void*)PhysInitrdPos, (void*)InitrdSize, entry.szAppend,xres,yres);
-
-	BootVgaInitializationKernelNG((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
-	memset(framebuffer,0,xres*yres*4);
+	setup((void*)KernelPos, (void*)PhysInitrdPos, (void*)InitrdSize, entry.szAppend);
 
 	/* orange LED */
 	HalWriteSMBusValue(0x20, 0x08, FALSE, 0xff);
@@ -471,9 +397,9 @@ NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
         unsigned int TempConfigSize;
 
 	// This is the Real kernel Size
-	memcpy(&TempConfigStart,(void*)(ValueDumps+0x14),4);
+	memcpy(&TempConfigStart,(void*)0x011080+0x14,4);
 	// this is the kernel Size we pass to the Kernel loader
-	memcpy(&TempConfigSize, (void*)(ValueDumps+0x18),4);
+	memcpy(&TempConfigSize, (void*)0x011080+0x18,4);
 
 	Buffer = MmAllocateContiguousMemoryEx(CONFIG_BUFFERSIZE,MIN_KERNEL,
 	                        MAX_KERNEL, 0, PAGE_READWRITE);
