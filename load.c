@@ -86,11 +86,11 @@ long LoadKernelXBE(long *FileSize) {
 	TempKernelSize = *FileSize;
 
 	// This is the Where the Real kernel Starts in the XBE
-	memcpy(&TempKernelStart,(void*)0x011f00,4);
+	memcpy(&TempKernelStart,(void*)0x011080,4);
 	// This is the Real kernel Size
-	memcpy(&TempKernelSizev,(void*)0x011f00+0x04,4);
+	memcpy(&TempKernelSizev,(void*)0x011080+0x04,4);
 	// this is the kernel Size we pass to the Kernel loader
-	memcpy(&TempKernelSize,(void*)0x011f00+0x08,4);
+	memcpy(&TempKernelSize,(void*)0x011080+0x08,4);
 
 	*FileSize= TempKernelSize;
 
@@ -115,8 +115,8 @@ long LoadIinitrdXBE(long *FileSize) {
 	ULONGLONG TempInitrdStart;
 	ULONGLONG TempInitrdSize;
 
-	memcpy(&TempInitrdStart,(void*)0x011f00+0xC,4);	// This is the Where the Real kernel Starts in the XBE
-	memcpy(&TempInitrdSize,(void*)0x011f00+0x10,4);	// This is the Real kernel Size
+	memcpy(&TempInitrdStart,(void*)0x011080+0xC,4);	// This is the Where the Real kernel Starts in the XBE
+	memcpy(&TempInitrdSize,(void*)0x011080+0x10,4);	// This is the Real kernel Size
 
 	*FileSize= TempInitrdSize;
 
@@ -468,9 +468,9 @@ NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
         unsigned int TempConfigSize;
 
 	// This is the Real kernel Size
-	memcpy(&TempConfigStart,(void*)0x011f00+0x14,4);
+	memcpy(&TempConfigStart,(void*)0x011080+0x14,4);
 	// this is the kernel Size we pass to the Kernel loader
-	memcpy(&TempConfigSize, (void*)0x011f00+0x18,4);
+	memcpy(&TempConfigSize, (void*)0x011080+0x18,4);
 
 	Buffer = MmAllocateContiguousMemoryEx(CONFIG_BUFFERSIZE,MIN_KERNEL,
 	                        MAX_KERNEL, 0, PAGE_READWRITE);

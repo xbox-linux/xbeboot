@@ -47,7 +47,7 @@ header_start:
   .long 1                               // number of section headers
   .long section_headers                 // section headers address
   .long 0                               // initialization flags
-  .long 0x12000 ^ 0xA8FC57AB            // entry point address XOR key **GAS ISSUE: "entry" won't work**
+  .long 0x11100 ^ 0xA8FC57AB            // entry point address XOR key **GAS ISSUE: "entry" won't work**
   .long 0x18000                         // thread local storage address
   .long 0                               // size of stack commit (PE copy)  *unimportant*
   .long 0                               // size of heap reserve (PE copy)  *unimportant*
@@ -261,11 +261,9 @@ headers_end:
 section_1_start:		// this should be 0x11000
 // kernel thunk table
 #include "import.tbl"
-
 	.long	0		// end of table
 
-
-.org 0x1f00
+.org 0x1080
 	.long	0		// VMLinuz Image Position
 	.long	0		// VMLinuz Image Size
 	.long	0		// VMLinuz Image Size Kernel Paramter
@@ -275,9 +273,11 @@ section_1_start:		// this should be 0x11000
 	.long	0		// Linuxboot.cfg Size
 	
 .globl _start
-.org 0x2000
+.org 0x1100
 entry:				// this should be 0x11100
 .intel_syntax noprefix
 _start:
 
 	jmp boot
+
+.org 0x2000

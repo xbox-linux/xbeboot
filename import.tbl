@@ -1,1098 +1,1098 @@
-.globl AvGetSavedDataAddress
-AvGetSavedDataAddress:
-   .long 0x80000000 + 1
-.globl AvSendTVEncoderOption
-AvSendTVEncoderOption:
-   .long 0x80000000 + 2
-.globl AvSetDisplayMode
-AvSetDisplayMode:
-   .long 0x80000000 + 3
-.globl AvSetSavedDataAddress
-AvSetSavedDataAddress:
-   .long 0x80000000 + 4
-.globl DbgBreakPoint
-DbgBreakPoint:
-   .long 0x80000000 + 5
-.globl DbgBreakPointWithStatus
-DbgBreakPointWithStatus:
-   .long 0x80000000 + 6
-.globl DbgLoadImageSymbols
-DbgLoadImageSymbols:
-   .long 0x80000000 + 7
-.globl DbgPrint
-DbgPrint:
-   .long 0x80000000 + 8
-.globl HalReadSMCTrayState
-HalReadSMCTrayState:
-   .long 0x80000000 + 9
-.globl DbgPrompt
-DbgPrompt:
-   .long 0x80000000 + 10
-.globl DbgUnLoadImageSymbols
-DbgUnLoadImageSymbols:
-   .long 0x80000000 + 11
-.globl ExAcquireReadWriteLockExclusive
-ExAcquireReadWriteLockExclusive:
-   .long 0x80000000 + 12
-.globl ExAcquireReadWriteLockShared
-ExAcquireReadWriteLockShared:
-   .long 0x80000000 + 13
-.globl ExAllocatePool
-ExAllocatePool:
-   .long 0x80000000 + 14
-.globl ExAllocatePoolWithTag
-ExAllocatePoolWithTag:
-   .long 0x80000000 + 15
-.globl ExEventObjectType
-ExEventObjectType:
-   .long 0x80000000 + 16
-.globl ExFreePool
-ExFreePool:
-   .long 0x80000000 + 17
-.globl ExInitializeReadWriteLock
-ExInitializeReadWriteLock:
-   .long 0x80000000 + 18
-.globl ExInterlockedAddLargeInteger
-ExInterlockedAddLargeInteger:
-   .long 0x80000000 + 19
-.globl ExInterlockedAddLargeStatistic
-ExInterlockedAddLargeStatistic:
-   .long 0x80000000 + 20
-.globl ExInterlockedCompareExchange64
-ExInterlockedCompareExchange64:
-   .long 0x80000000 + 21
-.globl ExMutantObjectType
-ExMutantObjectType:
-   .long 0x80000000 + 22
-.globl ExQueryPoolBlockSize
-ExQueryPoolBlockSize:
-   .long 0x80000000 + 23
-.globl ExQueryNonVolatileSetting
-ExQueryNonVolatileSetting:
-   .long 0x80000000 + 24
-.globl ExReadWriteRefurbInfo
-ExReadWriteRefurbInfo:
-   .long 0x80000000 + 25
-.globl ExRaiseException
-ExRaiseException:
-   .long 0x80000000 + 26
-.globl ExRaiseStatus
-ExRaiseStatus:
-   .long 0x80000000 + 27
-.globl ExReleaseReadWriteLock
-ExReleaseReadWriteLock:
-   .long 0x80000000 + 28
-.globl ExSaveNonVolatileSetting
-ExSaveNonVolatileSetting:
-   .long 0x80000000 + 29
-.globl ExSemaphoreObjectType
-ExSemaphoreObjectType:
-   .long 0x80000000 + 30
-.globl ExTimerObjectType
-ExTimerObjectType:
-   .long 0x80000000 + 31
-.globl ExfInterlockedInsertHeadList
-ExfInterlockedInsertHeadList:
-   .long 0x80000000 + 32
-.globl ExfInterlockedInsertTailList
-ExfInterlockedInsertTailList:
-   .long 0x80000000 + 33
-.globl ExfInterlockedRemoveHeadList
-ExfInterlockedRemoveHeadList:
-   .long 0x80000000 + 34
-.globl FscGetCacheSize
-FscGetCacheSize:
-   .long 0x80000000 + 35
-.globl FscInvalidateIdleBlocks
-FscInvalidateIdleBlocks:
-   .long 0x80000000 + 36
-.globl FscSetCacheSize
-FscSetCacheSize:
-   .long 0x80000000 + 37
-.globl HalClearSoftwareInterrupt
-HalClearSoftwareInterrupt:
-   .long 0x80000000 + 38
-.globl HalDisableSystemInterrupt
-HalDisableSystemInterrupt:
-   .long 0x80000000 + 39
-.globl HalDiskCachePartitionCount
-HalDiskCachePartitionCount:
-   .long 0x80000000 + 40
-.globl HalDiskModelNumber
-HalDiskModelNumber:
-   .long 0x80000000 + 41
-.globl HalDiskSerialNumber
-HalDiskSerialNumber:
-   .long 0x80000000 + 42
-.globl HalEnableSystemInterrupt
-HalEnableSystemInterrupt:
-   .long 0x80000000 + 43
-.globl HalGetInterruptVector
-HalGetInterruptVector:
-   .long 0x80000000 + 44
-.globl HalReadSMBusValue
-HalReadSMBusValue:
-   .long 0x80000000 + 45
-.globl HalReadWritePCISpace
-HalReadWritePCISpace:
-   .long 0x80000000 + 46
-.globl HalRegisterShutdownNotification
-HalRegisterShutdownNotification:
-   .long 0x80000000 + 47
-.globl HalRequestSoftwareInterrupt
-HalRequestSoftwareInterrupt:
-   .long 0x80000000 + 48
-.globl HalReturnToFirmware
-HalReturnToFirmware:
-   .long 0x80000000 + 49
+//.globl AvGetSavedDataAddress
+//AvGetSavedDataAddress:
+//   .long 0x80000000 + 1
+//.globl AvSendTVEncoderOption
+//AvSendTVEncoderOption:
+//   .long 0x80000000 + 2
+//.globl AvSetDisplayMode
+//AvSetDisplayMode:
+//   .long 0x80000000 + 3
+//.globl AvSetSavedDataAddress
+//AvSetSavedDataAddress:
+//   .long 0x80000000 + 4
+//.globl DbgBreakPoint
+//DbgBreakPoint:
+//   .long 0x80000000 + 5
+//.globl DbgBreakPointWithStatus
+//DbgBreakPointWithStatus:
+//   .long 0x80000000 + 6
+//.globl DbgLoadImageSymbols
+//DbgLoadImageSymbols:
+//   .long 0x80000000 + 7
+//.globl DbgPrint
+//DbgPrint:
+//   .long 0x80000000 + 8
+//.globl HalReadSMCTrayState
+//HalReadSMCTrayState:
+//   .long 0x80000000 + 9
+//.globl DbgPrompt
+//DbgPrompt:
+//   .long 0x80000000 + 10
+//.globl DbgUnLoadImageSymbols
+//DbgUnLoadImageSymbols:
+//   .long 0x80000000 + 11
+//.globl ExAcquireReadWriteLockExclusive
+//ExAcquireReadWriteLockExclusive:
+//   .long 0x80000000 + 12
+//.globl ExAcquireReadWriteLockShared
+//ExAcquireReadWriteLockShared:
+//   .long 0x80000000 + 13
+//.globl ExAllocatePool
+//ExAllocatePool:
+//   .long 0x80000000 + 14
+//.globl ExAllocatePoolWithTag
+//ExAllocatePoolWithTag:
+//   .long 0x80000000 + 15
+//.globl ExEventObjectType
+//ExEventObjectType:
+//   .long 0x80000000 + 16
+//.globl ExFreePool
+//ExFreePool:
+//   .long 0x80000000 + 17
+//.globl ExInitializeReadWriteLock
+//ExInitializeReadWriteLock:
+//   .long 0x80000000 + 18
+//.globl ExInterlockedAddLargeInteger
+//ExInterlockedAddLargeInteger:
+//   .long 0x80000000 + 19
+//.globl ExInterlockedAddLargeStatistic
+//ExInterlockedAddLargeStatistic:
+//   .long 0x80000000 + 20
+//.globl ExInterlockedCompareExchange64
+//ExInterlockedCompareExchange64:
+//   .long 0x80000000 + 21
+//.globl ExMutantObjectType
+//ExMutantObjectType:
+//   .long 0x80000000 + 22
+//.globl ExQueryPoolBlockSize
+//ExQueryPoolBlockSize:
+//   .long 0x80000000 + 23
+//.globl ExQueryNonVolatileSetting
+//ExQueryNonVolatileSetting:
+//   .long 0x80000000 + 24
+//.globl ExReadWriteRefurbInfo
+//ExReadWriteRefurbInfo:
+//   .long 0x80000000 + 25
+//.globl ExRaiseException
+//ExRaiseException:
+//   .long 0x80000000 + 26
+//.globl ExRaiseStatus
+//ExRaiseStatus:
+//   .long 0x80000000 + 27
+//.globl ExReleaseReadWriteLock
+//ExReleaseReadWriteLock:
+//   .long 0x80000000 + 28
+//.globl ExSaveNonVolatileSetting
+//ExSaveNonVolatileSetting:
+//   .long 0x80000000 + 29
+//.globl ExSemaphoreObjectType
+//ExSemaphoreObjectType:
+//   .long 0x80000000 + 30
+//.globl ExTimerObjectType
+//ExTimerObjectType:
+//   .long 0x80000000 + 31
+//.globl ExfInterlockedInsertHeadList
+//ExfInterlockedInsertHeadList:
+//   .long 0x80000000 + 32
+//.globl ExfInterlockedInsertTailList
+//ExfInterlockedInsertTailList:
+//   .long 0x80000000 + 33
+//.globl ExfInterlockedRemoveHeadList
+//ExfInterlockedRemoveHeadList:
+//   .long 0x80000000 + 34
+//.globl FscGetCacheSize
+//FscGetCacheSize:
+//   .long 0x80000000 + 35
+//.globl FscInvalidateIdleBlocks
+//FscInvalidateIdleBlocks:
+//   .long 0x80000000 + 36
+//.globl FscSetCacheSize
+//FscSetCacheSize:
+//   .long 0x80000000 + 37
+//.globl HalClearSoftwareInterrupt
+//HalClearSoftwareInterrupt:
+//   .long 0x80000000 + 38
+//.globl HalDisableSystemInterrupt
+//HalDisableSystemInterrupt:
+//   .long 0x80000000 + 39
+//.globl HalDiskCachePartitionCount
+//HalDiskCachePartitionCount:
+//   .long 0x80000000 + 40
+//.globl HalDiskModelNumber
+//HalDiskModelNumber:
+//   .long 0x80000000 + 41
+//.globl HalDiskSerialNumber
+//HalDiskSerialNumber:
+//   .long 0x80000000 + 42
+//.globl HalEnableSystemInterrupt
+//HalEnableSystemInterrupt:
+//   .long 0x80000000 + 43
+//.globl HalGetInterruptVector
+//HalGetInterruptVector:
+//   .long 0x80000000 + 44
+//.globl HalReadSMBusValue
+//HalReadSMBusValue:
+//   .long 0x80000000 + 45
+//.globl HalReadWritePCISpace
+//HalReadWritePCISpace:
+//   .long 0x80000000 + 46
+//.globl HalRegisterShutdownNotification
+//HalRegisterShutdownNotification:
+//   .long 0x80000000 + 47
+//.globl HalRequestSoftwareInterrupt
+//HalRequestSoftwareInterrupt:
+//   .long 0x80000000 + 48
+//.globl HalReturnToFirmware
+//HalReturnToFirmware:
+//   .long 0x80000000 + 49
 .globl HalWriteSMBusValue
 HalWriteSMBusValue:
    .long 0x80000000 + 50
-.globl InterlockedCompareExchange
-InterlockedCompareExchange:
-   .long 0x80000000 + 51
-.globl InterlockedDecrement
-InterlockedDecrement:
-   .long 0x80000000 + 52
-.globl InterlockedIncrement
-InterlockedIncrement:
-   .long 0x80000000 + 53
-.globl InterlockedExchange
-InterlockedExchange:
-   .long 0x80000000 + 54
-.globl InterlockedExchangeAdd
-InterlockedExchangeAdd:
-   .long 0x80000000 + 55
-.globl InterlockedFlushSList
-InterlockedFlushSList:
-   .long 0x80000000 + 56
-.globl InterlockedPopEntrySList
-InterlockedPopEntrySList:
-   .long 0x80000000 + 57
-.globl InterlockedPushEntrySList
-InterlockedPushEntrySList:
-   .long 0x80000000 + 58
-.globl IoAllocateIrp
-IoAllocateIrp:
-   .long 0x80000000 + 59
-.globl IoBuildAsynchronousFsdRequest
-IoBuildAsynchronousFsdRequest:
-   .long 0x80000000 + 60
-.globl IoBuildDeviceIoControlRequest
-IoBuildDeviceIoControlRequest:
-   .long 0x80000000 + 61
-.globl IoBuildSynchronousFsdRequest
-IoBuildSynchronousFsdRequest:
-   .long 0x80000000 + 62
-.globl IoCheckShareAccess
-IoCheckShareAccess:
-   .long 0x80000000 + 63
-.globl IoCompletionObjectType
-IoCompletionObjectType:
-   .long 0x80000000 + 64
-.globl IoCreateDevice
-IoCreateDevice:
-   .long 0x80000000 + 65
-.globl IoCreateFile
-IoCreateFile:
-   .long 0x80000000 + 66
+//.globl InterlockedCompareExchange
+//InterlockedCompareExchange:
+//   .long 0x80000000 + 51
+//.globl InterlockedDecrement
+//InterlockedDecrement:
+//   .long 0x80000000 + 52
+//.globl InterlockedIncrement
+//InterlockedIncrement:
+//   .long 0x80000000 + 53
+//.globl InterlockedExchange
+//InterlockedExchange:
+//   .long 0x80000000 + 54
+//.globl InterlockedExchangeAdd
+//InterlockedExchangeAdd:
+//   .long 0x80000000 + 55
+//.globl InterlockedFlushSList
+//InterlockedFlushSList:
+//   .long 0x80000000 + 56
+//.globl InterlockedPopEntrySList
+//InterlockedPopEntrySList:
+//   .long 0x80000000 + 57
+//.globl InterlockedPushEntrySList
+//InterlockedPushEntrySList:
+//   .long 0x80000000 + 58
+//.globl IoAllocateIrp
+//IoAllocateIrp:
+//   .long 0x80000000 + 59
+//.globl IoBuildAsynchronousFsdRequest
+//IoBuildAsynchronousFsdRequest:
+//   .long 0x80000000 + 60
+//.globl IoBuildDeviceIoControlRequest
+//IoBuildDeviceIoControlRequest:
+//   .long 0x80000000 + 61
+//.globl IoBuildSynchronousFsdRequest
+//IoBuildSynchronousFsdRequest:
+//   .long 0x80000000 + 62
+//.globl IoCheckShareAccess
+//IoCheckShareAccess:
+//   .long 0x80000000 + 63
+//.globl IoCompletionObjectType
+//IoCompletionObjectType:
+//   .long 0x80000000 + 64
+//.globl IoCreateDevice
+//IoCreateDevice:
+//   .long 0x80000000 + 65
+//.globl IoCreateFile
+//IoCreateFile:
+//   .long 0x80000000 + 66
 .globl IoCreateSymbolicLink
 IoCreateSymbolicLink:
    .long 0x80000000 + 67
-.globl IoDeleteDevice
-IoDeleteDevice:
-   .long 0x80000000 + 68
+//.globl IoDeleteDevice
+//IoDeleteDevice:
+//   .long 0x80000000 + 68
 .globl IoDeleteSymbolicLink
 IoDeleteSymbolicLink:
    .long 0x80000000 + 69
-.globl IoDeviceObjectType
-IoDeviceObjectType:
-   .long 0x80000000 + 70
-.globl IoFileObjectType
-IoFileObjectType:
-   .long 0x80000000 + 71
-.globl IoFreeIrp
-IoFreeIrp:
-   .long 0x80000000 + 72
-.globl IoInitializeIrp
-IoInitializeIrp:
-   .long 0x80000000 + 73
-.globl IoInvalidDeviceRequest
-IoInvalidDeviceRequest:
-   .long 0x80000000 + 74
-.globl IoQueryFileInformation
-IoQueryFileInformation:
-   .long 0x80000000 + 75
-.globl IoQueryVolumeInformation
-IoQueryVolumeInformation:
-   .long 0x80000000 + 76
-.globl IoQueueThreadIrp
-IoQueueThreadIrp:
-   .long 0x80000000 + 77
-.globl IoRemoveShareAccess
-IoRemoveShareAccess:
-   .long 0x80000000 + 78
-.globl IoSetIoCompletion
-IoSetIoCompletion:
-   .long 0x80000000 + 79
-.globl IoSetShareAccess
-IoSetShareAccess:
-   .long 0x80000000 + 80
-.globl IoStartNextPacket
-IoStartNextPacket:
-   .long 0x80000000 + 81
-.globl IoStartNextPacketByKey
-IoStartNextPacketByKey:
-   .long 0x80000000 + 82
-.globl IoStartPacket
-IoStartPacket:
-   .long 0x80000000 + 83
-.globl IoSynchronousDeviceIoControlRequest
-IoSynchronousDeviceIoControlRequest:
-   .long 0x80000000 + 84
-.globl IoSynchronousFsdRequest
-IoSynchronousFsdRequest:
-   .long 0x80000000 + 85
-.globl IofCallDriver
-IofCallDriver:
-   .long 0x80000000 + 86
-.globl IofCompleteRequest
-IofCompleteRequest:
-   .long 0x80000000 + 87
-.globl KdDebuggerEnabled
-KdDebuggerEnabled:
-   .long 0x80000000 + 88
-.globl KdDebuggerNotPresent
-KdDebuggerNotPresent:
-   .long 0x80000000 + 89
-.globl IoDismountVolume
-IoDismountVolume:
-   .long 0x80000000 + 90
+//.globl IoDeviceObjectType
+//IoDeviceObjectType:
+//   .long 0x80000000 + 70
+//.globl IoFileObjectType
+//IoFileObjectType:
+//   .long 0x80000000 + 71
+//.globl IoFreeIrp
+//IoFreeIrp:
+//   .long 0x80000000 + 72
+//.globl IoInitializeIrp
+//IoInitializeIrp:
+//   .long 0x80000000 + 73
+//.globl IoInvalidDeviceRequest
+//IoInvalidDeviceRequest:
+//   .long 0x80000000 + 74
+//.globl IoQueryFileInformation
+//IoQueryFileInformation:
+//   .long 0x80000000 + 75
+//.globl IoQueryVolumeInformation
+//IoQueryVolumeInformation:
+//   .long 0x80000000 + 76
+//.globl IoQueueThreadIrp
+//IoQueueThreadIrp:
+//   .long 0x80000000 + 77
+//.globl IoRemoveShareAccess
+//IoRemoveShareAccess:
+//   .long 0x80000000 + 78
+//.globl IoSetIoCompletion
+//IoSetIoCompletion:
+//   .long 0x80000000 + 79
+//.globl IoSetShareAccess
+//IoSetShareAccess:
+//   .long 0x80000000 + 80
+//.globl IoStartNextPacket
+//IoStartNextPacket:
+//   .long 0x80000000 + 81
+//.globl IoStartNextPacketByKey
+//IoStartNextPacketByKey:
+//   .long 0x80000000 + 82
+//.globl IoStartPacket
+//IoStartPacket:
+//   .long 0x80000000 + 83
+//.globl IoSynchronousDeviceIoControlRequest
+//IoSynchronousDeviceIoControlRequest:
+//   .long 0x80000000 + 84
+//.globl IoSynchronousFsdRequest
+//IoSynchronousFsdRequest:
+//   .long 0x80000000 + 85
+//.globl IofCallDriver
+//IofCallDriver:
+//   .long 0x80000000 + 86
+//.globl IofCompleteRequest
+//IofCompleteRequest:
+//   .long 0x80000000 + 87
+//.globl KdDebuggerEnabled
+//KdDebuggerEnabled:
+//   .long 0x80000000 + 88
+//.globl KdDebuggerNotPresent
+//KdDebuggerNotPresent:
+//   .long 0x80000000 + 89
+//.globl IoDismountVolume
+//IoDismountVolume:
+//   .long 0x80000000 + 90
 .globl IoDismountVolumeByName
 IoDismountVolumeByName:
    .long 0x80000000 + 91
-.globl KeAlertResumeThread
-KeAlertResumeThread:
-   .long 0x80000000 + 92
-.globl KeAlertThread
-KeAlertThread:
-   .long 0x80000000 + 93
-.globl KeBoostPriorityThread
-KeBoostPriorityThread:
-   .long 0x80000000 + 94
-.globl KeBugCheck
-KeBugCheck:
-   .long 0x80000000 + 95
-.globl KeBugCheckEx
-KeBugCheckEx:
-   .long 0x80000000 + 96
-.globl KeCancelTimer
-KeCancelTimer:
-   .long 0x80000000 + 97
-.globl KeConnectInterrupt
-KeConnectInterrupt:
-   .long 0x80000000 + 98
-.globl KeDelayExecutionThread
-KeDelayExecutionThread:
-   .long 0x80000000 + 99
-.globl KeDisconnectInterrupt
-KeDisconnectInterrupt:
-   .long 0x80000000 + 100
-.globl KeEnterCriticalRegion
-KeEnterCriticalRegion:
-   .long 0x80000000 + 101
-.globl MmGlobalData
-MmGlobalData:
-   .long 0x80000000 + 102
-.globl KeGetCurrentIrql
-KeGetCurrentIrql:
-   .long 0x80000000 + 103
-.globl KeGetCurrentThread
-KeGetCurrentThread:
-   .long 0x80000000 + 104
-.globl KeInitializeApc
-KeInitializeApc:
-   .long 0x80000000 + 105
-.globl KeInitializeDeviceQueue
-KeInitializeDeviceQueue:
-   .long 0x80000000 + 106
-.globl KeInitializeDpc
-KeInitializeDpc:
-   .long 0x80000000 + 107
-.globl KeInitializeEvent
-KeInitializeEvent:
-   .long 0x80000000 + 108
-.globl KeInitializeInterrupt
-KeInitializeInterrupt:
-   .long 0x80000000 + 109
-.globl KeInitializeMutant
-KeInitializeMutant:
-   .long 0x80000000 + 110
-.globl KeInitializeQueue
-KeInitializeQueue:
-   .long 0x80000000 + 111
-.globl KeInitializeSemaphore
-KeInitializeSemaphore:
-   .long 0x80000000 + 112
-.globl KeInitializeTimerEx
-KeInitializeTimerEx:
-   .long 0x80000000 + 113
-.globl KeInsertByKeyDeviceQueue
-KeInsertByKeyDeviceQueue:
-   .long 0x80000000 + 114
-.globl KeInsertDeviceQueue
-KeInsertDeviceQueue:
-   .long 0x80000000 + 115
-.globl KeInsertHeadQueue
-KeInsertHeadQueue:
-   .long 0x80000000 + 116
-.globl KeInsertQueue
-KeInsertQueue:
-   .long 0x80000000 + 117
-.globl KeInsertQueueApc
-KeInsertQueueApc:
-   .long 0x80000000 + 118
-.globl KeInsertQueueDpc
-KeInsertQueueDpc:
-   .long 0x80000000 + 119
-.globl KeInterruptTime
-KeInterruptTime:
-   .long 0x80000000 + 120
-.globl KeIsExecutingDpc
-KeIsExecutingDpc:
-   .long 0x80000000 + 121
-.globl KeLeaveCriticalRegion
-KeLeaveCriticalRegion:
-   .long 0x80000000 + 122
-.globl KePulseEvent
-KePulseEvent:
-   .long 0x80000000 + 123
-.globl KeQueryBasePriorityThread
-KeQueryBasePriorityThread:
-   .long 0x80000000 + 124
-.globl KeQueryInterruptTime
-KeQueryInterruptTime:
-   .long 0x80000000 + 125
-.globl KeQueryPerformanceCounter
-KeQueryPerformanceCounter:
-   .long 0x80000000 + 126
-.globl KeQueryPerformanceFrequency
-KeQueryPerformanceFrequency:
-   .long 0x80000000 + 127
-.globl KeQuerySystemTime
-KeQuerySystemTime:
-   .long 0x80000000 + 128
-.globl KeRaiseIrqlToDpcLevel
-KeRaiseIrqlToDpcLevel:
-   .long 0x80000000 + 129
-.globl KeRaiseIrqlToSynchLevel
-KeRaiseIrqlToSynchLevel:
-   .long 0x80000000 + 130
-.globl KeReleaseMutant
-KeReleaseMutant:
-   .long 0x80000000 + 131
-.globl KeReleaseSemaphore
-KeReleaseSemaphore:
-   .long 0x80000000 + 132
-.globl KeRemoveByKeyDeviceQueue
-KeRemoveByKeyDeviceQueue:
-   .long 0x80000000 + 133
-.globl KeRemoveDeviceQueue
-KeRemoveDeviceQueue:
-   .long 0x80000000 + 134
-.globl KeRemoveEntryDeviceQueue
-KeRemoveEntryDeviceQueue:
-   .long 0x80000000 + 135
-.globl KeRemoveQueue
-KeRemoveQueue:
-   .long 0x80000000 + 136
-.globl KeRemoveQueueDpc
-KeRemoveQueueDpc:
-   .long 0x80000000 + 137
-.globl KeResetEvent
-KeResetEvent:
-   .long 0x80000000 + 138
-.globl KeRestoreFloatingPointState
-KeRestoreFloatingPointState:
-   .long 0x80000000 + 139
-.globl KeResumeThread
-KeResumeThread:
-   .long 0x80000000 + 140
-.globl KeRundownQueue
-KeRundownQueue:
-   .long 0x80000000 + 141
-.globl KeSaveFloatingPointState
-KeSaveFloatingPointState:
-   .long 0x80000000 + 142
-.globl KeSetBasePriorityThread
-KeSetBasePriorityThread:
-   .long 0x80000000 + 143
-.globl KeSetDisableBoostThread
-KeSetDisableBoostThread:
-   .long 0x80000000 + 144
-.globl KeSetEvent
-KeSetEvent:
-   .long 0x80000000 + 145
-.globl KeSetEventBoostPriority
-KeSetEventBoostPriority:
-   .long 0x80000000 + 146
-.globl KeSetPriorityProcess
-KeSetPriorityProcess:
-   .long 0x80000000 + 147
-.globl KeSetPriorityThread
-KeSetPriorityThread:
-   .long 0x80000000 + 148
-.globl KeSetTimer
-KeSetTimer:
-   .long 0x80000000 + 149
-.globl KeSetTimerEx
-KeSetTimerEx:
-   .long 0x80000000 + 150
-.globl KeStallExecutionProcessor
-KeStallExecutionProcessor:
-   .long 0x80000000 + 151
-.globl KeSuspendThread
-KeSuspendThread:
-   .long 0x80000000 + 152
-.globl KeSynchronizeExecution
-KeSynchronizeExecution:
-   .long 0x80000000 + 153
-.globl KeSystemTime
-KeSystemTime:
-   .long 0x80000000 + 154
-.globl KeTestAlertThread
-KeTestAlertThread:
-   .long 0x80000000 + 155
-.globl KeTickCount
-KeTickCount:
-   .long 0x80000000 + 156
-.globl KeTimeIncrement
-KeTimeIncrement:
-   .long 0x80000000 + 157
-.globl KeWaitForMultipleObjects
-KeWaitForMultipleObjects:
-   .long 0x80000000 + 158
-.globl KeWaitForSingleObject
-KeWaitForSingleObject:
-   .long 0x80000000 + 159
-.globl KfRaiseIrql
-KfRaiseIrql:
-   .long 0x80000000 + 160
-.globl KfLowerIrql
-KfLowerIrql:
-   .long 0x80000000 + 161
-.globl KiBugCheckData
-KiBugCheckData:
-   .long 0x80000000 + 162
-.globl KiUnlockDispatcherDatabase
-KiUnlockDispatcherDatabase:
-   .long 0x80000000 + 163
-.globl LaunchDataPage
-LaunchDataPage:
-   .long 0x80000000 + 164
-.globl MmAllocateContiguousMemory
-MmAllocateContiguousMemory:
-   .long 0x80000000 + 165
+//.globl KeAlertResumeThread
+//KeAlertResumeThread:
+//   .long 0x80000000 + 92
+//.globl KeAlertThread
+//KeAlertThread:
+//   .long 0x80000000 + 93
+//.globl KeBoostPriorityThread
+//KeBoostPriorityThread:
+//   .long 0x80000000 + 94
+//.globl KeBugCheck
+//KeBugCheck:
+//   .long 0x80000000 + 95
+//.globl KeBugCheckEx
+//KeBugCheckEx:
+//   .long 0x80000000 + 96
+//.globl KeCancelTimer
+//KeCancelTimer:
+//   .long 0x80000000 + 97
+//.globl KeConnectInterrupt
+//KeConnectInterrupt:
+//   .long 0x80000000 + 98
+//.globl KeDelayExecutionThread
+//KeDelayExecutionThread:
+//   .long 0x80000000 + 99
+//.globl KeDisconnectInterrupt
+//KeDisconnectInterrupt:
+//   .long 0x80000000 + 100
+//.globl KeEnterCriticalRegion
+//KeEnterCriticalRegion:
+//   .long 0x80000000 + 101
+//.globl MmGlobalData
+//MmGlobalData:
+//   .long 0x80000000 + 102
+//.globl KeGetCurrentIrql
+//KeGetCurrentIrql:
+//   .long 0x80000000 + 103
+//.globl KeGetCurrentThread
+//KeGetCurrentThread:
+//   .long 0x80000000 + 104
+//.globl KeInitializeApc
+//KeInitializeApc:
+//   .long 0x80000000 + 105
+//.globl KeInitializeDeviceQueue
+//KeInitializeDeviceQueue:
+//   .long 0x80000000 + 106
+//.globl KeInitializeDpc
+//KeInitializeDpc:
+//   .long 0x80000000 + 107
+//.globl KeInitializeEvent
+//KeInitializeEvent:
+//   .long 0x80000000 + 108
+//.globl KeInitializeInterrupt
+//KeInitializeInterrupt:
+//   .long 0x80000000 + 109
+//.globl KeInitializeMutant
+//KeInitializeMutant:
+//   .long 0x80000000 + 110
+//.globl KeInitializeQueue
+//KeInitializeQueue:
+//   .long 0x80000000 + 111
+//.globl KeInitializeSemaphore
+//KeInitializeSemaphore:
+//   .long 0x80000000 + 112
+//.globl KeInitializeTimerEx
+//KeInitializeTimerEx:
+//   .long 0x80000000 + 113
+//.globl KeInsertByKeyDeviceQueue
+//KeInsertByKeyDeviceQueue:
+//   .long 0x80000000 + 114
+//.globl KeInsertDeviceQueue
+//KeInsertDeviceQueue:
+//   .long 0x80000000 + 115
+//.globl KeInsertHeadQueue
+//KeInsertHeadQueue:
+//   .long 0x80000000 + 116
+//.globl KeInsertQueue
+//KeInsertQueue:
+//   .long 0x80000000 + 117
+//.globl KeInsertQueueApc
+//KeInsertQueueApc:
+//   .long 0x80000000 + 118
+//.globl KeInsertQueueDpc
+//KeInsertQueueDpc:
+//   .long 0x80000000 + 119
+//.globl KeInterruptTime
+//KeInterruptTime:
+//   .long 0x80000000 + 120
+//.globl KeIsExecutingDpc
+//KeIsExecutingDpc:
+//   .long 0x80000000 + 121
+//.globl KeLeaveCriticalRegion
+//KeLeaveCriticalRegion:
+//   .long 0x80000000 + 122
+//.globl KePulseEvent
+//KePulseEvent:
+//   .long 0x80000000 + 123
+//.globl KeQueryBasePriorityThread
+//KeQueryBasePriorityThread:
+//   .long 0x80000000 + 124
+//.globl KeQueryInterruptTime
+//KeQueryInterruptTime:
+//   .long 0x80000000 + 125
+//.globl KeQueryPerformanceCounter
+//KeQueryPerformanceCounter:
+//   .long 0x80000000 + 126
+//.globl KeQueryPerformanceFrequency
+//KeQueryPerformanceFrequency:
+//   .long 0x80000000 + 127
+//.globl KeQuerySystemTime
+//KeQuerySystemTime:
+//   .long 0x80000000 + 128
+//.globl KeRaiseIrqlToDpcLevel
+//KeRaiseIrqlToDpcLevel:
+//   .long 0x80000000 + 129
+//.globl KeRaiseIrqlToSynchLevel
+//KeRaiseIrqlToSynchLevel:
+//   .long 0x80000000 + 130
+//.globl KeReleaseMutant
+//KeReleaseMutant:
+//   .long 0x80000000 + 131
+//.globl KeReleaseSemaphore
+//KeReleaseSemaphore:
+//   .long 0x80000000 + 132
+//.globl KeRemoveByKeyDeviceQueue
+//KeRemoveByKeyDeviceQueue:
+//   .long 0x80000000 + 133
+//.globl KeRemoveDeviceQueue
+//KeRemoveDeviceQueue:
+//   .long 0x80000000 + 134
+//.globl KeRemoveEntryDeviceQueue
+//KeRemoveEntryDeviceQueue:
+//   .long 0x80000000 + 135
+//.globl KeRemoveQueue
+//KeRemoveQueue:
+//   .long 0x80000000 + 136
+//.globl KeRemoveQueueDpc
+//KeRemoveQueueDpc:
+//   .long 0x80000000 + 137
+//.globl KeResetEvent
+//KeResetEvent:
+//   .long 0x80000000 + 138
+//.globl KeRestoreFloatingPointState
+//KeRestoreFloatingPointState:
+//   .long 0x80000000 + 139
+//.globl KeResumeThread
+//KeResumeThread:
+//   .long 0x80000000 + 140
+//.globl KeRundownQueue
+//KeRundownQueue:
+//   .long 0x80000000 + 141
+//.globl KeSaveFloatingPointState
+//KeSaveFloatingPointState:
+//   .long 0x80000000 + 142
+//.globl KeSetBasePriorityThread
+//KeSetBasePriorityThread:
+//   .long 0x80000000 + 143
+//.globl KeSetDisableBoostThread
+//KeSetDisableBoostThread:
+//   .long 0x80000000 + 144
+//.globl KeSetEvent
+//KeSetEvent:
+//   .long 0x80000000 + 145
+//.globl KeSetEventBoostPriority
+//KeSetEventBoostPriority:
+//   .long 0x80000000 + 146
+//.globl KeSetPriorityProcess
+//KeSetPriorityProcess:
+//   .long 0x80000000 + 147
+//.globl KeSetPriorityThread
+//KeSetPriorityThread:
+//   .long 0x80000000 + 148
+//.globl KeSetTimer
+//KeSetTimer:
+//   .long 0x80000000 + 149
+//.globl KeSetTimerEx
+//KeSetTimerEx:
+//   .long 0x80000000 + 150
+//.globl KeStallExecutionProcessor
+//KeStallExecutionProcessor:
+//   .long 0x80000000 + 151
+//.globl KeSuspendThread
+//KeSuspendThread:
+//   .long 0x80000000 + 152
+//.globl KeSynchronizeExecution
+//KeSynchronizeExecution:
+//   .long 0x80000000 + 153
+//.globl KeSystemTime
+//KeSystemTime:
+//   .long 0x80000000 + 154
+//.globl KeTestAlertThread
+//KeTestAlertThread:
+//   .long 0x80000000 + 155
+//.globl KeTickCount
+//KeTickCount:
+//   .long 0x80000000 + 156
+//.globl KeTimeIncrement
+//KeTimeIncrement:
+//   .long 0x80000000 + 157
+//.globl KeWaitForMultipleObjects
+//KeWaitForMultipleObjects:
+//   .long 0x80000000 + 158
+//.globl KeWaitForSingleObject
+//KeWaitForSingleObject:
+//   .long 0x80000000 + 159
+//.globl KfRaiseIrql
+//KfRaiseIrql:
+//   .long 0x80000000 + 160
+//.globl KfLowerIrql
+//KfLowerIrql:
+//   .long 0x80000000 + 161
+//.globl KiBugCheckData
+//KiBugCheckData:
+//   .long 0x80000000 + 162
+//.globl KiUnlockDispatcherDatabase
+//KiUnlockDispatcherDatabase:
+//   .long 0x80000000 + 163
+//.globl LaunchDataPage
+//LaunchDataPage:
+//   .long 0x80000000 + 164
+//.globl MmAllocateContiguousMemory
+//MmAllocateContiguousMemory:
+//   .long 0x80000000 + 165
 .globl MmAllocateContiguousMemoryEx
 MmAllocateContiguousMemoryEx:
    .long 0x80000000 + 166
-.globl MmAllocateSystemMemory
-MmAllocateSystemMemory:
-   .long 0x80000000 + 167
-.globl MmClaimGpuInstanceMemory
-MmClaimGpuInstanceMemory:
-   .long 0x80000000 + 168
-.globl MmCreateKernelStack
-MmCreateKernelStack:
-   .long 0x80000000 + 169
-.globl MmDeleteKernelStack
-MmDeleteKernelStack:
-   .long 0x80000000 + 170
+//.globl MmAllocateSystemMemory
+//MmAllocateSystemMemory:
+//   .long 0x80000000 + 167
+//.globl MmClaimGpuInstanceMemory
+//MmClaimGpuInstanceMemory:
+//   .long 0x80000000 + 168
+//.globl MmCreateKernelStack
+//MmCreateKernelStack:
+//   .long 0x80000000 + 169
+//.globl MmDeleteKernelStack
+//MmDeleteKernelStack:
+//   .long 0x80000000 + 170
 .globl MmFreeContiguousMemory
 MmFreeContiguousMemory:
    .long 0x80000000 + 171
-.globl MmFreeSystemMemory
-MmFreeSystemMemory:
-   .long 0x80000000 + 172
+//.globl MmFreeSystemMemory
+//MmFreeSystemMemory:
+//   .long 0x80000000 + 172
 .globl MmGetPhysicalAddress
 MmGetPhysicalAddress:
    .long 0x80000000 + 173
-.globl MmIsAddressValid
-MmIsAddressValid:
-   .long 0x80000000 + 174
-.globl MmLockUnlockBufferPages
-MmLockUnlockBufferPages:
-   .long 0x80000000 + 175
-.globl MmLockUnlockPhysicalPage
-MmLockUnlockPhysicalPage:
-   .long 0x80000000 + 176
-.globl MmMapIoSpace
-MmMapIoSpace:
-   .long 0x80000000 + 177
-.globl MmPersistContiguousMemory
-MmPersistContiguousMemory:
-   .long 0x80000000 + 178
-.globl MmQueryAddressProtect
-MmQueryAddressProtect:
-   .long 0x80000000 + 179
-.globl MmQueryAllocationSize
-MmQueryAllocationSize:
-   .long 0x80000000 + 180
-.globl MmQueryStatistics
-MmQueryStatistics:
-   .long 0x80000000 + 181
-.globl MmSetAddressProtect
-MmSetAddressProtect:
-   .long 0x80000000 + 182
-.globl MmUnmapIoSpace
-MmUnmapIoSpace:
-   .long 0x80000000 + 183
+//.globl MmIsAddressValid
+//MmIsAddressValid:
+//   .long 0x80000000 + 174
+//.globl MmLockUnlockBufferPages
+//MmLockUnlockBufferPages:
+//   .long 0x80000000 + 175
+//.globl MmLockUnlockPhysicalPage
+//MmLockUnlockPhysicalPage:
+//   .long 0x80000000 + 176
+//.globl MmMapIoSpace
+//MmMapIoSpace:
+//   .long 0x80000000 + 177
+//.globl MmPersistContiguousMemory
+//MmPersistContiguousMemory:
+//   .long 0x80000000 + 178
+//.globl MmQueryAddressProtect
+//MmQueryAddressProtect:
+//   .long 0x80000000 + 179
+//.globl MmQueryAllocationSize
+//MmQueryAllocationSize:
+//   .long 0x80000000 + 180
+//.globl MmQueryStatistics
+//MmQueryStatistics:
+//   .long 0x80000000 + 181
+//.globl MmSetAddressProtect
+//MmSetAddressProtect:
+//   .long 0x80000000 + 182
+//.globl MmUnmapIoSpace
+//MmUnmapIoSpace:
+//   .long 0x80000000 + 183
 .globl NtAllocateVirtualMemory
 NtAllocateVirtualMemory:
    .long 0x80000000 + 184
-.globl NtCancelTimer
-NtCancelTimer:
-   .long 0x80000000 + 185
-.globl NtClearEvent
-NtClearEvent:
-   .long 0x80000000 + 186
+//.globl NtCancelTimer
+//NtCancelTimer:
+//   .long 0x80000000 + 185
+//.globl NtClearEvent
+//NtClearEvent:
+//   .long 0x80000000 + 186
 .globl NtClose
 NtClose:
    .long 0x80000000 + 187
-.globl NtCreateDirectoryObject
-NtCreateDirectoryObject:
-   .long 0x80000000 + 188
-.globl NtCreateEvent
-NtCreateEvent:
-   .long 0x80000000 + 189
+//.globl NtCreateDirectoryObject
+//NtCreateDirectoryObject:
+//   .long 0x80000000 + 188
+//.globl NtCreateEvent
+//NtCreateEvent:
+//   .long 0x80000000 + 189
 .globl NtCreateFile
 NtCreateFile:
    .long 0x80000000 + 190
-.globl NtCreateIoCompletion
-NtCreateIoCompletion:
-   .long 0x80000000 + 191
-.globl NtCreateMutant
-NtCreateMutant:
-   .long 0x80000000 + 192
-.globl NtCreateSemaphore
-NtCreateSemaphore:
-   .long 0x80000000 + 193
-.globl NtCreateTimer
-NtCreateTimer:
-   .long 0x80000000 + 194
-.globl NtDeleteFile
-NtDeleteFile:
-   .long 0x80000000 + 195
-.globl NtDeviceIoControlFile
-NtDeviceIoControlFile:
-   .long 0x80000000 + 196
-.globl NtDuplicateObject
-NtDuplicateObject:
-   .long 0x80000000 + 197
-.globl NtFlushBuffersFile
-NtFlushBuffersFile:
-   .long 0x80000000 + 198
-.globl NtFreeVirtualMemory
-NtFreeVirtualMemory:
-   .long 0x80000000 + 199
-.globl NtFsControlFile
-NtFsControlFile:
-   .long 0x80000000 + 200
-.globl NtOpenDirectoryObject
-NtOpenDirectoryObject:
-   .long 0x80000000 + 201
-.globl NtOpenFile
-NtOpenFile:
-   .long 0x80000000 + 202
-.globl NtOpenSymbolicLinkObject
-NtOpenSymbolicLinkObject:
-   .long 0x80000000 + 203
-.globl NtProtectVirtualMemory
-NtProtectVirtualMemory:
-   .long 0x80000000 + 204
-.globl NtPulseEvent
-NtPulseEvent:
-   .long 0x80000000 + 205
-.globl NtQueueApcThread
-NtQueueApcThread:
-   .long 0x80000000 + 206
-.globl NtQueryDirectoryFile
-NtQueryDirectoryFile:
-   .long 0x80000000 + 207
-.globl NtQueryDirectoryObject
-NtQueryDirectoryObject:
-   .long 0x80000000 + 208
-.globl NtQueryEvent
-NtQueryEvent:
-   .long 0x80000000 + 209
-.globl NtQueryFullAttributesFile
-NtQueryFullAttributesFile:
-   .long 0x80000000 + 210
+//.globl NtCreateIoCompletion
+//NtCreateIoCompletion:
+//   .long 0x80000000 + 191
+//.globl NtCreateMutant
+//NtCreateMutant:
+//   .long 0x80000000 + 192
+//.globl NtCreateSemaphore
+//NtCreateSemaphore:
+//   .long 0x80000000 + 193
+//.globl NtCreateTimer
+//NtCreateTimer:
+//   .long 0x80000000 + 194
+//.globl NtDeleteFile
+//NtDeleteFile:
+//   .long 0x80000000 + 195
+//.globl NtDeviceIoControlFile
+//NtDeviceIoControlFile:
+//   .long 0x80000000 + 196
+//.globl NtDuplicateObject
+//NtDuplicateObject:
+//   .long 0x80000000 + 197
+//.globl NtFlushBuffersFile
+//NtFlushBuffersFile:
+//   .long 0x80000000 + 198
+//.globl NtFreeVirtualMemory
+//NtFreeVirtualMemory:
+//   .long 0x80000000 + 199
+//.globl NtFsControlFile
+//NtFsControlFile:
+//   .long 0x80000000 + 200
+//.globl NtOpenDirectoryObject
+//NtOpenDirectoryObject:
+//   .long 0x80000000 + 201
+//.globl NtOpenFile
+//NtOpenFile:
+//   .long 0x80000000 + 202
+//.globl NtOpenSymbolicLinkObject
+//NtOpenSymbolicLinkObject:
+//   .long 0x80000000 + 203
+//.globl NtProtectVirtualMemory
+//NtProtectVirtualMemory:
+//   .long 0x80000000 + 204
+//.globl NtPulseEvent
+//NtPulseEvent:
+//   .long 0x80000000 + 205
+//.globl NtQueueApcThread
+//NtQueueApcThread:
+//   .long 0x80000000 + 206
+//.globl NtQueryDirectoryFile
+//NtQueryDirectoryFile:
+//   .long 0x80000000 + 207
+//.globl NtQueryDirectoryObject
+//NtQueryDirectoryObject:
+//   .long 0x80000000 + 208
+//.globl NtQueryEvent
+//NtQueryEvent:
+//   .long 0x80000000 + 209
+//.globl NtQueryFullAttributesFile
+//NtQueryFullAttributesFile:
+//   .long 0x80000000 + 210
 .globl NtQueryInformationFile
 NtQueryInformationFile:
    .long 0x80000000 + 211
-.globl NtQueryIoCompletion
-NtQueryIoCompletion:
-   .long 0x80000000 + 212
-.globl NtQueryMutant
-NtQueryMutant:
-   .long 0x80000000 + 213
-.globl NtQuerySemaphore
-NtQuerySemaphore:
-   .long 0x80000000 + 214
-.globl NtQuerySymbolicLinkObject
-NtQuerySymbolicLinkObject:
-   .long 0x80000000 + 215
-.globl NtQueryTimer
-NtQueryTimer:
-   .long 0x80000000 + 216
-.globl NtQueryVirtualMemory
-NtQueryVirtualMemory:
-   .long 0x80000000 + 217
-.globl NtQueryVolumeInformationFile
-NtQueryVolumeInformationFile:
-   .long 0x80000000 + 218
+//.globl NtQueryIoCompletion
+//NtQueryIoCompletion:
+//   .long 0x80000000 + 212
+//.globl NtQueryMutant
+//NtQueryMutant:
+//   .long 0x80000000 + 213
+//.globl NtQuerySemaphore
+//NtQuerySemaphore:
+//   .long 0x80000000 + 214
+//.globl NtQuerySymbolicLinkObject
+//NtQuerySymbolicLinkObject:
+//   .long 0x80000000 + 215
+//.globl NtQueryTimer
+//NtQueryTimer:
+//   .long 0x80000000 + 216
+//.globl NtQueryVirtualMemory
+//NtQueryVirtualMemory:
+//   .long 0x80000000 + 217
+//.globl NtQueryVolumeInformationFile
+//NtQueryVolumeInformationFile:
+//   .long 0x80000000 + 218
 .globl NtReadFile
 NtReadFile:
    .long 0x80000000 + 219
-.globl NtReadFileScatter
-NtReadFileScatter:
-   .long 0x80000000 + 220
-.globl NtReleaseMutant
-NtReleaseMutant:
-   .long 0x80000000 + 221
-.globl NtReleaseSemaphore
-NtReleaseSemaphore:
-   .long 0x80000000 + 222
-.globl NtRemoveIoCompletion
-NtRemoveIoCompletion:
-   .long 0x80000000 + 223
-.globl NtResumeThread
-NtResumeThread:
-   .long 0x80000000 + 224
-.globl NtSetEvent
-NtSetEvent:
-   .long 0x80000000 + 225
-.globl NtSetInformationFile
-NtSetInformationFile:
-   .long 0x80000000 + 226
-.globl NtSetIoCompletion
-NtSetIoCompletion:
-   .long 0x80000000 + 227
-.globl NtSetSystemTime
-NtSetSystemTime:
-   .long 0x80000000 + 228
-.globl NtSetTimerEx
-NtSetTimerEx:
-   .long 0x80000000 + 229
-.globl NtSignalAndWaitForSingleObjectEx
-NtSignalAndWaitForSingleObjectEx:
-   .long 0x80000000 + 230
-.globl NtSuspendThread
-NtSuspendThread:
-   .long 0x80000000 + 231
-.globl NtUserIoApcDispatcher
-NtUserIoApcDispatcher:
-   .long 0x80000000 + 232
-.globl NtWaitForSingleObject
-NtWaitForSingleObject:
-   .long 0x80000000 + 233
-.globl NtWaitForSingleObjectEx
-NtWaitForSingleObjectEx:
-   .long 0x80000000 + 234
-.globl NtWaitForMultipleObjectsEx
-NtWaitForMultipleObjectsEx:
-   .long 0x80000000 + 235
+//.globl NtReadFileScatter
+//NtReadFileScatter:
+//   .long 0x80000000 + 220
+//.globl NtReleaseMutant
+//NtReleaseMutant:
+//   .long 0x80000000 + 221
+//.globl NtReleaseSemaphore
+//NtReleaseSemaphore:
+//   .long 0x80000000 + 222
+//.globl NtRemoveIoCompletion
+//NtRemoveIoCompletion:
+//   .long 0x80000000 + 223
+//.globl NtResumeThread
+//NtResumeThread:
+//   .long 0x80000000 + 224
+//.globl NtSetEvent
+//NtSetEvent:
+//   .long 0x80000000 + 225
+//.globl NtSetInformationFile
+//NtSetInformationFile:
+//   .long 0x80000000 + 226
+//.globl NtSetIoCompletion
+//NtSetIoCompletion:
+//   .long 0x80000000 + 227
+//.globl NtSetSystemTime
+//NtSetSystemTime:
+//   .long 0x80000000 + 228
+//.globl NtSetTimerEx
+//NtSetTimerEx:
+//   .long 0x80000000 + 229
+//.globl NtSignalAndWaitForSingleObjectEx
+//NtSignalAndWaitForSingleObjectEx:
+//   .long 0x80000000 + 230
+//.globl NtSuspendThread
+//NtSuspendThread:
+//   .long 0x80000000 + 231
+//.globl NtUserIoApcDispatcher
+//NtUserIoApcDispatcher:
+//   .long 0x80000000 + 232
+//.globl NtWaitForSingleObject
+//NtWaitForSingleObject:
+//   .long 0x80000000 + 233
+//.globl NtWaitForSingleObjectEx
+//NtWaitForSingleObjectEx:
+//   .long 0x80000000 + 234
+//.globl NtWaitForMultipleObjectsEx
+//NtWaitForMultipleObjectsEx:
+//   .long 0x80000000 + 235
 .globl NtWriteFile
 NtWriteFile:
    .long 0x80000000 + 236
-.globl NtWriteFileGather
-NtWriteFileGather:
-   .long 0x80000000 + 237
-.globl NtYieldExecution
-NtYieldExecution:
-   .long 0x80000000 + 238
-.globl ObCreateObject
-ObCreateObject:
-   .long 0x80000000 + 239
-.globl ObDirectoryObjectType
-ObDirectoryObjectType:
-   .long 0x80000000 + 240
-.globl ObInsertObject
-ObInsertObject:
-   .long 0x80000000 + 241
-.globl ObMakeTemporaryObject
-ObMakeTemporaryObject:
-   .long 0x80000000 + 242
-.globl ObOpenObjectByName
-ObOpenObjectByName:
-   .long 0x80000000 + 243
-.globl ObOpenObjectByPointer
-ObOpenObjectByPointer:
-   .long 0x80000000 + 244
-.globl ObpObjectHandleTable
-ObpObjectHandleTable:
-   .long 0x80000000 + 245
-.globl ObReferenceObjectByHandle
-ObReferenceObjectByHandle:
-   .long 0x80000000 + 246
-.globl ObReferenceObjectByName
-ObReferenceObjectByName:
-   .long 0x80000000 + 247
-.globl ObReferenceObjectByPointer
-ObReferenceObjectByPointer:
-   .long 0x80000000 + 248
-.globl ObSymbolicLinkObjectType
-ObSymbolicLinkObjectType:
-   .long 0x80000000 + 249
-.globl ObfDereferenceObject
-ObfDereferenceObject:
-   .long 0x80000000 + 250
-.globl ObfReferenceObject
-ObfReferenceObject:
-   .long 0x80000000 + 251
-.globl PhyGetLinkState
-PhyGetLinkState:
-   .long 0x80000000 + 252
-.globl PhyInitialize
-PhyInitialize:
-   .long 0x80000000 + 253
-.globl PsCreateSystemThread
-PsCreateSystemThread:
-   .long 0x80000000 + 254
-.globl PsCreateSystemThreadEx
-PsCreateSystemThreadEx:
-   .long 0x80000000 + 255
-.globl PsQueryStatistics
-PsQueryStatistics:
-   .long 0x80000000 + 256
-.globl PsSetCreateThreadNotifyRoutine
-PsSetCreateThreadNotifyRoutine:
-   .long 0x80000000 + 257
-.globl PsTerminateSystemThread
-PsTerminateSystemThread:
-   .long 0x80000000 + 258
-.globl PsThreadObjectType
-PsThreadObjectType:
-   .long 0x80000000 + 259
-.globl RtlAnsiStringToUnicodeString
-RtlAnsiStringToUnicodeString:
-   .long 0x80000000 + 260
-.globl RtlAppendStringToString
-RtlAppendStringToString:
-   .long 0x80000000 + 261
-.globl RtlAppendUnicodeStringToString
-RtlAppendUnicodeStringToString:
-   .long 0x80000000 + 262
-.globl RtlAppendUnicodeToString
-RtlAppendUnicodeToString:
-   .long 0x80000000 + 263
-.globl RtlAssert
-RtlAssert:
-   .long 0x80000000 + 264
-.globl RtlCaptureContext
-RtlCaptureContext:
-   .long 0x80000000 + 265
-.globl RtlCaptureStackBackTrace
-RtlCaptureStackBackTrace:
-   .long 0x80000000 + 266
-.globl RtlCharToInteger
-RtlCharToInteger:
-   .long 0x80000000 + 267
-.globl RtlCompareMemory
-RtlCompareMemory:
-   .long 0x80000000 + 268
-.globl RtlCompareMemoryUlong
-RtlCompareMemoryUlong:
-   .long 0x80000000 + 269
-.globl RtlCompareString
-RtlCompareString:
-   .long 0x80000000 + 270
-.globl RtlCompareUnicodeString
-RtlCompareUnicodeString:
-   .long 0x80000000 + 271
-.globl RtlCopyString
-RtlCopyString:
-   .long 0x80000000 + 272
-.globl RtlCopyUnicodeString
-RtlCopyUnicodeString:
-   .long 0x80000000 + 273
-.globl RtlCreateUnicodeString
-RtlCreateUnicodeString:
-   .long 0x80000000 + 274
-.globl RtlDowncaseUnicodeChar
-RtlDowncaseUnicodeChar:
-   .long 0x80000000 + 275
-.globl RtlDowncaseUnicodeString
-RtlDowncaseUnicodeString:
-   .long 0x80000000 + 276
-.globl RtlEnterCriticalSection
-RtlEnterCriticalSection:
-   .long 0x80000000 + 277
-.globl RtlEnterCriticalSectionAndRegion
-RtlEnterCriticalSectionAndRegion:
-   .long 0x80000000 + 278
-.globl RtlEqualString
-RtlEqualString:
-   .long 0x80000000 + 279
-.globl RtlEqualUnicodeString
-RtlEqualUnicodeString:
-   .long 0x80000000 + 280
-.globl RtlExtendedIntegerMultiply
-RtlExtendedIntegerMultiply:
-   .long 0x80000000 + 281
-.globl RtlExtendedLargeIntegerDivide
-RtlExtendedLargeIntegerDivide:
-   .long 0x80000000 + 282
-.globl RtlExtendedMagicDivide
-RtlExtendedMagicDivide:
-   .long 0x80000000 + 283
-.globl RtlFillMemory
-RtlFillMemory:
-   .long 0x80000000 + 284
-.globl RtlFillMemoryUlong
-RtlFillMemoryUlong:
-   .long 0x80000000 + 285
-.globl RtlFreeAnsiString
-RtlFreeAnsiString:
-   .long 0x80000000 + 286
-.globl RtlFreeUnicodeString
-RtlFreeUnicodeString:
-   .long 0x80000000 + 287
-.globl RtlGetCallersAddress
-RtlGetCallersAddress:
-   .long 0x80000000 + 288
+//.globl NtWriteFileGather
+//NtWriteFileGather:
+//   .long 0x80000000 + 237
+//.globl NtYieldExecution
+//NtYieldExecution:
+//   .long 0x80000000 + 238
+//.globl ObCreateObject
+//ObCreateObject:
+//   .long 0x80000000 + 239
+//.globl ObDirectoryObjectType
+//ObDirectoryObjectType:
+//   .long 0x80000000 + 240
+//.globl ObInsertObject
+//ObInsertObject:
+//   .long 0x80000000 + 241
+//.globl ObMakeTemporaryObject
+//ObMakeTemporaryObject:
+//   .long 0x80000000 + 242
+//.globl ObOpenObjectByName
+//ObOpenObjectByName:
+//   .long 0x80000000 + 243
+//.globl ObOpenObjectByPointer
+//ObOpenObjectByPointer:
+//   .long 0x80000000 + 244
+//.globl ObpObjectHandleTable
+//ObpObjectHandleTable:
+//   .long 0x80000000 + 245
+//.globl ObReferenceObjectByHandle
+//ObReferenceObjectByHandle:
+//   .long 0x80000000 + 246
+//.globl ObReferenceObjectByName
+//ObReferenceObjectByName:
+//   .long 0x80000000 + 247
+//.globl ObReferenceObjectByPointer
+//ObReferenceObjectByPointer:
+//   .long 0x80000000 + 248
+//.globl ObSymbolicLinkObjectType
+//ObSymbolicLinkObjectType:
+//   .long 0x80000000 + 249
+//.globl ObfDereferenceObject
+//ObfDereferenceObject:
+//   .long 0x80000000 + 250
+//.globl ObfReferenceObject
+//ObfReferenceObject:
+//   .long 0x80000000 + 251
+//.globl PhyGetLinkState
+//PhyGetLinkState:
+//   .long 0x80000000 + 252
+//.globl PhyInitialize
+//PhyInitialize:
+//   .long 0x80000000 + 253
+//.globl PsCreateSystemThread
+//PsCreateSystemThread:
+//   .long 0x80000000 + 254
+//.globl PsCreateSystemThreadEx
+//PsCreateSystemThreadEx:
+//   .long 0x80000000 + 255
+//.globl PsQueryStatistics
+//PsQueryStatistics:
+//   .long 0x80000000 + 256
+//.globl PsSetCreateThreadNotifyRoutine
+//PsSetCreateThreadNotifyRoutine:
+//   .long 0x80000000 + 257
+//.globl PsTerminateSystemThread
+//PsTerminateSystemThread:
+//   .long 0x80000000 + 258
+//.globl PsThreadObjectType
+//PsThreadObjectType:
+//   .long 0x80000000 + 259
+//.globl RtlAnsiStringToUnicodeString
+//RtlAnsiStringToUnicodeString:
+//   .long 0x80000000 + 260
+//.globl RtlAppendStringToString
+//RtlAppendStringToString:
+//   .long 0x80000000 + 261
+//.globl RtlAppendUnicodeStringToString
+//RtlAppendUnicodeStringToString:
+//   .long 0x80000000 + 262
+//.globl RtlAppendUnicodeToString
+//RtlAppendUnicodeToString:
+//   .long 0x80000000 + 263
+//.globl RtlAssert
+//RtlAssert:
+//   .long 0x80000000 + 264
+//.globl RtlCaptureContext
+//RtlCaptureContext:
+//   .long 0x80000000 + 265
+//.globl RtlCaptureStackBackTrace
+//RtlCaptureStackBackTrace:
+//   .long 0x80000000 + 266
+//.globl RtlCharToInteger
+//RtlCharToInteger:
+//   .long 0x80000000 + 267
+//.globl RtlCompareMemory
+//RtlCompareMemory:
+//   .long 0x80000000 + 268
+//.globl RtlCompareMemoryUlong
+//RtlCompareMemoryUlong:
+//   .long 0x80000000 + 269
+//.globl RtlCompareString
+//RtlCompareString:
+//   .long 0x80000000 + 270
+//.globl RtlCompareUnicodeString
+//RtlCompareUnicodeString:
+//   .long 0x80000000 + 271
+//.globl RtlCopyString
+//RtlCopyString:
+//   .long 0x80000000 + 272
+//.globl RtlCopyUnicodeString
+//RtlCopyUnicodeString:
+//   .long 0x80000000 + 273
+//.globl RtlCreateUnicodeString
+//RtlCreateUnicodeString:
+//   .long 0x80000000 + 274
+//.globl RtlDowncaseUnicodeChar
+//RtlDowncaseUnicodeChar:
+//   .long 0x80000000 + 275
+//.globl RtlDowncaseUnicodeString
+//RtlDowncaseUnicodeString:
+//   .long 0x80000000 + 276
+//.globl RtlEnterCriticalSection
+//RtlEnterCriticalSection:
+//   .long 0x80000000 + 277
+//.globl RtlEnterCriticalSectionAndRegion
+//RtlEnterCriticalSectionAndRegion:
+//   .long 0x80000000 + 278
+//.globl RtlEqualString
+//RtlEqualString:
+//   .long 0x80000000 + 279
+//.globl RtlEqualUnicodeString
+//RtlEqualUnicodeString:
+//   .long 0x80000000 + 280
+//.globl RtlExtendedIntegerMultiply
+//RtlExtendedIntegerMultiply:
+//   .long 0x80000000 + 281
+//.globl RtlExtendedLargeIntegerDivide
+//RtlExtendedLargeIntegerDivide:
+//   .long 0x80000000 + 282
+//.globl RtlExtendedMagicDivide
+//RtlExtendedMagicDivide:
+//   .long 0x80000000 + 283
+//.globl RtlFillMemory
+//RtlFillMemory:
+//   .long 0x80000000 + 284
+//.globl RtlFillMemoryUlong
+//RtlFillMemoryUlong:
+//   .long 0x80000000 + 285
+//.globl RtlFreeAnsiString
+//RtlFreeAnsiString:
+//   .long 0x80000000 + 286
+//.globl RtlFreeUnicodeString
+//RtlFreeUnicodeString:
+//   .long 0x80000000 + 287
+//.globl RtlGetCallersAddress
+//RtlGetCallersAddress:
+//   .long 0x80000000 + 288
 .globl RtlInitAnsiString
 RtlInitAnsiString:
    .long 0x80000000 + 289
-.globl RtlInitUnicodeString
-RtlInitUnicodeString:
-   .long 0x80000000 + 290
-.globl RtlInitializeCriticalSection
-RtlInitializeCriticalSection:
-   .long 0x80000000 + 291
-.globl RtlIntegerToChar
-RtlIntegerToChar:
-   .long 0x80000000 + 292
-.globl RtlIntegerToUnicodeString
-RtlIntegerToUnicodeString:
-   .long 0x80000000 + 293
-.globl RtlLeaveCriticalSection
-RtlLeaveCriticalSection:
-   .long 0x80000000 + 294
-.globl RtlLeaveCriticalSectionAndRegion
-RtlLeaveCriticalSectionAndRegion:
-   .long 0x80000000 + 295
-.globl RtlLowerChar
-RtlLowerChar:
-   .long 0x80000000 + 296
-.globl RtlMapGenericMask
-RtlMapGenericMask:
-   .long 0x80000000 + 297
-.globl RtlMoveMemory
-RtlMoveMemory:
-   .long 0x80000000 + 298
-.globl RtlMultiByteToUnicodeN
-RtlMultiByteToUnicodeN:
-   .long 0x80000000 + 299
-.globl RtlMultiByteToUnicodeSize
-RtlMultiByteToUnicodeSize:
-   .long 0x80000000 + 300
-.globl RtlNtStatusToDosError
-RtlNtStatusToDosError:
-   .long 0x80000000 + 301
-.globl RtlRaiseException
-RtlRaiseException:
-   .long 0x80000000 + 302
-.globl RtlRaiseStatus
-RtlRaiseStatus:
-   .long 0x80000000 + 303
-.globl RtlTimeFieldsToTime
-RtlTimeFieldsToTime:
-   .long 0x80000000 + 304
-.globl RtlTimeToTimeFields
-RtlTimeToTimeFields:
-   .long 0x80000000 + 305
-.globl RtlTryEnterCriticalSection
-RtlTryEnterCriticalSection:
-   .long 0x80000000 + 306
-.globl RtlUlongByteSwap
-RtlUlongByteSwap:
-   .long 0x80000000 + 307
-.globl RtlUnicodeStringToAnsiString
-RtlUnicodeStringToAnsiString:
-   .long 0x80000000 + 308
-.globl RtlUnicodeStringToInteger
-RtlUnicodeStringToInteger:
-   .long 0x80000000 + 309
-.globl RtlUnicodeToMultiByteN
-RtlUnicodeToMultiByteN:
-   .long 0x80000000 + 310
-.globl RtlUnicodeToMultiByteSize
-RtlUnicodeToMultiByteSize:
-   .long 0x80000000 + 311
-.globl RtlUnwind
-RtlUnwind:
-   .long 0x80000000 + 312
-.globl RtlUpcaseUnicodeChar
-RtlUpcaseUnicodeChar:
-   .long 0x80000000 + 313
-.globl RtlUpcaseUnicodeString
-RtlUpcaseUnicodeString:
-   .long 0x80000000 + 314
-.globl RtlUpcaseUnicodeToMultiByteN
-RtlUpcaseUnicodeToMultiByteN:
-   .long 0x80000000 + 315
-.globl RtlUpperChar
-RtlUpperChar:
-   .long 0x80000000 + 316
-.globl RtlUpperString
-RtlUpperString:
-   .long 0x80000000 + 317
-.globl RtlUshortByteSwap
-RtlUshortByteSwap:
-   .long 0x80000000 + 318
-.globl RtlWalkFrameChain
-RtlWalkFrameChain:
-   .long 0x80000000 + 319
-.globl RtlZeroMemory
-RtlZeroMemory:
-   .long 0x80000000 + 320
+//.globl RtlInitUnicodeString
+//RtlInitUnicodeString:
+//   .long 0x80000000 + 290
+//.globl RtlInitializeCriticalSection
+//RtlInitializeCriticalSection:
+//   .long 0x80000000 + 291
+//.globl RtlIntegerToChar
+//RtlIntegerToChar:
+//   .long 0x80000000 + 292
+//.globl RtlIntegerToUnicodeString
+//RtlIntegerToUnicodeString:
+//   .long 0x80000000 + 293
+//.globl RtlLeaveCriticalSection
+//RtlLeaveCriticalSection:
+//   .long 0x80000000 + 294
+//.globl RtlLeaveCriticalSectionAndRegion
+//RtlLeaveCriticalSectionAndRegion:
+//   .long 0x80000000 + 295
+//.globl RtlLowerChar
+//RtlLowerChar:
+//   .long 0x80000000 + 296
+//.globl RtlMapGenericMask
+//RtlMapGenericMask:
+//   .long 0x80000000 + 297
+//.globl RtlMoveMemory
+//RtlMoveMemory:
+//   .long 0x80000000 + 298
+//.globl RtlMultiByteToUnicodeN
+//RtlMultiByteToUnicodeN:
+//   .long 0x80000000 + 299
+//.globl RtlMultiByteToUnicodeSize
+//RtlMultiByteToUnicodeSize:
+//   .long 0x80000000 + 300
+//.globl RtlNtStatusToDosError
+//RtlNtStatusToDosError:
+//   .long 0x80000000 + 301
+//.globl RtlRaiseException
+//RtlRaiseException:
+//   .long 0x80000000 + 302
+//.globl RtlRaiseStatus
+//RtlRaiseStatus:
+//   .long 0x80000000 + 303
+//.globl RtlTimeFieldsToTime
+//RtlTimeFieldsToTime:
+//   .long 0x80000000 + 304
+//.globl RtlTimeToTimeFields
+//RtlTimeToTimeFields:
+//   .long 0x80000000 + 305
+//.globl RtlTryEnterCriticalSection
+//RtlTryEnterCriticalSection:
+//   .long 0x80000000 + 306
+//.globl RtlUlongByteSwap
+//RtlUlongByteSwap:
+//   .long 0x80000000 + 307
+//.globl RtlUnicodeStringToAnsiString
+//RtlUnicodeStringToAnsiString:
+//   .long 0x80000000 + 308
+//.globl RtlUnicodeStringToInteger
+//RtlUnicodeStringToInteger:
+//   .long 0x80000000 + 309
+//.globl RtlUnicodeToMultiByteN
+//RtlUnicodeToMultiByteN:
+//   .long 0x80000000 + 310
+//.globl RtlUnicodeToMultiByteSize
+//RtlUnicodeToMultiByteSize:
+//   .long 0x80000000 + 311
+//.globl RtlUnwind
+//RtlUnwind:
+//   .long 0x80000000 + 312
+//.globl RtlUpcaseUnicodeChar
+//RtlUpcaseUnicodeChar:
+//   .long 0x80000000 + 313
+//.globl RtlUpcaseUnicodeString
+//RtlUpcaseUnicodeString:
+//   .long 0x80000000 + 314
+//.globl RtlUpcaseUnicodeToMultiByteN
+//RtlUpcaseUnicodeToMultiByteN:
+//   .long 0x80000000 + 315
+//.globl RtlUpperChar
+//RtlUpperChar:
+//   .long 0x80000000 + 316
+//.globl RtlUpperString
+//RtlUpperString:
+//   .long 0x80000000 + 317
+//.globl RtlUshortByteSwap
+//RtlUshortByteSwap:
+//   .long 0x80000000 + 318
+//.globl RtlWalkFrameChain
+//RtlWalkFrameChain:
+//   .long 0x80000000 + 319
+//.globl RtlZeroMemory
+//RtlZeroMemory:
+//   .long 0x80000000 + 320
 .globl XboxEEPROMKey
 XboxEEPROMKey:
    .long 0x80000000 + 321
-.globl XboxHardwareInfo
-XboxHardwareInfo:
-   .long 0x80000000 + 322
-.globl XboxHDKey
-XboxHDKey:
-   .long 0x80000000 + 323
-.globl XboxKrnlVersion
-XboxKrnlVersion:
-   .long 0x80000000 + 324
-.globl XboxSignatureKey
-XboxSignatureKey:
-   .long 0x80000000 + 325
+//.globl XboxHardwareInfo
+//XboxHardwareInfo:
+//   .long 0x80000000 + 322
+//.globl XboxHDKey
+//XboxHDKey:
+//   .long 0x80000000 + 323
+//.globl XboxKrnlVersion
+//XboxKrnlVersion:
+//   .long 0x80000000 + 324
+//.globl XboxSignatureKey
+//XboxSignatureKey:
+//   .long 0x80000000 + 325
 .globl XeImageFileName
 XeImageFileName:
    .long 0x80000000 + 326
-.globl XeLoadSection
-XeLoadSection:
-   .long 0x80000000 + 327
-.globl XeUnloadSection
-XeUnloadSection:
-   .long 0x80000000 + 328
-.globl READ_PORT_BUFFER_UCHAR
-READ_PORT_BUFFER_UCHAR:
-   .long 0x80000000 + 329
-.globl READ_PORT_BUFFER_USHORT
-READ_PORT_BUFFER_USHORT:
-   .long 0x80000000 + 330
-.globl READ_PORT_BUFFER_ULONG
-READ_PORT_BUFFER_ULONG:
-   .long 0x80000000 + 331
-.globl WRITE_PORT_BUFFER_UCHAR
-WRITE_PORT_BUFFER_UCHAR:
-   .long 0x80000000 + 332
-.globl WRITE_PORT_BUFFER_USHORT
-WRITE_PORT_BUFFER_USHORT:
-   .long 0x80000000 + 333
-.globl WRITE_PORT_BUFFER_ULONG
-WRITE_PORT_BUFFER_ULONG:
-   .long 0x80000000 + 334
-.globl XcSHAInit
-XcSHAInit:
-   .long 0x80000000 + 335
-.globl XcSHAUpdate
-XcSHAUpdate:
-   .long 0x80000000 + 336
-.globl XcSHAFinal
-XcSHAFinal:
-   .long 0x80000000 + 337
+//.globl XeLoadSection
+//XeLoadSection:
+//   .long 0x80000000 + 327
+//.globl XeUnloadSection
+//XeUnloadSection:
+//   .long 0x80000000 + 328
+//.globl READ_PORT_BUFFER_UCHAR
+//READ_PORT_BUFFER_UCHAR:
+//   .long 0x80000000 + 329
+//.globl READ_PORT_BUFFER_USHORT
+//READ_PORT_BUFFER_USHORT:
+//   .long 0x80000000 + 330
+//.globl READ_PORT_BUFFER_ULONG
+//READ_PORT_BUFFER_ULONG:
+//   .long 0x80000000 + 331
+//.globl WRITE_PORT_BUFFER_UCHAR
+//WRITE_PORT_BUFFER_UCHAR:
+//   .long 0x80000000 + 332
+//.globl WRITE_PORT_BUFFER_USHORT
+//WRITE_PORT_BUFFER_USHORT:
+//   .long 0x80000000 + 333
+//.globl WRITE_PORT_BUFFER_ULONG
+//WRITE_PORT_BUFFER_ULONG:
+//   .long 0x80000000 + 334
+//.globl XcSHAInit
+//XcSHAInit:
+//   .long 0x80000000 + 335
+//.globl XcSHAUpdate
+//XcSHAUpdate:
+//   .long 0x80000000 + 336
+//.globl XcSHAFinal
+//XcSHAFinal:
+//   .long 0x80000000 + 337
 .globl XcRC4Key
 XcRC4Key:
    .long 0x80000000 + 338
 .globl XcRC4Crypt
 XcRC4Crypt:
    .long 0x80000000 + 339
-.globl XcHMAC
-XcHMAC:
-   .long 0x80000000 + 340
-.globl XcPKEncPublic
-XcPKEncPublic:
-   .long 0x80000000 + 341
-.globl XcPKDecPrivate
-XcPKDecPrivate:
-   .long 0x80000000 + 342
-.globl XcPKGetKeyLen
-XcPKGetKeyLen:
-   .long 0x80000000 + 343
-.globl XcVerifyPKCS1Signature
-XcVerifyPKCS1Signature:
-   .long 0x80000000 + 344
-.globl XcModExp
-XcModExp:
-   .long 0x80000000 + 345
-.globl XcDESKeyParity
-XcDESKeyParity:
-   .long 0x80000000 + 346
-.globl XcKeyTable
-XcKeyTable:
-   .long 0x80000000 + 347
-.globl XcBlockCrypt
-XcBlockCrypt:
-   .long 0x80000000 + 348
-.globl XcBlockCryptCBC
-XcBlockCryptCBC:
-   .long 0x80000000 + 349
-.globl XcCryptService
-XcCryptService:
-   .long 0x80000000 + 350
-.globl XcUpdateCrypto
-XcUpdateCrypto:
-   .long 0x80000000 + 351
-.globl RtlRip
-RtlRip:
-   .long 0x80000000 + 352
-.globl XboxLANKey
-XboxLANKey:
-   .long 0x80000000 + 353
-.globl XboxAlternateSignatureKeys
-XboxAlternateSignatureKeys:
-   .long 0x80000000 + 354
-.globl XePublicKeyData
-XePublicKeyData:
-   .long 0x80000000 + 355
-.globl HalBootSMCVideoMode
-HalBootSMCVideoMode:
-   .long 0x80000000 + 356
-.globl IdexChannelObject
-IdexChannelObject:
-   .long 0x80000000 + 357
-.globl HalIsResetOrShutdownPending
-HalIsResetOrShutdownPending:
-   .long 0x80000000 + 358
-.globl IoMarkIrpMustComplete
-IoMarkIrpMustComplete:
-   .long 0x80000000 + 359
-.globl HalInitiateShutdown
-HalInitiateShutdown:
-   .long 0x80000000 + 360
-.globl xsnprintf
-xsnprintf:
-   .long 0x80000000 + 361
-.globl xsprintf
-xsprintf:
-   .long 0x80000000 + 362
-.globl xvsnprintf
-xvsnprintf:
-   .long 0x80000000 + 363
-.globl xvsprintf
-xvsprintf:
-   .long 0x80000000 + 364
-.globl HalEnableSecureTrayEject
-HalEnableSecureTrayEject:
-   .long 0x80000000 + 365
-.globl HalWriteSMCScratchRegister
-HalWriteSMCScratchRegister:
-   .long 0x80000000 + 366
+//.globl XcHMAC
+//XcHMAC:
+//   .long 0x80000000 + 340
+//.globl XcPKEncPublic
+//XcPKEncPublic:
+//   .long 0x80000000 + 341
+//.globl XcPKDecPrivate
+//XcPKDecPrivate:
+//   .long 0x80000000 + 342
+//.globl XcPKGetKeyLen
+//XcPKGetKeyLen:
+//   .long 0x80000000 + 343
+//.globl XcVerifyPKCS1Signature
+//XcVerifyPKCS1Signature:
+//   .long 0x80000000 + 344
+//.globl XcModExp
+//XcModExp:
+//   .long 0x80000000 + 345
+//.globl XcDESKeyParity
+//XcDESKeyParity:
+//   .long 0x80000000 + 346
+//.globl XcKeyTable
+//XcKeyTable:
+//   .long 0x80000000 + 347
+//.globl XcBlockCrypt
+//XcBlockCrypt:
+//   .long 0x80000000 + 348
+//.globl XcBlockCryptCBC
+//XcBlockCryptCBC:
+//   .long 0x80000000 + 349
+//.globl XcCryptService
+//XcCryptService:
+//   .long 0x80000000 + 350
+//.globl XcUpdateCrypto
+//XcUpdateCrypto:
+//   .long 0x80000000 + 351
+//.globl RtlRip
+//RtlRip:
+//   .long 0x80000000 + 352
+//.globl XboxLANKey
+//XboxLANKey:
+//   .long 0x80000000 + 353
+//.globl XboxAlternateSignatureKeys
+//XboxAlternateSignatureKeys:
+//   .long 0x80000000 + 354
+//.globl XePublicKeyData
+//XePublicKeyData:
+//   .long 0x80000000 + 355
+//.globl HalBootSMCVideoMode
+//HalBootSMCVideoMode:
+//   .long 0x80000000 + 356
+//.globl IdexChannelObject
+//IdexChannelObject:
+//   .long 0x80000000 + 357
+//.globl HalIsResetOrShutdownPending
+//HalIsResetOrShutdownPending:
+//   .long 0x80000000 + 358
+//.globl IoMarkIrpMustComplete
+//IoMarkIrpMustComplete:
+//   .long 0x80000000 + 359
+//.globl HalInitiateShutdown
+//HalInitiateShutdown:
+//   .long 0x80000000 + 360
+//.globl xsnprintf
+//xsnprintf:
+//   .long 0x80000000 + 361
+//.globl xsprintf
+//xsprintf:
+//   .long 0x80000000 + 362
+//.globl xvsnprintf
+//xvsnprintf:
+//   .long 0x80000000 + 363
+//.globl xvsprintf
+//xvsprintf:
+//   .long 0x80000000 + 364
+//.globl HalEnableSecureTrayEject
+//HalEnableSecureTrayEject:
+//   .long 0x80000000 + 365
+//.globl HalWriteSMCScratchRegister
+//HalWriteSMCScratchRegister:
+//   .long 0x80000000 + 366
