@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include "sha1.h"
 #include "xbe-header.h"
-
+#include "../config.h"
 
 
 #define debug
@@ -79,7 +79,8 @@ int xberepair (	unsigned char * xbeimage,
 
        	printf("ImageBLD Hasher by XBL Project (c) hamtitampti\n");
        	printf("XBEBOOT Modus\n\n");
-	
+
+#ifdef LOADXBE	
 	f = fopen(vmlinuzname, "rb");
 	if (f!=NULL) 
     	{    
@@ -90,8 +91,12 @@ int xberepair (	unsigned char * xbeimage,
     		fread(vmlinuz, 1, vmlinux_size, f);
     		fclose(f);
     		printf("VMLinuz Existing, Linking it in\n");
-    	} else  printf("VMLinuz not Existing Loading from Hdd then    ----> WARNING \n");
-
+    	} else  {
+    		printf("VMLinuz not Existing     ----> ERROR \n");
+    		return 1;
+    		}
+#endif
+#ifdef LOADHDD_CFGFALLBACK
 	f = fopen(configname, "rb");
 	if (f!=NULL) 
     	{    
@@ -102,8 +107,12 @@ int xberepair (	unsigned char * xbeimage,
     		fread(config, 1, config_size, f);
     		fclose(f);
 		printf("Linuxboot.cfg Existing, Linking it in\n");
-    	} else  printf("Linuxboot.cfg not Existing, Using Defaults    ---> WARNING \n");
-
+    	} else  {
+    		printf("Linuxboot.cfg not Existing ---> ERROR \n");
+    		return 1;
+    		}
+#endif
+#ifdef LOADXBE
 	f = fopen(initrdname, "rb");
 	if (f!=NULL) 
     	{    
@@ -113,8 +122,11 @@ int xberepair (	unsigned char * xbeimage,
     		initrd = malloc(initrd_size);
     		fread(initrd, 1, initrd_size, f);
    		printf("Initrd Existing, Linking it in\n");
-    	} else  printf("Initrd not Existing, Using Defaults           ---> WARNING \n");
-    	
+    	} else  {
+    		printf("Initrd not Existing   ---> ERROR \n");
+    		return 1;
+    		}
+#endif    	
 	f = fopen(xbeimage, "rb");
     	if (f!=NULL) 
     	{   
@@ -137,6 +149,7 @@ int xberepair (	unsigned char * xbeimage,
 	        	      
 	        //vmlinux_size = (vmlinux_size & 0xfffff800 ) + 0x400;
 	        
+#ifdef LOADXBE
 	        vmlinux_start = xbesize;
 	        memcpy(&xbe[0x1080],&vmlinux_start,4);
 	        
@@ -149,12 +162,12 @@ int xberepair (	unsigned char * xbeimage,
 		memcpy(&xbe[0x1088],&temp,4);		
 		
 		xbesize = xbesize + vmlinux_size;
-		
 		// Ok, we allign again
 		xbesize = (xbesize & 0xfffffff0) + 32;
-		
 
+#endif
 		
+#ifdef LOADXBE		
 		initrd_start = xbesize;
 		memcpy(&xbe[0x108C],&initrd_start,4);
 		memcpy(&xbe[0x1090],&initrd_size,4);
@@ -163,8 +176,9 @@ int xberepair (	unsigned char * xbeimage,
 		
 		xbesize = xbesize + initrd_size;	
                 xbesize = (xbesize & 0xfffffff0) + 32;
-                
+#endif                
 
+#ifdef LOADHDD_CFGFALLBACK
                	config_start = xbesize;
 		memcpy(&xbe[0x1094],&config_start,4);
 		memcpy(&xbe[0x1098],&config_size,4);               	
@@ -173,14 +187,20 @@ int xberepair (	unsigned char * xbeimage,
 
 		xbesize = xbesize + config_size;	
                 xbesize = (xbesize & 0xfffffff0) + 32;
+#endif
                 			        
 		#ifdef debug
+	 	printf("Linking Section\n");
+	 	#ifdef LOADXBE	
 	 	printf("Start of Linux Kernel    : 0x%08X\n", vmlinux_start);
 	 	printf("Size of Linux Kernel     : 0x%08X\n", vmlinux_size);
 		printf("Start of InitRD          : 0x%08X\n", initrd_start);
 	 	printf("Size of Initrd           : 0x%08X\n", initrd_size);
+		#endif		
+		#ifdef LOADHDD_CFGFALLBACK
 		printf("Start of Config          : 0x%08X\n", config_start);
 	 	printf("Size of config           : 0x%08X\n", config_size);
+	 	#endif
 		printf("----------------\n");
 		#endif	      
 	      
@@ -240,7 +260,7 @@ int xberepair (	unsigned char * xbeimage,
         	 fclose(f);			
 		}	  	
 	        
-	        printf("\nXRomwell File Created    : %s\n",xbeimage);
+	        printf("\nXbeboot.xbe Created    : %s\n",xbeimage);
 	      	
 		free(initrd);         
         	free(config);   
@@ -255,10 +275,10 @@ int xberepair (	unsigned char * xbeimage,
 
 int main (int argc, const char * argv[])
 {
-	//if( argc < 3 ) 	return -1;
+	int error;
 	
 	
-	xberepair((unsigned char*)argv[1],(unsigned char*)argv[2],(unsigned char*)argv[3],(unsigned char*)argv[4]);
+	error = xberepair((unsigned char*)argv[1],(unsigned char*)argv[2],(unsigned char*)argv[3],(unsigned char*)argv[4]);
 	
-	return 0;	
+	return error;	
 }

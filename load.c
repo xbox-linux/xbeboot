@@ -219,12 +219,13 @@ static NTSTATUS LoadIinitrdXBE(long *FilePos, long *FileSize) {
 
 
 
-
+/*
 	memcpy(&TempInitrdStart,(void*)0x01108c,4);
 	dprintf("%08x\n", TempInitrdStart);
 	memcpy(&TempInitrdSize,(void*)0x011090,4);
 	dprintf("%08x\n", TempInitrdSize);
 //while(1);	
+*/
         return STATUS_SUCCESS;
 }
 
@@ -281,12 +282,19 @@ void boot() {
 
 #ifdef LOADHDD	
 	Error = GetConfig(&entry);
-
+#ifdef LOADHDD_CFGFALLBACK
+        if (!NT_SUCCESS(Error)) {
+        	Error = GetConfigXBE(&entry);
+        	}
+#endif
 	if (!NT_SUCCESS(Error)) die();
 	
 	// Load the kernel image into RAM 
 	KernelSize = MAX_KERNEL_SIZE;
 	Error = LoadFile(entry.szKernel, &KernelPos, &KernelSize);
+
+	/* get physical addresses */
+	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
 
 	if (!NT_SUCCESS(Error)) die();
 
@@ -313,64 +321,25 @@ void boot() {
 	// Load the kernel image into the correct RAM 
 	KernelSize = MAX_KERNEL_SIZE;
 	Error = LoadKernelXBE(&KernelPos, &KernelSize);
-      
-	// ED : only if initrd 
-	if(entry.szInitrd[0]) {
-		InitrdSize = MAX_INITRD_SIZE;
-	//	Error = LoadFile(entry.szInitrd, &InitrdPos, &InitrdSize);
-          
-          	Error = LoadIinitrdXBE( &InitrdPos, &InitrdSize);
-		PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos); 
-		
-		//dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos); 
-		//dprintf("PhysInitrdSize = 0x%08x\n", InitrdSize);
-		//while(1);
-		 
-		
-	} else {
-		InitrdSize = 0;
-		PhysInitrdPos = 0;
-	}
+	/* get physical addresses */
+	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
+	
+	// Load the Ramdisk into the correct RAM       
+	InitrdSize = MAX_INITRD_SIZE;
+       	Error = LoadIinitrdXBE( &InitrdPos, &InitrdSize);
+	PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos); 
+
 #endif
 
 
 
 
-	/* get physical addresses */
-	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
 	
-	dprintf("KernelPos 	= 0x%08x\n", KernelPos);
-	dprintf("PhysKernelPos 	= 0x%08x\n", PhysKernelPos);
+//	dprintf("KernelPos 	= 0x%08x\n", KernelPos);
+//	dprintf("PhysKernelPos 	= 0x%08x\n", PhysKernelPos);
 
-        dprintf("\n");
-/*	
-	memcpy(tempstr,(void*)KernelPos,10);
-	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
+  //      dprintf("\n");
 
-	dprintf("\n");	
-	
-	memcpy(tempstr,(void*)0x110000,10);
-	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
-	            
-	
-	//memcpy((void*)KernelPos,(void*)0x110000,1024*1024);
-	       
-//	if (memcmp((void*)KernelPos,(void*)0x110000,1024*1024)==0) dprintf("\nOK\n"); else dprintf("False\n");	       
-
-     //   KernelSize = 1024*1024-1;
-         
-        dprintf("\n");	
-        dprintf("KernelSize 	= 0x%08x\n",KernelSize);
-        
-	dprintf("\n");	        
-       // KernelSize = 1024*1024;
-        
-//        memcpy(tempstr,(void*)(KernelPos+937609),10);
-//	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
-	
-//while(1); 
-
-*/
 	/* allocate memory for EscapeCode */
 	EscapeCodePos = MmAllocateContiguousMemoryEx(PAGE_SIZE, RAMSIZE /4, RAMSIZE / 2, 16, PAGE_READWRITE);
 	dprintf("EscapeCodePos = 0x%08x\n", EscapeCodePos);
