@@ -25,10 +25,10 @@ volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 	HANDLE KernelFile;
 
-	PVOID VirtKernel;
+	PVOID VirtKernel = 0;
 
 	/* Temporary buffer for use with ReadFile */
-	static BYTE ReadBuffer[READ_CHUNK_SIZE];
+	PVOID ReadBuffer = 0;
 
 	/* Error code from an NT kernel call */
 	NTSTATUS Error;
@@ -51,7 +51,12 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 	int i;
 	
-	PHYSICAL_ADDRESS max_kernel;
+	ReadBuffer = MmAllocateContiguousMemoryEx(READ_CHUNK_SIZE,MIN_KERNEL, 
+			MAX_KERNEL, 0, PAGE_READWRITE);
+	if (!ReadBuffer) {
+		Error = STATUS_NO_MEMORY;
+		goto ErrorCloseFile;
+	}
 
 //	dprintf("Loading \"%s\"...", Filename);
 	/* Make an ANSI_STRING out of the kernel image filename */
@@ -75,18 +80,12 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 	TempKernelSize = *FileSize;
 
-	/* Try to allocate contiguous physical memory for the kernel image.
-	   We need an address from 1 meg or above.
-	   NOTE: We CANNOT use the memory allocated here in most API calls,
-	   including ReadFile().*/
-	max_kernel = MAX_KERNEL;
 	//dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
 	//	MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
-	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,
-		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,MIN_KERNEL, 
+			MAX_KERNEL, 0, PAGE_READWRITE);
 	//dprintf("%08x\n", VirtKernel);
-	if (!VirtKernel)
-	{
+	if (!VirtKernel) {
 		Error = STATUS_NO_MEMORY;
 		goto ErrorCloseFile;
 	}
@@ -115,6 +114,7 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 /* Undoes the allocations and returns an error code */
 ErrorFreeMemory:
+	MmFreeContiguousMemory(ReadBuffer);
 	MmFreeContiguousMemory(VirtKernel);
 
 ErrorCloseFile:

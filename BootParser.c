@@ -15,9 +15,9 @@ enum {
 typedef unsigned char BYTE;
 
 int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
-	static char szLine[MAX_LINE];
-	static char szTmp[MAX_LINE];
-	static char szNorm[MAX_LINE];
+	char szLine[MAX_LINE];
+	char szTmp[MAX_LINE];
+	char szNorm[MAX_LINE];
         int nRivaFB = 0;
         int nVesaFB = 0;
 	BYTE VideoStandard[4];
