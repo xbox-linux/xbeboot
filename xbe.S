@@ -1,5 +1,5 @@
 #define BASE_ADDRESS 0x10000
-#define FILE_SIZE 0x100000
+#define FILE_SIZE (1200*1024)
 header_start:
   .ascii "XBEH"
 
@@ -53,7 +53,7 @@ certificate:
   // alternate title ids
   .long 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
-  .long 5   // allowed media types: HD or any CD/DVD
+  .long 0x80000005   // allowed media types: HD or any CD/DVD; don't reboot on eject
   .long 7   // game regions: all
   .long -1  // game ratings 
   .long 0   // disk number
@@ -91,7 +91,7 @@ section_headers:
 section_headers_end:
 
 rc1:
-  .word 0 
+  .word 0
 rc2:
   .word 0
 

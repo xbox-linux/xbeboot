@@ -47,7 +47,7 @@
 #define CR0_ENABLE_PAGING		0x80000000
 
 #define FRAMEBUFFER 0xF0040240
-#define TEXTBUFFER (FRAMEBUFFER + 80 * 640 * 4) 
+#define TEXTBUFFER (FRAMEBUFFER + 80 * 640 * 4)
 
 /* located within bootsect space (copied from arch/i386/setup.c) */
 /* originally defined mostly in arch/i386/kernel/setup.c and head.S */
@@ -119,43 +119,18 @@ NtAllocateVirtualMemory:
 
 	.long	0		// end of table
 
+.globl _start
 .align 0x100
 entry:				// this should be 0x11100
-
-.globl _start
 .intel_syntax noprefix
-_start:	
-
-// draw a 256-color 80x80 pixel logo onto the upper right corner
-	mov esi, offset linux_logo
-	mov edi, FRAMEBUFFER		// Xbox screen RAM starts here
-	mov edx, 80
-	mov ebx, 0
-logo_l2:	
-	mov ecx, 80
-logo_l1:	
-	lodsb		//  encoded pixel
-	mov bl, al
-	sub bl, 0x20
-	mov al, linux_logo_blue[ebx]
-	stosb
-	mov al, linux_logo_green[ebx]
-	stosb
-	mov al, linux_logo_red[ebx]
-	stosb
-	mov al, 0xff
-	stosb
-	loop logo_l1
-	add edi, (640-80)*4
-	dec edx
-	jne logo_l2
+_start:
 
 
-	
 // debug output
     mov ebx, 0		// x position
     mov ecx, 0		// y position
 
+#if 0
     lea esi, text1
     mov eax, MmAllocateContiguousMemoryEx
     call strhexout
@@ -165,16 +140,17 @@ logo_l1:
     lea esi, text3
     mov eax, NtAllocateVirtualMemory
     call strhexout
-    
+
     lea esi, text_kernel
     mov eax, offset kernel
     call strhexout
+#endif
 
 // 1. use MmAllocateContiguousMemoryEx to allocate physical memory
 //    somewhere between 1 and 32 MB for the kernel
     push ebx
     push ecx
-    
+
         push	PAGE_READWRITE
         push	0
         push	RETAIL_RAM_SIZE / 2 - 1
@@ -186,11 +162,12 @@ logo_l1:
     pop ecx
     pop ebx
 
-    push eax
+#if 0
+	push eax
     lea esi, text_kernelram
     call strhexout
     pop eax		// kernelram
-
+#endif
 // 3. MmGetPhysicalAddress that memory
     push ebx
     push ecx
@@ -202,103 +179,20 @@ logo_l1:
     pop ecx
     pop ebx
 
-    lea esi, text_phys_kernelram
+#if 0
+	lea esi, text_phys_kernelram
     call strhexout
-    
-// 2. put kernel there	
+#endif
+
+// 2. put kernel there
     push ecx
     mov esi, offset kernel
     mov edi, dword ptr [kernelram]
-    mov ecx, 900*1024/2  //KERNEL_SIZE / 2 TODO
+    mov ecx, 1024*1024/2  //KERNEL_SIZE / 2 TODO
     rep movsw
     pop ecx
-    
-// print some kernel info
-    mov edx, 16		// print first few bytes of kernel image
-    mov esi, dword ptr [kernelram]
-kernelout:
-    lodsb
-    call hexout8
-    mov al, ' '
-    call chrout
-    dec edx
-    jne kernelout
-    
-    call cr
-    
-    mov edi, dword ptr [kernelram]
-    xor eax, eax
-    mov ax, word ptr 0x20e[edi]	// kernel version string
-    add eax, edi
-    add eax, 0x200
-    mov esi, eax
-    call strout
-    
-    call cr
 
-// init kernel data
-
-    mov edi, dword ptr [kernelram]
-    mov byte ptr LOADER_TYPE[edi], 1	// must be != 0
-    mov byte ptr LOAD_FLAGS[edi], 1	// loaded high (1 MB)
-    mov word ptr RAMDISK_FLAGS[edi], 0
-    mov dword ptr ALT_MEM_K[edi], 0
-    mov word ptr CL_MAGIC[edi], 0xA33F
-//    mov word ptr CL_OFFSET, offset REL_COMMAND_LINE // cannot be correct?? see boot.txt
-    mov byte ptr AUX_DEVICE_INFO[edi], 0
-    mov dword ptr KERNEL_START[edi], 0x00100000	// 1 MB (bzimage)
-    mov word ptr EXT_MEM_K[edi], 63*1024		// 63 MB extended memory
-
-    mov dword ptr INITRD_SIZE[edi], 0
-    mov dword ptr INITRD_START[edi], 0	// TODO
-
-//    mov esi, offset my_command_line
-//    mov edi, offset COMMAND_LINE	// buffer within "setup"
-//    mov ecx, 128
-//    rep movsw
-    
-//    mov edi, APM_BIOS_INFO
-//    mov ecx, (0x100-0x40)	// clear 0x40 - 0xFF
-//    xor al, al
-//    rep stosb
-
-    mov byte ptr PARAM_HAVE_VGA[edi], 0x23
-    mov word ptr PARAM_LFB_LINELENGTH[edi], 0xa00
-    mov word ptr PARAM_LFB_WIDTH[edi], 640
-    mov word ptr PARAM_LFB_HEIGHT[edi], 480
-    mov word ptr PARAM_LFB_DEPTH[edi], 32
-    mov word ptr PARAM_LFB_PAGES[edi], 2 // ???
-    mov dword ptr PARAM_LFB_BASE[edi], FRAMEBUFFER
-    mov dword ptr PARAM_LFB_COLORS[edi], 8
-    mov dword ptr PARAM_LFB_COLORS+1[edi], 16
-    mov dword ptr PARAM_LFB_COLORS+2[edi], 8
-    mov dword ptr PARAM_LFB_COLORS+3[edi], 8
-    mov dword ptr PARAM_LFB_COLORS+4[edi], 8
-    mov dword ptr PARAM_LFB_COLORS+5[edi], 0
-    mov dword ptr PARAM_LFB_COLORS+6[edi], 8
-    mov dword ptr PARAM_LFB_COLORS+7[edi], 24
-    mov dword ptr PARAM_LFB_SIZE[edi], 1220/64	// RAM size in 64KB chunks
-    
-
-    mov esi, offset text_setup_sects
-    call strout
-    
-    mov edi, dword ptr [kernelram]
-    xor eax, eax
-    mov al, byte ptr SETUP_SECTS[edi]
-    push eax
-    call hexout8
-    call cr
-    pop eax
-    inc eax	// + 1 sector
-    shl eax, 9	// * 512
-    add eax, dword ptr [phys_kernelram]
-    mov dword ptr [phys_pm_kernelram], eax
-    
-    mov esi, offset text_phys_pm_kernelram
-    call strhexout
-    
-// 4. use MmAllocateContiguousMemoryEx to allocate 4096 bytes of memory 
+// 4. use MmAllocateContiguousMemoryEx to allocate 4096 bytes of memory
 //	  for the boot loader between 16 MB and 32 MB (virtual memory should
 //	  be unallocated there)
     push ebx
@@ -315,23 +209,26 @@ kernelout:
     pop ecx
     pop ebx
 
+#if 0
     lea esi, text_bootloaderram
     call strhexout
-    
+#endif
 
 // 5. use MmGetPhysicalAddress on that
     push ebx
     push ecx
-    
+
         push	dword ptr [bootloaderram]
         call	dword ptr [MmGetPhysicalAddress]
         mov	[phys_bootloaderram],  eax
-        
+
     pop ecx
     pop ebx
 
+#if 0
     lea esi, text_phys_bootloaderram
     call strhexout
+#endif
 
 // 6. use NtAllocateVirtualMemory to allocate virtual memory at that virtual address
 //	NtAllocateVirtualMemory(
@@ -351,13 +248,13 @@ kernelout:
         push	offset phys_bootloaderram
         call	dword ptr [NtAllocateVirtualMemory]
 
-        
+
     pop ecx
     pop ebx
-
+#if 0
     lea esi, text_allocvirt
     call strhexout
-
+#endif
 
 // 7. put a copy of the boot loader at both #4 and #6's memory
 
@@ -377,7 +274,7 @@ kernelout:
 	mov	ecx, PAGE_SIZE / 4
 	.byte	0xF3, 0xA5  // rep movsd
 
-	mov	ebp, dword ptr [phys_pm_kernelram]	// kernel
+//	mov	ebp, dword ptr [phys_pm_kernelram]	// kernel
         mov	esi, dword ptr [phys_kernelram]		// kernel information structure
 
 	mov	edx, [phys_bootloaderram]; // we'll need it again later
@@ -428,41 +325,31 @@ blentry:
 	lldt	ax
 
 // initialize segment registers
-	mov	ax, 0x0018
+	mov	ax, 0x0010
 	mov	ds, ax
 	mov	es, ax
 	mov	fs, ax
 	mov	gs, ax
 	mov	ss, ax
 
-    
+
 // jmp to new location
 	.byte	0xea //  = ljmp
 ptr_newloc:
 	.long	0
-	.word	0x0010
+	.word	0x0008
 
 newloc:
         // esi = phys_kernelram
-	mov	edi, KERNEL_INFO_ADDRESS // 0x90000
-	mov	ecx, 10 * 512 / 4	// hardcoded...
-	.byte	0xF3, 0xA5  // rep movsd
-
-	mov	esi, ebp; // start of kernel in ram
-	mov	edi, MIN_KERNEL_ADDRESS; // 64 MB
+	mov	edi, 60*1024*1024 // 60 MB (0x3c)
 	mov	ecx, KERNEL_SIZE / 4
 	.byte	0xF3, 0xA5  // rep movsd
 
-// what's missing here is the complete setup of the configuration block at 0x90000
-
-//    jmp newflash
-
 // start kernel
-        xor	ebx, ebx // flag: boot
 	.byte	0xea //  = ljmp
 
-	.long	0x00100000
-	.word	0x0010
+	.long	0x03cffe00
+	.word	0x0008
 
 newflash:
 // flash the LEDs
@@ -522,17 +409,17 @@ bootloader_gdt:
 	// 0000 (dummy)
 	.word	0, 0, 0, 0		// dummy
 
-	// 0008 (TSS?)
-	.word	0, 0, 0, 0		// unused
+//	// 0008 (TSS?)
+//	.word	0, 0, 0, 0		// unused
 
-	// 0010 (code segment)
+	// 0008 (code segment)
 	.word	0xFFFF			// 4Gb - (0x100000*0x1000 = 4Gb)
 	.word	0			// base address = 0
 	.word	0x9A00			// code read/exec
 	.word	0x00CF			// granularity = 4096, 386
 					//  (+5th nibble of limit)
 
-	// 0018 (data segment)
+	// 0010 (data segment)
 	.word	0xFFFF			// 4Gb - (0x100000*0x1000 = 4Gb)
 	.word	0			// base address = 0
 	.word	0x9200			// data read/write
@@ -655,6 +542,7 @@ f2:
 no1:
     ret
 
+
 text1:
 	.ascii "MmAllocateContiguousMemoryEx: 0x"
         .byte 0
@@ -686,10 +574,10 @@ text_setup_sects:
         .ascii "setup_sects: 0x"
         .byte 0
 
-text_phys_pm_kernelram:
-    .ascii "phys_pm_kernelram: 0x"
-    .byte 0
-        
+//text_phys_pm_kernelram:
+    //.ascii "phys_pm_kernelram: 0x"
+    //.byte 0
+
 ptr_PAGE_SIZE:
     .long PAGE_SIZE
 
@@ -713,11 +601,17 @@ bootloaderram:
 // Physical address of bootloader _and_ virtual address of a second copy
 phys_bootloaderram:
 	.long	0
-phys_pm_kernelram:
-	.long	0
-
+//phys_pm_kernelram:
+//	.long	0
+pos_x:
+	.long 0
+pos_y:
+	.long 0
+start_x:
+	.long 0
+start_y:
+	.long 0
 #include "font.S"
-#include "logo.S"
 
 .align 4096
 kernel:

@@ -4,8 +4,9 @@ all:
 	cpp xbeboot.S -o xbeboot.s
 	as -o xbeboot.o xbeboot.s
 	ld -Ttext 0x10000 -Tdata 0x10000 -e _start -s --oformat binary -o default.xbe xbeboot.o
-	cat /boot/vmlinuz >> default.xbe
-	dd if=/dev/zero bs=1K count=200 >> default.xbe
+	cat ../image-xbe.bin >> default.xbe
+	dd if=/dev/zero bs=1024 count=200 >> default.xbe
+	mkisofs -udf default.xbe > xbox-linux.iso
 
 clean:
-	rm -f *.o *.s default.xbe *~
+	rm -f *.o *.s default.xbe xbox-linux.iso *~
