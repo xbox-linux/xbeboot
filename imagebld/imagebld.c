@@ -42,7 +42,7 @@ void shax(unsigned char *result, unsigned char *data, unsigned int len)
 
 
 
-int xberepair (	unsigned char * xbeimage,
+int xbebuild (	unsigned char * xbeimage,
 		unsigned char * vmlinuzname,
 		unsigned char * initrdname,
 		unsigned char * configname
@@ -63,7 +63,6 @@ int xberepair (	unsigned char * xbeimage,
         unsigned char *initrd;         
         unsigned int initrd_size = 0;
 	unsigned int initrd_start = 0;
-
 
         unsigned char *config;         
         unsigned int config_size = 0;
@@ -153,11 +152,10 @@ int xberepair (	unsigned char * xbeimage,
 #ifdef LOADXBE
 	        vmlinux_start = xbesize;
 	        memcpy(&xbe[0x1080],&vmlinux_start,4);
-	        
-	        
-	        memcpy(&xbe[vmlinux_start],vmlinuz,vmlinux_size);
 		memcpy(&xbe[0x1084],&vmlinux_size,4);
-		
+
+	        memcpy(&xbe[vmlinux_start],vmlinuz,vmlinux_size);
+	        		
 		// We tell the XBEBOOT loader, that the Paramter he should pass to the Kernel = 2MB for the Size
 		
 		//temp= 2*1024*1024;
@@ -280,12 +278,98 @@ int xberepair (	unsigned char * xbeimage,
 }
 
 
+int xbeextract (	unsigned char * xbeimage ) 
+{
+	FILE *f;
+
+        unsigned char *xbe;
+        unsigned int xbesize = 0;
+    	
+    	unsigned char *vmlinuz;
+    	unsigned int vmlinux_size = 0;
+        unsigned int vmlinux_start=0;
+        
+        unsigned char *initrd;         
+        unsigned int initrd_size = 0;
+	unsigned int initrd_start = 0;
+
+        unsigned char *config;         
+        unsigned int config_size = 0;
+	unsigned int config_start = 0;
+
+
+
+	f = fopen(xbeimage, "rb");
+    	if (f!=NULL) 
+    	{   
+  		fseek(f, 0, SEEK_END); 
+         	xbesize	 = ftell(f); 
+         	fseek(f, 0, SEEK_SET);
+           	xbe = malloc(xbesize);
+    		fread(xbe, 1, xbesize, f);
+    		fclose(f);
+
+		memcpy(&initrd_start, &xbe[0x108C],4);
+		memcpy(&initrd_size,  &xbe[0x1090],4);
+	        memcpy(&vmlinux_start,&xbe[0x1080],4);
+		memcpy(&vmlinux_size, &xbe[0x1084],4);
+		memcpy(&config_start, &xbe[0x1094],4);
+		memcpy(&config_size,  &xbe[0x1098],4);         		
+
+	 	printf("Linked Sections\n");
+	 	printf("Start of Linux Kernel    : 0x%08X\n", vmlinux_start);
+	 	printf("Size of Linux Kernel     : 0x%08X\n", vmlinux_size);
+		printf("Start of InitRD          : 0x%08X\n", initrd_start);
+	 	printf("Size of Initrd           : 0x%08X\n", initrd_size);
+		printf("Start of Config          : 0x%08X\n", config_start);
+	 	printf("Size of config           : 0x%08X\n", config_size);
+		printf("----------------\n");
+
+
+		printf("Extracting Kernel");
+		f = fopen("kernel", "wb");
+    		if (f!=NULL) 
+    		{   
+		 fwrite(&xbe[vmlinux_start], 1, vmlinux_size, f);
+        	 fclose(f);			
+		}	  
+		printf(" .. Done \n");
+
+
+		printf("Extracting Ramdisk");
+		f = fopen("ramdisk", "wb");
+    		if (f!=NULL) 
+    		{   
+		 fwrite(&xbe[initrd_start], 1, initrd_size, f);
+        	 fclose(f);			
+		}	  
+		printf(" .. Done \n");
+
+		printf("Extracting Config");
+		f = fopen("config.cfg", "wb");
+    		if (f!=NULL) 
+    		{   
+		 fwrite(&xbe[config_start], 1, config_size, f);
+        	 fclose(f);			
+		}	  
+		printf(" .. Done \n");
+    		
+    		free(xbe);
+    	}        
+	return 0;	
+}
+
 int main (int argc, const char * argv[])
 {
-	int error;
+	int error=0;
 	
-	
-	error = xberepair((unsigned char*)argv[1],(unsigned char*)argv[2],(unsigned char*)argv[3],(unsigned char*)argv[4]);
-	
+	if (strcmp(argv[1],"-build")==0) {
+	error = xbebuild((unsigned char*)argv[2],(unsigned char*)argv[3],(unsigned char*)argv[4],(unsigned char*)argv[5]);
+	}
+
+	if (strcmp(argv[1],"-extract")==0) {
+	error = xbeextract((unsigned char*)argv[2]);
+	}
+
 	return error;	
 }

@@ -40,6 +40,6 @@ clean	:
 %.xbe : %.elf
 	${OBJCOPY} --output-target=binary --strip-all $< $@
 	#dd if=/dev/zero bs=1k count=30000 >> $@
-	$(TOPDIR)/imagebld/image $(TOPDIR)/default.xbe  $(TOPDIR)/vmlinuz $(TOPDIR)/initrd  $(TOPDIR)/linuxboot.cfg
+	$(TOPDIR)/imagebld/image -build $(TOPDIR)/default.xbe  $(TOPDIR)/vmlinuz $(TOPDIR)/initrd  $(TOPDIR)/linuxboot.cfg
 	cp default.xbe xbeboot.xbe
 	@ls -l $@
