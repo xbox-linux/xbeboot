@@ -56,7 +56,7 @@ int xberepair (	unsigned char * xbeimage,
         unsigned char *xbe;
         unsigned int xbesize = 0;
 
-    	unsigned char vmlinuz[2048*1024];
+    	unsigned char *vmlinuz;
     	unsigned int vmlinux_size = 0;
         unsigned int vmlinux_start=0;
         
@@ -87,6 +87,7 @@ int xberepair (	unsigned char * xbeimage,
  		fseek(f, 0, SEEK_END); 
          	vmlinux_size	 = ftell(f);        
          	fseek(f, 0, SEEK_SET);
+    		vmlinuz = malloc(vmlinux_size);
     		memset(vmlinuz,0xff,sizeof(vmlinuz));
     		fread(vmlinuz, 1, vmlinux_size, f);
     		fclose(f);
@@ -136,9 +137,9 @@ int xberepair (	unsigned char * xbeimage,
            	  
            	
 //           	xbe = malloc(xbesize+vmlinux_size+1024*1024);
-           	xbe = malloc(xbesize+vmlinux_size+3*1024*1024+initrd_size);
+           	xbe = malloc(xbesize+vmlinux_size+3*1024*1024+initrd_size+config_size);
            	    		
-    		memset(xbe,0x00,sizeof(xbesize+vmlinux_size+1024*1024));
+    		memset(xbe,0x00,sizeof(xbesize+vmlinux_size+3*1024*1024+initrd_size+config_size));
     		fread(xbe, 1, xbesize, f);
     		fclose(f);
 	      
@@ -157,8 +158,12 @@ int xberepair (	unsigned char * xbeimage,
 	        memcpy(&xbe[vmlinux_start],vmlinuz,vmlinux_size);
 		memcpy(&xbe[0x1084],&vmlinux_size,4);
 		
-		// We tell the XBEBOOT loader, that the Paramter he should pass to the Kernel = 1MB for the Size
-		temp= 1024*1024;
+		// We tell the XBEBOOT loader, that the Paramter he should pass to the Kernel = 2MB for the Size
+		
+		//temp= 2*1024*1024;
+		
+		temp = vmlinux_size;
+		temp = (temp & 0xffff0000) + 0xffff + 0xffff;
 		memcpy(&xbe[0x1088],&temp,4);		
 		
 		xbesize = xbesize + vmlinux_size;
@@ -264,7 +269,9 @@ int xberepair (	unsigned char * xbeimage,
 	      	
 		free(initrd);         
         	free(config);   
-
+                free(vmlinuz);
+                free(xbe);
+                
 	} else return 1;
 
 
