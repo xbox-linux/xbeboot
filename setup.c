@@ -65,7 +65,7 @@ struct kernel_setup_t {
 
 extern void* framebuffer;
 
-void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_cmdline) {
+void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_cmdline, int xres, int yres) {
     int i;
     int cmd_line_ptr;
     struct kernel_setup_t *kernel_setup = (struct kernel_setup_t*)KernelPos;
@@ -96,11 +96,11 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->orig_video_ega_bx = 0;
     kernel_setup->orig_video_points = 16;
     kernel_setup->lfb_depth = 32;
-    kernel_setup->lfb_width = SCREEN_WIDTH;
-    kernel_setup->lfb_height = SCREEN_HEIGHT_480;
+    kernel_setup->lfb_width = xres;
+    kernel_setup->lfb_height = yres;
     kernel_setup->lfb_base = (0xf0000000|*(unsigned int*)0xFD600800);
     kernel_setup->lfb_size = (4 * 1024 * 1024)/0x10000;
-    kernel_setup->lfb_linelength = SCREEN_WIDTH*4;
+    kernel_setup->lfb_linelength = xres*4;
     kernel_setup->pages=1;
     kernel_setup->vesapm_seg = 0;
     kernel_setup->vesapm_off = 0;
@@ -123,6 +123,6 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->cmd_offset = (unsigned short) cmd_line_ptr;
     kernel_setup->cmd_magic = 0xA33F;
     kernel_setup->cmd_line_ptr = 0;
-    my_memcpy((char*)(KernelPos+cmd_line_ptr), kernel_cmdline, 512);
+    memcpy((char*)(KernelPos+cmd_line_ptr), kernel_cmdline, 512);
     *(char*)(KernelPos+cmd_line_ptr+511) = 0;
 }

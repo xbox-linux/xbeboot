@@ -28,7 +28,7 @@
 // to decode the header, such as "xbedump" (or probably Microsoft's certification
 // tools) are likely to fail, but it is a valid header for the Xbox kernel.
 #define BASE_ADDRESS 0x10000
-#define FILE_SIZE (1024*1024)
+#define FILE_SIZE (0x4000+0x44000)
 header_start:
   .ascii "XBEH"
 
@@ -40,7 +40,7 @@ header_start:
 
   .long BASE_ADDRESS                    // base address
   .long headers_end - header_start      // size of headers
-  .long FILE_SIZE+32*1024               // size of image
+  .long FILE_SIZE+1024                  // size of image
   .long header_end - header_start       // size of image header
   .long 0                               // time date stamp                 *unimportant*
   .long certificate                     // certificate address
@@ -56,9 +56,9 @@ header_start:
   .long 0                               // original size of image (PE copy)*unimportant*
   .long 0                               // original checksum (PE copy)     *unimportant*
   .long 0                               // original time stamp (PE copy)   *unimportant*
-  .long 0                               // debug path name address         *unimportant*
-  .long 0                               // debug file name address         *unimportant*
-  .long 0                               // debug unicode file name address *unimportant*
+  .long normalname			// debug path name address         *unimportant*
+  .long normalname			// debug file name address         *unimportant*
+  .long unicodename			// debug unicode file name address *unimportant*
   .long 0x11000 ^ 0x5B6D40B6            // kernel image thunk address XOR key **GAS ISSUE: see above**
   .long 0                               // non-kernel import directory address
   .long 0                               // number of library versions      *unimportant*
@@ -75,13 +75,15 @@ certificate:
   .long 0                               // title id                        *unimportant?*
 
   // title name (unicode string, 40 chars) *unimportant, but beautiful*
+unicodename:
   .word 'L','i','n','u','x',0,0,0,0,0,0
+normalname:
   .word 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
   .word 0,0,0,0,0,0,0,0,0,0,0,0,0
 
   // alternate title ids
   .long 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-
+  
 #ifdef DEBUG
   .long 0x40000005   // allowed media types: HD or any CD/DVD; no panic of HDD unlocked
 #else
@@ -255,7 +257,7 @@ logo_end:
 headers_end:
 
 
-.align 0x1000
+.org 0x1000
 section_1_start:		// this should be 0x11000
 // kernel thunk table
 .globl AvGetSavedDataAddress
@@ -324,8 +326,17 @@ HalWriteSMBusValue:
 
 	.long	0		// end of table
 
+.org 0x1080
+	.long	0		// VMLinuz Image Position
+	.long	0		// VMLinuz Image Size
+	.long	0		// VMLinuz Image Size Kernel Paramter
+	.long	0		// Initrd Image Position
+	.long	0		// Initrd Image Size
+	.long	0		// Linuxboot.cfg Position
+	.long	0		// Linuxboot.cfg Size
+	
 .globl _start
-.align 0x100
+.org 0x1100
 entry:				// this should be 0x11100
 .intel_syntax noprefix
 _start:

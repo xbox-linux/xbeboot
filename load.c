@@ -16,11 +16,15 @@
 #include "BootString.h"
 #include "BootParser.h"
 #include "BootVideo.h"
+#include "config.h"
+
+volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
+
 
 volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 
 /* Loads the kernel image file into contiguous physical memory */
-static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
+static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 	HANDLE KernelFile;
 
 	PVOID VirtKernel;
@@ -78,28 +82,31 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 	   NOTE: We CANNOT use the memory allocated here in most API calls,
 	   including ReadFile().*/
 	max_kernel = MAX_KERNEL;
-//	dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
-//		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	//dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
+	//	MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
 	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,
 		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
-//	dprintf("%08x\n", VirtKernel);
+	//dprintf("%08x\n", VirtKernel);
 	if (!VirtKernel)
 	{
 		Error = STATUS_NO_MEMORY;
 		goto ErrorCloseFile;
 	}
 
-//	dprintf("Reading");
+	dprintf("Reading");
 	ReadPtr = (PUCHAR) VirtKernel;
+	
+	
 	for (i=0; i < TempKernelSize; i+=READ_CHUNK_SIZE, ReadPtr+=READ_CHUNK_SIZE) {
 		ReadSize = READ_CHUNK_SIZE;
 		Error = NtReadFile(KernelFile, NULL, NULL, NULL, &IoStatusBlock,
 			ReadBuffer, ReadSize, NULL);
-		my_memcpy(ReadPtr, ReadBuffer, ReadSize);
-//		dprintf(".");
+		memcpy(ReadPtr, ReadBuffer, ReadSize);
+		dprintf(".");
 		if (!NT_SUCCESS(Error)) break;
 	}
-//	dprintf("done. (%i bytes @ %08x)\n", i, VirtKernel);
+	
+	dprintf("done. (%i bytes @ %08x)\n", i, VirtKernel);
 
 	/* Done; return size to caller */
 	*FileSize = i; /* just an estimation */
@@ -119,90 +126,258 @@ ErrorNothing:
 	return Error;
 }
 
-void die(char *s) {
-	printf(s);
+static NTSTATUS LoadKernelXBE(long *FilePos, long *FileSize) {
+
+	PVOID VirtKernel;
+	/* Size of the kernel file */
+	ULONGLONG TempKernelStart;
+	ULONGLONG TempKernelSize;
+	ULONGLONG TempKernelSizev;
+	PHYSICAL_ADDRESS max_kernel;
+	TempKernelSize = *FileSize;
+        
+	/* Try to allocate contiguous physical memory for the kernel image.
+	   We need an address from 1 meg or above.
+	   NOTE: We CANNOT use the memory allocated here in most API calls,
+	   including ReadFile().*/
+	
+	max_kernel = MAX_KERNEL;
+	//dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
+	//	MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,
+		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	//dprintf("%08x\n", VirtKernel);
+	
+	if (!VirtKernel) return STATUS_NO_MEMORY;
+
+	*FilePos = (int)VirtKernel;
+	
+
+	memcpy(&TempKernelStart,(void*)0x011080,4);	// This is the Where the Real kernel Starts in the XBE
+	memcpy(&TempKernelSizev,(void*)0x011084,4);	// This is the Real kernel Size
+	memcpy(&TempKernelSize,(void*)0x011088,4);	// this is the kernel Size we pass to the Kernel loader
+	*FileSize= TempKernelSize;
+	
+	// We fille the compleate space with 0xff
+	memcpy((void*)*FilePos,(void*)0x010000+TempKernelStart,TempKernelSizev);
+	
+	memset((void*)*FilePos+TempKernelSizev,0xff,TempKernelSize-TempKernelSizev);
+	
+	// We force the Cache to write back the changes to RAM
+	asm volatile ("wbinvd\n");
+
+
+
+/*
+	memcpy(&TempKernelSize,(void*)0x011084,4);
+	dprintf("%08x\n", TempKernelSize);
+	memcpy(&TempKernelSize,(void*)0x011088,4);
+	dprintf("%08x\n", TempKernelSize);
+//while(1);	
+  */
+        return STATUS_SUCCESS;
+}
+
+
+
+
+static NTSTATUS LoadIinitrdXBE(long *FilePos, long *FileSize) {
+
+	PVOID VirtKernel;
+	/* Size of the initrd file */
+	ULONGLONG TempInitrdStart;
+	ULONGLONG TempInitrdSize;
+
+	PHYSICAL_ADDRESS max_kernel;
+	TempInitrdSize = *FileSize;
+        
+	/* Try to allocate contiguous physical memory for the kernel image.
+	   We need an address from 1 meg or above.
+	   NOTE: We CANNOT use the memory allocated here in most API calls,
+	   including ReadFile().*/
+	
+	max_kernel = MAX_KERNEL;
+	//dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
+	//	MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempInitrdSize,
+		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	//dprintf("%08x\n", VirtKernel);
+	
+	if (!VirtKernel) return STATUS_NO_MEMORY;
+
+	*FilePos = (int)VirtKernel;
+	  
+	memcpy(&TempInitrdStart,(void*)0x01108C,4);	// This is the Where the Real kernel Starts in the XBE
+	memcpy(&TempInitrdSize,(void*)0x011090,4);	// This is the Real kernel Size
+
+
+	*FileSize= TempInitrdSize;
+	
+	
+	memcpy((void*)*FilePos,(void*)0x010000+TempInitrdStart,TempInitrdSize);
+	
+	// We force the Cache to write back the changes to RAM
+	asm volatile ("wbinvd\n");
+
+
+
+
+	memcpy(&TempInitrdStart,(void*)0x01108c,4);
+	dprintf("%08x\n", TempInitrdStart);
+	memcpy(&TempInitrdSize,(void*)0x011090,4);
+	dprintf("%08x\n", TempInitrdSize);
+//while(1);	
+        return STATUS_SUCCESS;
+}
+
+void die() {
 	while(1);
 }
 
 extern int I2CTransmitByteGetReturn(char bPicAddressI2cFormat, char bDataToWrite);
 
 int NewFramebuffer;
-int KernelSize;
+long KernelSize;
 PHYSICAL_ADDRESS PhysKernelPos, PhysEscapeCodePos;
 PVOID EscapeCodePos;
 
 NTSTATUS GetConfig(CONFIGENTRY *entry);
+NTSTATUS GetConfigXBE(CONFIGENTRY *entry);
 
 void boot() {
 	BYTE bAvPackType;
+	int xres,yres;
 	int i;
 	unsigned char* s;
-	int KernelPos;
-	int InitrdSize, InitrdPos;
+	long KernelPos;
+	long InitrdSize, InitrdPos;
 	PHYSICAL_ADDRESS PhysInitrdPos;
 	NTSTATUS Error;
 	int data_PAGE_SIZE;
 	extern int EscapeCode, EscapeCodeEnd;
 	extern void* newloc, ptr_newloc;
 	CONFIGENTRY entry;
+	unsigned char tempstr[10];
+	unsigned int temp;
 	
-        currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
+	currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
         currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
-        currentvideomodedetails.m_fForceEncoderLumaAndChromaToZeroInitially=0;
+	currentvideomodedetails.m_dwFrameBufferStart = FRAMEBUFFER_START;
 
-        BootVgaInitializationKernel((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
-
+        BootVgaInitializationKernelNG((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
+	
 	framebuffer = (unsigned int*)(0xF0000000+*(unsigned int*)0xFD600800);
-
 	memset(framebuffer,0,640*480*4);
 
 	memset(&entry,0,sizeof(CONFIGENTRY));
 	cx = 0;
 	cy = 0;
-	splash_init();
 //	dprintf("\n");
 //	dprintf("Framebuffer at: 0x%08x\n", framebuffer);
 
 	/* parse the configuration file */
-	Error = GetConfig(&entry);
-
-	if (!NT_SUCCESS(Error)) die("Error loading configuration file!\n");
-
- 	splash(3);
 
 	dprintf("Xbox Linux XBEBOOT  %s\n",VERSION);
 	
 	dprintf("%s -  http://xbox-linux.sf.net\n",__DATE__);
 	dprintf("(C)2002 Xbox Linux Team - Licensed under the GPL\n");
 	dprintf("\n");
+
+#ifdef LOADHDD	
+	Error = GetConfig(&entry);
+
+	if (!NT_SUCCESS(Error)) die();
 	
-	/* Load the kernel image into RAM */
+	// Load the kernel image into RAM 
 	KernelSize = MAX_KERNEL_SIZE;
 	Error = LoadFile(entry.szKernel, &KernelPos, &KernelSize);
 
-	if (!NT_SUCCESS(Error)) die("Error loading kernel!\n");
+	if (!NT_SUCCESS(Error)) die();
 
-	/* ED : only if initrd */
+	// ED : only if initrd 
 	if(entry.szInitrd[0]) {
 		InitrdSize = MAX_INITRD_SIZE;
 		Error = LoadFile(entry.szInitrd, &InitrdPos, &InitrdSize);
 
-		if (!NT_SUCCESS(Error)) die("Error loading initrd!\n");
+		if (!NT_SUCCESS(Error)) die();
 		PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos);
-//		dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos);
+		dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos);
 	} else {
 		InitrdSize = 0;
 		PhysInitrdPos = 0;
 	}
+#endif
+
+
+#ifdef LOADXBE
+	Error = GetConfigXBE(&entry);
+
+	if (!NT_SUCCESS(Error)) die();
+	      
+	// Load the kernel image into the correct RAM 
+	KernelSize = MAX_KERNEL_SIZE;
+	Error = LoadKernelXBE(&KernelPos, &KernelSize);
+      
+	// ED : only if initrd 
+	if(entry.szInitrd[0]) {
+		InitrdSize = MAX_INITRD_SIZE;
+	//	Error = LoadFile(entry.szInitrd, &InitrdPos, &InitrdSize);
+          
+          	Error = LoadIinitrdXBE( &InitrdPos, &InitrdSize);
+		PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos); 
+		
+		//dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos); 
+		//dprintf("PhysInitrdSize = 0x%08x\n", InitrdSize);
+		//while(1);
+		 
+		
+	} else {
+		InitrdSize = 0;
+		PhysInitrdPos = 0;
+	}
+#endif
+
+
 
 
 	/* get physical addresses */
 	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
-//	dprintf("PhysKernelPos = 0x%08x\n", PhysKernelPos);
+	
+	dprintf("KernelPos 	= 0x%08x\n", KernelPos);
+	dprintf("PhysKernelPos 	= 0x%08x\n", PhysKernelPos);
 
+        dprintf("\n");
+/*	
+	memcpy(tempstr,(void*)KernelPos,10);
+	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
+
+	dprintf("\n");	
+	
+	memcpy(tempstr,(void*)0x110000,10);
+	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
+	            
+	
+	//memcpy((void*)KernelPos,(void*)0x110000,1024*1024);
+	       
+//	if (memcmp((void*)KernelPos,(void*)0x110000,1024*1024)==0) dprintf("\nOK\n"); else dprintf("False\n");	       
+
+     //   KernelSize = 1024*1024-1;
+         
+        dprintf("\n");	
+        dprintf("KernelSize 	= 0x%08x\n",KernelSize);
+        
+	dprintf("\n");	        
+       // KernelSize = 1024*1024;
+        
+//        memcpy(tempstr,(void*)(KernelPos+937609),10);
+//	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
+	
+//while(1); 
+
+*/
 	/* allocate memory for EscapeCode */
 	EscapeCodePos = MmAllocateContiguousMemoryEx(PAGE_SIZE, RAMSIZE /4, RAMSIZE / 2, 16, PAGE_READWRITE);
-//	dprintf("EscapeCodePos = 0x%08x\n", EscapeCodePos);
+	dprintf("EscapeCodePos = 0x%08x\n", EscapeCodePos);
 	PhysEscapeCodePos = MmGetPhysicalAddress(EscapeCodePos);
 //	dprintf("PhysEscapeCodePos = 0x%08x\n", PhysEscapeCodePos);
 
@@ -211,14 +386,36 @@ void boot() {
 //	dprintf("NtAllocateVirtualMemory() = 0x%08x\n", Error);
 
 	/* copy EscapeCode to EscapeCodePos & PhysEscapeCodePos */
-	my_memcpy(EscapeCodePos, &EscapeCode, PAGE_SIZE);
-	my_memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
+	memcpy(EscapeCodePos, &EscapeCode, PAGE_SIZE);
+	memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
 
+	switch(entry.vmode) {
+		case VIDEO_MODE_640x480:
+			xres = 640;
+			yres = 480;
+			break;
+		case VIDEO_MODE_800x600:
+			xres = 800;
+			yres = 600;
+			break;
+	}
+
+	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend,xres,yres);
+	
+	currentvideomodedetails.m_nVideoModeIndex=entry.vmode;
+        currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
+        currentvideomodedetails.m_fForceEncoderLumaAndChromaToZeroInitially=0;
+	
+//	dprintf("Video mode %d x:%d y:%d\n",entry.vmode,xres,yres);
+	
 //	dprintf("Setup...");
-	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend);
+	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend,xres,yres);
 //	dprintf("done.");
 
 //	dprintf("Starting kernel...");
+
+	BootVgaInitializationKernelNG((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
+	memset(framebuffer,0,xres*yres*4);
 
 	/* orange LED */
 	HalWriteSMBusValue(0x20, 0x08, FALSE, 0xff);

@@ -8,17 +8,9 @@
 #define CONFIG_BUFFERSIZE (BUFFERSIZE*16)
 
 #ifdef DEBUG
-#define dprintf printf
+#define dprintf printk
 #else
-#define dprintf printf
-#endif
-
-#ifdef DEBUG
-#define splash
-#define splash_init()
-#else
-#define splash show_splash
-#define splash_init do_splash_init
+#define dprintf printk
 #endif
 
 #define SCREEN_WIDTH 640
@@ -30,14 +22,14 @@
 #define RAMSIZE (64 * 1024*1024)
 #define FB_RAM (4 * 1024 * 1024)
 
-#define FRAMEBUFFER_START ( /*0xf0000000 |*/ /*(0x04000000-(640*480*4) -(640*4*4)-(256*4))*/ (*((DWORD *)0xfd600800)) & 0x7fffffff )
+#define FRAMEBUFFER_START          0x03c00000
 #define SCREEN_SIZE (SCREEN_HEIGHT_480 * SCREEN_WIDTH * 4)
 #define FRAMEBUFFER_SIZE FB_RAM
 #define NEW_FRAMEBUFFER (RAMSIZE - (FRAMEBUFFER_SIZE))
-#define RAMSIZE_USE (NEW_FRAMEBUFFER)
+#define RAMSIZE_USE (RAMSIZE - 4096*1024)
 
 #define MAX_KERNEL_SIZE (2*1024*1024)
-#define MAX_INITRD_SIZE (6*1024*1024)
+#define MAX_INITRD_SIZE (16*1024*1024)
 
 /* position of kernel setup data */
 #define SETUP 0x90000

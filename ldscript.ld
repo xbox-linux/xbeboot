@@ -6,6 +6,15 @@
  * and work by Johan Rydberg and Daniel Kahlin.
  *
  * $Log$
+ * Revision 1.2  2003/05/16 11:54:00  franz
+ * Updates
+ *
+ * Revision 1.1.1.1  2003/05/15 19:41:59  ed
+ * initial import
+ *
+ * Revision 1.4  2003/02/18 07:20:06  huceke
+ * Added the Video init from cromwell.
+ *
  * Revision 1.3  2002/09/18 19:49:35  mist
  * gcc 3.2 (Mdk 9) fixes
  *
@@ -53,9 +62,6 @@ SECTIONS {
 		*(.sdata);
 		*(.sdata2);
 		*(.got);
-                _start_backdrop = .;
-                *(.backdrop);
-                _end_backdrop = .;								
 		*(.*);
 		_end_data = .;
 		}

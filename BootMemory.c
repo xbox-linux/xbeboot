@@ -1,4 +1,5 @@
-void __inline * my_memcpy(void *dest, const void *src, int size) {
+#include "boot.h"
+void __inline * memcpy(void *dest, const void *src, size_t size) {
 	__asm__  (
 		"    push %%esi    \n"
 		"    push %%edi    \n"
@@ -20,7 +21,7 @@ void __inline * my_memcpy(void *dest, const void *src, int size) {
 	return dest;
 }
 
-void * my_memset(void *dest, int data,  int size) {
+void * memset(void *dest, int data,  size_t size) {
         __asm__ __volatile__ (
                       "    push %%eax    \n"
                       "    push %%edi    \n"

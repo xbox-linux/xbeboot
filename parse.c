@@ -2,20 +2,21 @@
 #include "xboxkrnl.h"
 #include "BootString.h"
 #include "BootParser.h"
+#include <string.h>
 
-#define NULL 0
 
 NTSTATUS GetConfig(CONFIGENTRY *entry) {
-	char path[BUFFERSIZE];
-	char filename[BUFFERSIZE];
-	char config[CONFIG_BUFFERSIZE];
+	static char path[BUFFERSIZE];
+	static char filename[BUFFERSIZE];
+	static char config[CONFIG_BUFFERSIZE];
 	ANSI_STRING ConfigFileString;
 	HANDLE ConfigFile;
 	OBJECT_ATTRIBUTES ConfigFileAttributes;
 	IO_STATUS_BLOCK IoStatusBlock;
 	NTSTATUS Error;
 
-	memset(path,0,sizeof(path));
+	memset(path,0,BUFFERSIZE);
+	memset(config,0,CONFIG_BUFFERSIZE);
 	/* get the directory of the bootloader executable */
 	HelpCopyUntil(path, XeImageFileName->Buffer, XeImageFileName->Length);
 	HelpStrrchr(path, '\\')[1] = 0;
@@ -52,3 +53,39 @@ NTSTATUS GetConfig(CONFIGENTRY *entry) {
 	return STATUS_SUCCESS;
 }
 
+NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
+	static char path[BUFFERSIZE];
+	static char filename[BUFFERSIZE];
+	static char config[CONFIG_BUFFERSIZE];
+	ANSI_STRING ConfigFileString;
+	HANDLE ConfigFile;
+	OBJECT_ATTRIBUTES ConfigFileAttributes;
+	IO_STATUS_BLOCK IoStatusBlock;
+	NTSTATUS Error;
+        unsigned int TempConfigStart;
+        unsigned int TempConfigSize;
+        
+	memset(path,0,BUFFERSIZE);
+	memset(config,0,CONFIG_BUFFERSIZE);
+	/* get the directory of the bootloader executable */
+	HelpCopyUntil(path, XeImageFileName->Buffer, XeImageFileName->Length);
+	HelpStrrchr(path, '\\')[1] = 0;
+	/* read the config file from there */
+	HelpCopyUntil(filename, path, BUFFERSIZE);
+	HelpCopyUntil(HelpScan0(filename), CONFIG_FILE, BUFFERSIZE);
+
+//	dprintf("Path: %s\n", path);
+//	dprintf("Filename: %s\n", filename);
+
+	memcpy(&TempConfigStart,(void*)0x011094,4);	// This is the Real kernel Size
+	memcpy(&TempConfigSize, (void*)0x011098,4);	// this is the kernel Size we pass to the Kernel loader
+       	
+       	memset(config,0x00,sizeof(config));
+       	
+       	memcpy(config,(void*)0x010000+TempConfigStart,TempConfigSize);
+
+	ParseConfig(path,config,entry);
+//	PrintConfig(entry);
+
+	return STATUS_SUCCESS;
+}

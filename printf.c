@@ -32,7 +32,7 @@ int print(const unsigned char* s, unsigned short len) {
 	return 0;
 }
 
-int printf(const char *fmt, ...) {
+int printk(const char *fmt, ...) {
         char buf[512];
         unsigned short len;
         va_list argList;
