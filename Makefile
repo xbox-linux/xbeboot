@@ -10,7 +10,9 @@ OBJECTS	= header.o load.o setup.o escape.o parse.o splash.o
 RESOURCES =
 
 # target:
-all	: linux.iso
+all	: default.xbe
+
+iso	: linux.iso
 
 linux.iso: default.xbe
 	mkisofs -udf $< linuxboot.cfg vmlinuz initrd > $@

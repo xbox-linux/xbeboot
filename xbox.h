@@ -1,33 +1,14 @@
-/* configuration */
+/* you can change this */
 #undef DEBUG
-#define CONFIG_D
+//#define DEBUG
+//#define PAL
+#undef PAL /* that's NTSC */
 
-//#define CONFIG_FILE "\\Device\\Harddisk0\\Partition1\\Apps\\Linux\\linuxboot.cfg"
 
+/* but you better shouldn't change this */
+#define CONFIG_FILE "linuxboot.cfg"
 
-#ifdef CONFIG_C
-#define CONFIG_FILE "\\Device\\Harddisk0\\Partition2\\linuxboot.cfg"
-#endif
-#ifdef CONFIG_D
-#define CONFIG_FILE "\\Device\\Cdrom0\\linuxboot.cfg"
-#endif
-#ifdef CONFIG_E
-#define CONFIG_FILE "\\Device\\Harddisk0\\Partition1\\linuxboot.cfg"
-#endif
-#ifdef CONFIG_F
-#define CONFIG_FILE "\\Device\\Harddisk0\\Partition6\\linuxboot.cfg"
-#endif
-#ifdef CONFIG_X
-#define CONFIG_FILE "\\Device\\Harddisk0\\Partition3\\linuxboot.cfg"
-#endif
-#ifdef CONFIG_Y
-#define CONFIG_FILE "\\Device\\Harddisk0\\Partition4\\linuxboot.cfg"
-#endif
-#ifdef CONFIG_Z
-#define CONFIG_FILE "\\Device\\Harddisk0\\Partition5\\linuxboot.cfg"
-#endif
-
-#define BUFFERSIZE 512
+#define BUFFERSIZE 256 /* we have little stack */
 #define CONFIG_BUFFERSIZE (BUFFERSIZE*16)
 
 #ifdef DEBUG
@@ -38,14 +19,18 @@
 
 #ifdef DEBUG
 #define splash
-#define splash_init
+#define splash_init()
 #else
 #define splash show_splash
 #define splash_init do_splash_init
 #endif
 
 #define SCREEN_WIDTH 640
+#ifdef PAL
 #define SCREEN_HEIGHT 576
+#else /* NTSC */
+#define SCREEN_HEIGHT 480
+#endif
 
 /* memory layout */
 

@@ -10,11 +10,7 @@
 #include "xboxkrnl.h"
 #include "xbox.h"
 
-#ifndef size_t
-typedef int size_t;
-#endif
-
-void __inline * memcpy(void *dest, const void *src, size_t size) {
+void __inline * my_memcpy(void *dest, const void *src, int size) {
 	__asm__  (
 		"    push %%esi    \n"
 		"    push %%edi    \n"
@@ -109,7 +105,7 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 		ReadSize = READ_CHUNK_SIZE;
 		Error = NtReadFile(KernelFile, NULL, NULL, NULL, &IoStatusBlock,
 			ReadBuffer, ReadSize, NULL);
-		memcpy(ReadPtr, ReadBuffer, ReadSize);
+		my_memcpy(ReadPtr, ReadBuffer, ReadSize);
 		dprintf(".");
 		if (!NT_SUCCESS(Error)) break;
 	}
@@ -207,8 +203,8 @@ void boot() {
 	dprintf("NtAllocateVirtualMemory() = 0x%08x\n", Error);
 
 	/* copy EscapeCode to EscapeCodePos & PhysEscapeCodePos */
-	memcpy(EscapeCodePos, &EscapeCode, PAGE_SIZE);
-	memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
+	my_memcpy(EscapeCodePos, &EscapeCode, PAGE_SIZE);
+	my_memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
 
 	dprintf("Setup...");
 	setup(KernelPos, PhysInitrdPos, InitrdSize, command_line);

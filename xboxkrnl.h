@@ -91,3 +91,4 @@ extern PHYSICAL_ADDRESS __attribute__((__stdcall__))
 (*MmGetPhysicalAddress)(PVOID);
 extern NTSTATUS __attribute__((__stdcall__))
 (*NtAllocateVirtualMemory)(PVOID*, ULONG, PULONG, ULONG, ULONG);
+extern PANSI_STRING XeImageFileName;

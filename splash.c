@@ -115,12 +115,16 @@ void do_splash_init() {
 
 	switch (c) {
 		case 0x0039ef00:
+		case 0x00227a00:
+			/* Xbox Logo, wide version */
 			logo = LOGO_WIDE;
 			break;
 		case 0xffffffff:
+			/* Xbox Logo, narrow version */
 			logo = LOGO_NARROW;
 			break;
 		default:
+			/* other logo, fade Tux in */
 			logo = LOGO_OTHER;
 	}
 

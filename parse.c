@@ -57,15 +57,26 @@ void prepend(char* d, char* s) {
 	copyuntil(d, temp_mem, BUFFERSIZE*2);
 }
 
-int parse(char* config, char* kernel, char* initrd, char* command_line_mem) {
-//	char string[1024] = "ROOT \\Device\\CdRom0\nKERNEL    \\Device\\Harddisk0\\Partition1\\vmlinuz parameter1\nAPPEND console=/dev/null initrd=\\Device\\Harddisk0\\Partition1\\initrd blah=x\nINITRD blah";
-	char root[512];
+char *my_strrchr(const char *string, int ch) {
+	char *last = NULL;
+	char c = (char) ch;
+	for (; *string; string++)
+		if (*string == c)
+			last = (char *) string;
+	return last;
+}
+
+
+int parse(char *config, char *curdir, char *kernel, char *initrd, char *command_line_mem) {
+	char root[BUFFERSIZE];
 	char *command_line;
 	int a;
 
 	command_line = command_line_mem;
 
-	*root = 0;
+	/* the current directory is the default "root =" */
+	copyuntil(root, curdir, BUFFERSIZE);
+
 	*kernel = 0;
 	*initrd = 0;
 	*command_line = 0;
@@ -109,13 +120,13 @@ append:
 		config = skipuntilcrlf(config);
 	}
 
-	if (*root) {
-		prepend(kernel, root);
-		prepend(initrd, root);
-	}
+	prepend(kernel, root);
+	prepend(initrd, root);
 }
 
-NTSTATUS ParseConfig(char* kernel, char* initrd, char* command_line) {
+NTSTATUS ParseConfig(char *kernel, char *initrd, char *command_line) {
+	char path[BUFFERSIZE];
+	char filename[BUFFERSIZE];
 	char config[CONFIG_BUFFERSIZE];
 	ANSI_STRING ConfigFileString;
 	HANDLE ConfigFile;
@@ -123,7 +134,17 @@ NTSTATUS ParseConfig(char* kernel, char* initrd, char* command_line) {
 	IO_STATUS_BLOCK IoStatusBlock;
 	NTSTATUS Error;
 
-	RtlInitAnsiString(&ConfigFileString, CONFIG_FILE);
+	/* get the directory of the bootloader executable */
+	copyuntil(path, XeImageFileName->Buffer, XeImageFileName->Length);
+	my_strrchr(path, '\\')[1] = 0;
+	/* read the config file from there */
+	copyuntil(filename, path, BUFFERSIZE);
+	copyuntil(scan0(filename), CONFIG_FILE, BUFFERSIZE);
+
+	dprintf("Path: %s\n", path);
+	dprintf("Filename: %s\n", filename);
+
+	RtlInitAnsiString(&ConfigFileString, filename);
 
 	ConfigFileAttributes.Attributes = OBJ_CASE_INSENSITIVE;
 	ConfigFileAttributes.ObjectName = &ConfigFileString;
@@ -143,7 +164,7 @@ NTSTATUS ParseConfig(char* kernel, char* initrd, char* command_line) {
 	if (!NT_SUCCESS(Error)) return Error;
 	dprintf("Read.\n");
 
-	parse(config, kernel, initrd, command_line);
+	parse(config, path, kernel, initrd, command_line);
 
 	dprintf("kernel \"%s\"\n", kernel);
 	dprintf("initrd \"%s\"\n", initrd);
