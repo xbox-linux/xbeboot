@@ -28,8 +28,8 @@ extern PHYSICAL_ADDRESS __attribute__((__stdcall__))
 extern NTSTATUS __attribute__((__stdcall__))
 (*NtAllocateVirtualMemory)(PVOID*, ULONG, PULONG, ULONG, ULONG);
 extern PANSI_STRING XeImageFileName;
-extern PUCHAR XboxEEPROMKey[16];
-extern PUCHAR XboxHDKey[16];
+extern PUCHAR XboxEEPROMKey;
+extern PUCHAR XboxHDKey;
 extern NTSTATUS __attribute__((__stdcall__))
 (*HalWriteSMBusValue)(UCHAR, UCHAR, BOOLEAN, UCHAR);
 extern VOID __attribute__((__stdcall__))
