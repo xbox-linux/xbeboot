@@ -8,7 +8,7 @@ LDFLAGS	= -s -S -T ldscript.ld
 OBJCOPY	= objcopy
 
 ### objects
-OBJECTS	= header.o load.o setup.o escape.o parse.o I2C_io.o BootParser.o BootString.o BootMemory.o BootVgaInitialization.o
+OBJECTS	= header.o load.o setup.o escape.o parse.o I2C_io.o BootParser.o BootString.o BootMemory.o VideoInitialization.o BootVgaInitialization.o
 
 RESOURCES = 
 TOPDIR  := $(shell /bin/pwd)
