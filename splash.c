@@ -109,7 +109,7 @@ void do_splash_init() {
 
 	/* simple checksum  of a certain screen region */
 	for (x=SCREEN_WIDTH/2-50; x<SCREEN_WIDTH/2+50; x++) {
-		for (y=SCREEN_HEIGHT_480/2-50; y<SCREEN_HEIGHT_480/2+50; y++) {
+		for (y=SCREEN_HEIGHT/2-50; y<SCREEN_HEIGHT/2+50; y++) {
 			c ^= ((unsigned int*)framebuffer)[y*SCREEN_WIDTH+x];
 		}
 	}

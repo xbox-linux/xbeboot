@@ -6,6 +6,9 @@
  * and work by Johan Rydberg and Daniel Kahlin.
  *
  * $Log$
+ * Revision 1.3  2002/09/18 19:49:35  mist
+ * gcc 3.2 (Mdk 9) fixes
+ *
  * Revision 1.2  2002/08/26 22:46:33  mist
  * configuration file support, README
  *
@@ -50,6 +53,9 @@ SECTIONS {
 		*(.sdata);
 		*(.sdata2);
 		*(.got);
+                _start_backdrop = .;
+                *(.backdrop);
+                _end_backdrop = .;								
 		*(.*);
 		_end_data = .;
 		}

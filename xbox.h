@@ -1,5 +1,5 @@
 /* you can change this */
-#undef DEBUG
+//#define DEBUG
 
 /* but you better shouldn't change this */
 #define CONFIG_FILE "linuxboot.cfg"
@@ -10,7 +10,7 @@
 #ifdef DEBUG
 #define dprintf printf
 #else
-#define dprintf
+#define dprintf printf
 #endif
 
 #ifdef DEBUG
@@ -22,22 +22,19 @@
 #endif
 
 #define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 #define SCREEN_HEIGHT_576 576
 #define SCREEN_HEIGHT_480 480
 
-/* memory layout */
-
 /* a retail Xbox has 64 MB of RAM */
 #define RAMSIZE (64 * 1024*1024)
+#define FB_RAM (4 * 1024 * 1024)
 
-#define SCREEN_SIZE_480 (SCREEN_HEIGHT_480 * SCREEN_WIDTH * 4)
-#define SCREEN_SIZE_576 (SCREEN_HEIGHT_576 * SCREEN_WIDTH * 4)
-#define FRAMEBUFFER_SIZE_480 ((SCREEN_SIZE_480+0xFFFF)& 0xFFFF0000)
-#define FRAMEBUFFER_SIZE_576 ((SCREEN_SIZE_576+0xFFFF)& 0xFFFF0000)
-#define NEW_FRAMEBUFFER_480 (RAMSIZE - FRAMEBUFFER_SIZE_480)
-#define NEW_FRAMEBUFFER_576 (RAMSIZE - FRAMEBUFFER_SIZE_576)
-#define RAMSIZE_USE_480 (NEW_FRAMEBUFFER_480)
-#define RAMSIZE_USE_576 (NEW_FRAMEBUFFER_576)
+#define FRAMEBUFFER_START ( /*0xf0000000 |*/ /*(0x04000000-(640*480*4) -(640*4*4)-(256*4))*/ (*((DWORD *)0xfd600800)) & 0x7fffffff )
+#define SCREEN_SIZE (SCREEN_HEIGHT_480 * SCREEN_WIDTH * 4)
+#define FRAMEBUFFER_SIZE FB_RAM
+#define NEW_FRAMEBUFFER (RAMSIZE - (FRAMEBUFFER_SIZE))
+#define RAMSIZE_USE (NEW_FRAMEBUFFER)
 
 #define MAX_KERNEL_SIZE (2*1024*1024)
 #define MAX_INITRD_SIZE (6*1024*1024)
@@ -52,8 +49,7 @@
 /* Lowest allowable address of the kernel (at or above 1 meg) */
 #define MIN_KERNEL PM_KERNEL_DEST
 /* Highest allowable address */
-#define MAX_KERNEL_480 (RAMSIZE_USE_480-1)
-#define MAX_KERNEL_576 (RAMSIZE_USE_576-1)
+#define MAX_KERNEL (RAMSIZE_USE-1)
 
 /* i386 constants */
 

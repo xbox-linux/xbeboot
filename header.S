@@ -258,6 +258,18 @@ headers_end:
 .align 0x1000
 section_1_start:		// this should be 0x11000
 // kernel thunk table
+.globl AvGetSavedDataAddress
+AvGetSavedDataAddress:
+	.long	0x80000000 + 1
+.globl AvSendTVEncoderOption
+AvSendTVEncoderOption:
+	.long	0x80000000 + 2
+.globl AvSetDisplayMode
+AvSetDisplayMode:
+	.long	0x80000000 + 3
+.globl AvSetSavedDataAddress
+AvSetSavedDataAddress:
+	.long	0x80000000 + 4
 .globl MmAllocateContiguousMemoryEx
 MmAllocateContiguousMemoryEx:
 	.long	0x80000000 + 166
@@ -285,6 +297,12 @@ NtReadFile:
 .globl MmFreeContiguousMemory
 MmFreeContiguousMemory:
 	.long	0x80000000 + 171
+.globl MmPersistContiguousMemory
+MmPersistContiguousMemory:
+	.long	0x80000000 + 178
+.globl MmQueryAllocationSize
+MmQueryAllocationSize:
+	.long	0x80000000 + 180
 .globl XeImageFileName
 XeImageFileName:
 	.long	0x80000000 + 326
@@ -294,6 +312,12 @@ XboxEEPROMKey:
 .globl XboxHDKey
 XboxHDKey:
 	.long	0x80000000 + 323
+.globl RtlMoveMemory
+RtlMoveMemory:
+	.long	0x80000000 + 298
+.globl RtlZeroMemory
+RtlZeroMemory:
+	.long	0x80000000 + 320
 .globl HalWriteSMBusValue
 HalWriteSMBusValue:
 	.long	0x80000000 + 50

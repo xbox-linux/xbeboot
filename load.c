@@ -6,34 +6,18 @@
 
 */
 
+#include <stdarg.h>
+#include <stdio.h>
 #include <asm/io.h>
 #include "printf.c"
+#include "consts.h"
 #include "xboxkrnl.h"
 #include "xbox.h"
+#include "BootString.h"
+#include "BootParser.h"
+#include "BootVideo.h"
 
-int resolution;
-
-void __inline * my_memcpy(void *dest, const void *src, int size) {
-	__asm__  (
-		"    push %%esi    \n"
-		"    push %%edi    \n"
-		"    push %%ecx    \n"
-		"    mov %0, %%esi \n"
-		"    mov %1, %%edi \n"
-		"    mov %2, %%ecx \n"
-		"    push %%ecx    \n"
-		"    shr $2, %%ecx \n"
-		"    rep movsl     \n"
-		"    pop %%ecx     \n"
-		"    and $3, %%ecx \n"
-		"    rep movsb     \n"
-		"    pop %%ecx     \n"
-		"    pop %%edi     \n"
-		"    pop %%esi     \n"
-		: : "S" (src), "D" (dest), "c" (size)
-	);
-	return dest;
-}
+volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 
 /* Loads the kernel image file into contiguous physical memory */
 static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
@@ -67,14 +51,7 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 	
 	PHYSICAL_ADDRESS max_kernel;
 
-        /* move SMBUS IRQ from 0 to 7 */
-	outl(0x8000093c, 0xcf8);
-	outw(7,0xcfc);
-	/* Setting bus master mode for SMBUS */
-	outl(0x80000904, 0xcf8);
-	outb(inb(0xcfc) | 4, 0xcfc);
-
-	dprintf("Loading \"%s\"...", Filename);
+//	dprintf("Loading \"%s\"...", Filename);
 	/* Make an ANSI_STRING out of the kernel image filename */
 	RtlInitAnsiString(&KernelFileString, Filename);
 
@@ -89,10 +66,10 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 		&IoStatusBlock, NULL, 0, 7 /* FILE_SHARE_READ | FILE_SHARE_WRITE |
 		FILE_SHARE_DELETE*/, 1 /* FILE_OPEN */, 0x60 /* FILE_NON_DIRECTORY_FILE |
 		FILE_SYNCHRONOUS_IO_NONALERT */);
-	dprintf("NtCreateFile() = %08x\n", Error);
+//	dprintf("NtCreateFile() = %08x\n", Error);
 	if (!NT_SUCCESS(Error)) goto ErrorNothing;
 
-	dprintf("HANDLE KernelFile = %08x\n", KernelFile);
+//	dprintf("HANDLE KernelFile = %08x\n", KernelFile);
 
 	TempKernelSize = *FileSize;
 
@@ -100,32 +77,29 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 	   We need an address from 1 meg or above.
 	   NOTE: We CANNOT use the memory allocated here in most API calls,
 	   including ReadFile().*/
-	if (resolution == 480)
-		max_kernel = MAX_KERNEL_480;
-	else
-		max_kernel = MAX_KERNEL_576;
-	dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
-		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
+	max_kernel = MAX_KERNEL;
+//	dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
+//		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
 	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,
 		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
-	dprintf("%08x\n", VirtKernel);
+//	dprintf("%08x\n", VirtKernel);
 	if (!VirtKernel)
 	{
 		Error = STATUS_NO_MEMORY;
 		goto ErrorCloseFile;
 	}
 
-	dprintf("Reading");
+//	dprintf("Reading");
 	ReadPtr = (PUCHAR) VirtKernel;
 	for (i=0; i < TempKernelSize; i+=READ_CHUNK_SIZE, ReadPtr+=READ_CHUNK_SIZE) {
 		ReadSize = READ_CHUNK_SIZE;
 		Error = NtReadFile(KernelFile, NULL, NULL, NULL, &IoStatusBlock,
 			ReadBuffer, ReadSize, NULL);
 		my_memcpy(ReadPtr, ReadBuffer, ReadSize);
-		dprintf(".");
+//		dprintf(".");
 		if (!NT_SUCCESS(Error)) break;
 	}
-	dprintf("done. (%i bytes @ %08x)\n", i, VirtKernel);
+//	dprintf("done. (%i bytes @ %08x)\n", i, VirtKernel);
 
 	/* Done; return size to caller */
 	*FileSize = i; /* just an estimation */
@@ -157,9 +131,10 @@ int KernelSize;
 PHYSICAL_ADDRESS PhysKernelPos, PhysEscapeCodePos;
 PVOID EscapeCodePos;
 
-NTSTATUS ParseConfig(char* kernel, char* initrd, char* command_line);
+NTSTATUS GetConfig(CONFIGENTRY *entry);
 
 void boot() {
+	BYTE bAvPackType;
 	int i;
 	unsigned char* s;
 	int KernelPos;
@@ -169,96 +144,86 @@ void boot() {
 	int data_PAGE_SIZE;
 	extern int EscapeCode, EscapeCodeEnd;
 	extern void* newloc, ptr_newloc;
+	CONFIGENTRY entry;
+	
+        currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
+        currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
+        currentvideomodedetails.m_fForceEncoderLumaAndChromaToZeroInitially=0;
 
-	char kernel[BUFFERSIZE];
-	char initrd[BUFFERSIZE];
-	char command_line[BUFFERSIZE];
+        BootVgaInitializationKernel((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
 
+	framebuffer = (unsigned int*)(0xF0000000+*(unsigned int*)0xFD600800);
+
+	memset(framebuffer,0,640*480*4);
+
+	memset(&entry,0,sizeof(CONFIGENTRY));
 	cx = 0;
 	cy = 0;
-	framebuffer = (unsigned int*)(0xF0000000+*(unsigned int*)0xFD600800);
 	splash_init();
-	dprintf("\n");
-	dprintf("Framebuffer at: 0x%08x\n", framebuffer);
-
-	resolution = (I2CTransmitByteGetReturn(0x45, 0x94) == 0x40)? 576:480; // 0xe0 = 480; 0x40 = 576
-	dprintf("Resolution: 640x%i\n", resolution);
+//	dprintf("\n");
+//	dprintf("Framebuffer at: 0x%08x\n", framebuffer);
 
 	/* parse the configuration file */
-	Error = ParseConfig(kernel, initrd, command_line);
+	Error = GetConfig(&entry);
 
 	if (!NT_SUCCESS(Error)) die("Error loading configuration file!\n");
 
-	splash(1);
+ 	splash(3);
 
+	dprintf("Xbox Linux XBEBOOT  %s\n",VERSION);
+	
+	dprintf("%s -  http://xbox-linux.sf.net\n",__DATE__);
+	dprintf("(C)2002 Xbox Linux Team - Licensed under the GPL\n");
+	dprintf("\n");
+	
 	/* Load the kernel image into RAM */
 	KernelSize = MAX_KERNEL_SIZE;
-	Error = LoadFile(kernel, &KernelPos, &KernelSize);
+	Error = LoadFile(entry.szKernel, &KernelPos, &KernelSize);
 
 	if (!NT_SUCCESS(Error)) die("Error loading kernel!\n");
 
-	splash(2);
-
 	/* ED : only if initrd */
-	if(initrd[0]) {
+	if(entry.szInitrd[0]) {
 		InitrdSize = MAX_INITRD_SIZE;
-		Error = LoadFile(initrd, &InitrdPos, &InitrdSize);
+		Error = LoadFile(entry.szInitrd, &InitrdPos, &InitrdSize);
 
 		if (!NT_SUCCESS(Error)) die("Error loading initrd!\n");
 		PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos);
-		dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos);
+//		dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos);
 	} else {
 		InitrdSize = 0;
 		PhysInitrdPos = 0;
 	}
 
-	splash(3);
 
 	/* get physical addresses */
 	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
-	dprintf("PhysKernelPos = 0x%08x\n", PhysKernelPos);
+//	dprintf("PhysKernelPos = 0x%08x\n", PhysKernelPos);
 
 	/* allocate memory for EscapeCode */
 	EscapeCodePos = MmAllocateContiguousMemoryEx(PAGE_SIZE, RAMSIZE /4, RAMSIZE / 2, 16, PAGE_READWRITE);
-	dprintf("EscapeCodePos = 0x%08x\n", EscapeCodePos);
+//	dprintf("EscapeCodePos = 0x%08x\n", EscapeCodePos);
 	PhysEscapeCodePos = MmGetPhysicalAddress(EscapeCodePos);
-	dprintf("PhysEscapeCodePos = 0x%08x\n", PhysEscapeCodePos);
+//	dprintf("PhysEscapeCodePos = 0x%08x\n", PhysEscapeCodePos);
 
 	data_PAGE_SIZE = PAGE_SIZE;
 	Error = NtAllocateVirtualMemory((PVOID*)&PhysEscapeCodePos, 0, (PULONG) &data_PAGE_SIZE, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	dprintf("NtAllocateVirtualMemory() = 0x%08x\n", Error);
+//	dprintf("NtAllocateVirtualMemory() = 0x%08x\n", Error);
 
 	/* copy EscapeCode to EscapeCodePos & PhysEscapeCodePos */
 	my_memcpy(EscapeCodePos, &EscapeCode, PAGE_SIZE);
 	my_memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
 
-	dprintf("Setup...");
-	setup(KernelPos, PhysInitrdPos, InitrdSize, command_line);
-	dprintf("done.");
+//	dprintf("Setup...");
+	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend);
+//	dprintf("done.");
 
-#if 0
-	/* move USB IRQ from 1 to 3 */
-	/* too bad it doesn't work! */
-	__asm(
-	"mov $0xcf8, %dx\n"
-	"mov $0x8000103c, %eax\n" /* PCI 0:2:0/3c */
-	"out %eax, %dx\n"
-	"add $4, %edx\n"
-	"mov $3, %ax\n" /* set IRQ 3 */
-	"out %ax, %dx\n"
-	);
-#endif
-
-	dprintf("Starting kernel...");
+//	dprintf("Starting kernel...");
 
 	/* orange LED */
 	HalWriteSMBusValue(0x20, 0x08, FALSE, 0xff);
 	HalWriteSMBusValue(0x20, 0x07, FALSE, 0x01);
-
-	if (resolution == 480)
-		NewFramebuffer = NEW_FRAMEBUFFER_480 + 0xF0000000;
-	else
-		NewFramebuffer = NEW_FRAMEBUFFER_576 + 0xF0000000;
+	NewFramebuffer = NEW_FRAMEBUFFER + 0xF0000000;
 
 	__asm(
 		"mov	PhysEscapeCodePos, %edx\n"

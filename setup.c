@@ -1,12 +1,10 @@
 #include "xbox.h"
 
-extern int resolution;
-
 /* parameters to be passed to the kernel */
 struct kernel_setup_t {
 	unsigned char  orig_x;                  /* 0x00 */
 	unsigned char  orig_y;                  /* 0x01 */
-	unsigned short ext_mem_k;   /*   2 */
+	unsigned short ext_mem_k;   		/* 0x02 -- EXT_MEM_K sits here */
 	unsigned short orig_video_page;         /* 0x04 */
 	unsigned char  orig_video_mode;         /* 0x06 */
 	unsigned char  orig_video_cols;         /* 0x07 */
@@ -37,7 +35,8 @@ struct kernel_setup_t {
 	unsigned short vesapm_seg;              /* 0x2e */
 	unsigned short vesapm_off;              /* 0x30 */
 	unsigned short pages;                   /* 0x32 */
-	char __pad2[445];
+	unsigned short vesa_attributes;         /* 0x34 */ // NEW BY ED
+	char __pad2[443];
 	unsigned char  setup_sects; /* 497: setup size in sectors (512) */
 	unsigned short root_flags;	/* 498: 1 = ro ; 0 = rw */
 	unsigned short kernel_para;	/* 500: kernel size in paragraphs (16) */
@@ -54,12 +53,12 @@ struct kernel_setup_t {
 	unsigned char loader;       /* 528: loader type */
 	unsigned char flags;        /* 529: loader flags */
 	unsigned short a;           /* 530: more LOADLIN hacks */
-	unsigned long start;        /* 532: kernel start, filled in by loader */
+	unsigned long code32_start;        /* 532: kernel start, filled in by loader */
 	unsigned long ramdisk;      /* 536: RAM disk start address */
 	unsigned long ramdisk_size; /* 540: RAM disk size */
 	unsigned short b,c;         /* 544: bzImage hacks */
 	unsigned short heap_end_ptr;/* 548: end of free area after setup code */
-	unsigned char __pad3[4];
+	unsigned char __pad3[2];
 	unsigned int cmd_line_ptr;  /* 552: pointer to command line */
 	unsigned int initrd_addr_max;/*556: highest address that can be used by initrd */
 };
@@ -75,22 +74,15 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->loader = 0xFF;		/* must be != 0 */
     kernel_setup->heap_end_ptr = 0xffff;	/* 64K heap */
     kernel_setup->flags = 0x81;			/* loaded high, heap existant */
-    kernel_setup->start = PM_KERNEL_DEST;
-    if (resolution==480)
-		kernel_setup->ext_mem_k = RAMSIZE_USE_480/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
-	else
-		kernel_setup->ext_mem_k = RAMSIZE_USE_576/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
-
+    kernel_setup->code32_start = PM_KERNEL_DEST;
+    kernel_setup->ext_mem_k = RAMSIZE_USE/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
     /* initrd */
     /* ED : only if initrd */
 
     if((long)InitrdSize != 0) {
 	    kernel_setup->ramdisk = (long)PhysInitrdPos;
 	    kernel_setup->ramdisk_size = (long)InitrdSize;
-	    if (resolution==480)
-	    	kernel_setup->initrd_addr_max = RAMSIZE_USE_480;
-		else
-	    	kernel_setup->initrd_addr_max = RAMSIZE_USE_576;
+	    kernel_setup->initrd_addr_max = RAMSIZE_USE;
     }
 
     /* Framebuffer setup */
@@ -98,22 +90,16 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->orig_x = 0;
     kernel_setup->orig_y = 0;
     kernel_setup->vid_mode = 0x312;		/* 640x480x16M Colors */
-    kernel_setup->orig_video_mode = kernel_setup->vid_mode-0x200;
+    kernel_setup->orig_video_mode = kernel_setup->vid_mode-0x300;
     kernel_setup->orig_video_cols = 80;
     kernel_setup->orig_video_lines = 30;
     kernel_setup->orig_video_ega_bx = 0;
     kernel_setup->orig_video_points = 16;
     kernel_setup->lfb_depth = 32;
     kernel_setup->lfb_width = SCREEN_WIDTH;
-    if (resolution==480) {
-	    kernel_setup->lfb_height = SCREEN_HEIGHT_480;
-	    kernel_setup->lfb_base = 0xF0000000+NEW_FRAMEBUFFER_480;
-	    kernel_setup->lfb_size = (FRAMEBUFFER_SIZE_480+0xFFFF)/0x10000;
-	} else {
-    	kernel_setup->lfb_height = SCREEN_HEIGHT_576;
-    	kernel_setup->lfb_base = 0xF0000000+NEW_FRAMEBUFFER_576;
-	    kernel_setup->lfb_size = (FRAMEBUFFER_SIZE_576+0xFFFF)/0x10000;
-	}
+    kernel_setup->lfb_height = SCREEN_HEIGHT_480;
+    kernel_setup->lfb_base = (0xf0000000|*(unsigned int*)0xFD600800);
+    kernel_setup->lfb_size = (4 * 1024 * 1024)/0x10000;
     kernel_setup->lfb_linelength = SCREEN_WIDTH*4;
     kernel_setup->pages=1;
     kernel_setup->vesapm_seg = 0;
@@ -127,6 +113,10 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->rsvd_size = 8;
     kernel_setup->rsvd_pos = 24;
 
+    kernel_setup->boot_flag = 0xAA55;
+    kernel_setup->version = 0x0203;
+
+    memcpy(kernel_setup->signature,"HdrS",4);
 
     /* set command line */
     cmd_line_ptr = (kernel_setup->setup_sects) * 512; /* = 512 bytes from top of SETUP */

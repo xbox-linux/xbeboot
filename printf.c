@@ -29,6 +29,7 @@ void printc(char c) {
 int print(const unsigned char* s, unsigned short len) {
 	int i;
 	for (i=0; i<len; i++) printc(s[i]);
+	return 0;
 }
 
 int printf(const char *fmt, ...) {

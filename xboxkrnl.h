@@ -1,3 +1,10 @@
+#ifndef         __XBOXKRNL_H__
+#define         __XBOXKRNL_H__
+
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 /* partially based on RectOS source code */
 
 #define OBJ_CASE_INSENSITIVE		0x00000040L
@@ -11,6 +18,22 @@
 #define FALSE 0
 
 /* NT Data Types */
+
+typedef unsigned int u32;
+typedef unsigned long DWORD;
+typedef unsigned char u8;
+typedef signed int s32;
+typedef unsigned short u16;
+typedef unsigned long SIZE_T;
+typedef unsigned short WORD;
+
+#define CONST const
+#ifndef FALSE
+#define FALSE   0
+#endif
+#ifndef TRUE
+#define TRUE    1
+#endif
 
 typedef void VOID;
 typedef VOID* PVOID;
@@ -75,6 +98,14 @@ typedef VOID
                    ULONG Reserved);
 
 
+typedef struct {
+        BYTE * m_pBitmapData;
+        int m_nWidth;
+        int m_nHeight;
+        int m_nBytesPerPixel;
+} JPEG;
+
+
 /* Xbox Kernel Functions */
 
 extern VOID __attribute__((__stdcall__))
@@ -98,3 +129,24 @@ extern PUCHAR XboxEEPROMKey[16];
 extern PUCHAR XboxHDKey[16];
 extern NTSTATUS __attribute__((__stdcall__))
 (*HalWriteSMBusValue)(UCHAR, UCHAR, BOOLEAN, UCHAR);
+extern VOID __attribute__((__stdcall__))
+(*RtlZeroMemory)(PVOID Destination,ULONG Length);
+extern VOID __attribute__((__stdcall__))
+(*AvSetDisplayMode)(PVOID RegisterBase,ULONG Step,ULONG Mode, ULONG Format, ULONG Pitch, ULONG FrameBuffer);
+extern ULONG __attribute__((__stdcall__))
+(*MmQueryAllocationSize)(PVOID   BaseAddress);
+extern VOID __attribute__((__stdcall__))
+(*MmPersistContiguousMemory)(PVOID BaseAddress,ULONG NumberOfBytes,BOOLEAN Persist);
+extern VOID __attribute__((__stdcall__))
+(*RtlMoveMemory)(VOID *Destination,CONST VOID *Source,SIZE_T Length);
+extern VOID __attribute__((__stdcall__))
+(*AvSetSavedDataAddress)(PVOID Address);
+extern VOID __attribute__((__stdcall__))
+(*AvSendTVEncoderOption)(PVOID RegisterBase,ULONG Option,ULONG Param,ULONG *Result);
+
+#ifdef  __cplusplus
+};
+#endif
+
+#endif          //__XBOXKRNL_H__
+
