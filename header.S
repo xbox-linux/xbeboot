@@ -260,6 +260,18 @@ headers_end:
 .org 0x1000
 section_1_start:		// this should be 0x11000
 // kernel thunk table
+.globl AvGetSavedDataAddress
+AvGetSavedDataAddress:
+	.long	0x80000000 + 1
+.globl AvSendTVEncoderOption
+AvSendTVEncoderOption:
+	.long	0x80000000 + 2
+.globl AvSetDisplayMode
+AvSetDisplayMode:
+	.long	0x80000000 + 3
+.globl AvSetSavedDataAddress
+AvSetSavedDataAddress:
+	.long	0x80000000 + 4
 .globl MmAllocateContiguousMemoryEx
 MmAllocateContiguousMemoryEx:
 	.long	0x80000000 + 166

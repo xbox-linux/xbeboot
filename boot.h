@@ -17,8 +17,8 @@
 // configuration
 
 
-#include <linux/types.h>
-#include "types.h"
+#include <stdarg.h>
+#include <stdio.h>
 
 static inline double min (double a, double b)
 {
@@ -29,6 +29,36 @@ static inline double max (double a, double b)
 {
         if (a > b) return a; else return b;
 }
+
+#ifndef HAVE_BOOLEAN
+typedef int boolean;
+#endif
+#ifndef FALSE
+#define FALSE   0
+#endif
+#ifndef TRUE
+#define TRUE    1
+#endif
+
+typedef unsigned long ULONG;
+typedef unsigned int DWORD;
+typedef unsigned short WORD;
+typedef unsigned char BYTE;
+#ifndef bool_already_defined_
+typedef int bool;
+#endif
+typedef unsigned long RGBA; // LSB=R -> MSB = A
+typedef long long __int64;
+
+#define guint int
+#define guint8 unsigned char
+
+#define true 1
+#define false 0
+
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
 
 #include "BootVideo.h"
 

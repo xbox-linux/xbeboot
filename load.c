@@ -6,11 +6,13 @@
 
 */
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <asm/io.h>
 #include "printf.c"
 #include "consts.h"
 #include "xboxkrnl.h"
 #include "xbox.h"
-#include "boot.h"
 #include "BootString.h"
 #include "BootParser.h"
 #include "BootVideo.h"
@@ -25,10 +27,10 @@ volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 	HANDLE KernelFile;
 
-	PVOID VirtKernel = 0;
+	PVOID VirtKernel;
 
 	/* Temporary buffer for use with ReadFile */
-	PVOID ReadBuffer = 0;
+	static BYTE ReadBuffer[READ_CHUNK_SIZE];
 
 	/* Error code from an NT kernel call */
 	NTSTATUS Error;
@@ -51,12 +53,7 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 	int i;
 	
-	ReadBuffer = MmAllocateContiguousMemoryEx(READ_CHUNK_SIZE,MIN_KERNEL, 
-			MAX_KERNEL, 0, PAGE_READWRITE);
-	if (!ReadBuffer) {
-		Error = STATUS_NO_MEMORY;
-		goto ErrorCloseFile;
-	}
+	PHYSICAL_ADDRESS max_kernel;
 
 //	dprintf("Loading \"%s\"...", Filename);
 	/* Make an ANSI_STRING out of the kernel image filename */
@@ -80,12 +77,18 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 	TempKernelSize = *FileSize;
 
+	/* Try to allocate contiguous physical memory for the kernel image.
+	   We need an address from 1 meg or above.
+	   NOTE: We CANNOT use the memory allocated here in most API calls,
+	   including ReadFile().*/
+	max_kernel = MAX_KERNEL;
 	//dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
 	//	MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
-	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,MIN_KERNEL, 
-			MAX_KERNEL, 0, PAGE_READWRITE);
+	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,
+		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
 	//dprintf("%08x\n", VirtKernel);
-	if (!VirtKernel) {
+	if (!VirtKernel)
+	{
 		Error = STATUS_NO_MEMORY;
 		goto ErrorCloseFile;
 	}
@@ -114,7 +117,6 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 /* Undoes the allocations and returns an error code */
 ErrorFreeMemory:
-	MmFreeContiguousMemory(ReadBuffer);
 	MmFreeContiguousMemory(VirtKernel);
 
 ErrorCloseFile:
@@ -219,19 +221,20 @@ static NTSTATUS LoadIinitrdXBE(long *FilePos, long *FileSize) {
 
 
 
-/*
+
 	memcpy(&TempInitrdStart,(void*)0x01108c,4);
 	dprintf("%08x\n", TempInitrdStart);
 	memcpy(&TempInitrdSize,(void*)0x011090,4);
 	dprintf("%08x\n", TempInitrdSize);
 //while(1);	
-*/
         return STATUS_SUCCESS;
 }
 
 void die() {
 	while(1);
 }
+
+extern int I2CTransmitByteGetReturn(char bPicAddressI2cFormat, char bDataToWrite);
 
 int NewFramebuffer;
 long KernelSize;
@@ -282,19 +285,12 @@ void boot() {
 
 #ifdef LOADHDD	
 	Error = GetConfig(&entry);
-#ifdef LOADHDD_CFGFALLBACK
-        if (!NT_SUCCESS(Error)) {
-        	Error = GetConfigXBE(&entry);
-        	}
-#endif
+
 	if (!NT_SUCCESS(Error)) die();
 	
 	// Load the kernel image into RAM 
 	KernelSize = MAX_KERNEL_SIZE;
 	Error = LoadFile(entry.szKernel, &KernelPos, &KernelSize);
-
-	/* get physical addresses */
-	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
 
 	if (!NT_SUCCESS(Error)) die();
 
@@ -321,25 +317,64 @@ void boot() {
 	// Load the kernel image into the correct RAM 
 	KernelSize = MAX_KERNEL_SIZE;
 	Error = LoadKernelXBE(&KernelPos, &KernelSize);
-	/* get physical addresses */
-	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
-	
-	// Load the Ramdisk into the correct RAM       
-	InitrdSize = MAX_INITRD_SIZE;
-       	Error = LoadIinitrdXBE( &InitrdPos, &InitrdSize);
-	PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos); 
-
+      
+	// ED : only if initrd 
+	if(entry.szInitrd[0]) {
+		InitrdSize = MAX_INITRD_SIZE;
+	//	Error = LoadFile(entry.szInitrd, &InitrdPos, &InitrdSize);
+          
+          	Error = LoadIinitrdXBE( &InitrdPos, &InitrdSize);
+		PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos); 
+		
+		//dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos); 
+		//dprintf("PhysInitrdSize = 0x%08x\n", InitrdSize);
+		//while(1);
+		 
+		
+	} else {
+		InitrdSize = 0;
+		PhysInitrdPos = 0;
+	}
 #endif
 
 
 
 
+	/* get physical addresses */
+	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
 	
-//	dprintf("KernelPos 	= 0x%08x\n", KernelPos);
-//	dprintf("PhysKernelPos 	= 0x%08x\n", PhysKernelPos);
+	dprintf("KernelPos 	= 0x%08x\n", KernelPos);
+	dprintf("PhysKernelPos 	= 0x%08x\n", PhysKernelPos);
 
-  //      dprintf("\n");
+        dprintf("\n");
+/*	
+	memcpy(tempstr,(void*)KernelPos,10);
+	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
 
+	dprintf("\n");	
+	
+	memcpy(tempstr,(void*)0x110000,10);
+	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
+	            
+	
+	//memcpy((void*)KernelPos,(void*)0x110000,1024*1024);
+	       
+//	if (memcmp((void*)KernelPos,(void*)0x110000,1024*1024)==0) dprintf("\nOK\n"); else dprintf("False\n");	       
+
+     //   KernelSize = 1024*1024-1;
+         
+        dprintf("\n");	
+        dprintf("KernelSize 	= 0x%08x\n",KernelSize);
+        
+	dprintf("\n");	        
+       // KernelSize = 1024*1024;
+        
+//        memcpy(tempstr,(void*)(KernelPos+937609),10);
+//	for (temp=0;temp<10;temp++) dprintf("%02x",tempstr[temp]);
+	
+//while(1); 
+
+*/
 	/* allocate memory for EscapeCode */
 	EscapeCodePos = MmAllocateContiguousMemoryEx(PAGE_SIZE, RAMSIZE /4, RAMSIZE / 2, 16, PAGE_READWRITE);
 	dprintf("EscapeCodePos = 0x%08x\n", EscapeCodePos);

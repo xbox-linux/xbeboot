@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include "sha1.h"
 #include "xbe-header.h"
-#include "../config.h"
+
 
 
 #define debug
@@ -42,7 +42,7 @@ void shax(unsigned char *result, unsigned char *data, unsigned int len)
 
 
 
-int xbebuild (	unsigned char * xbeimage,
+int xberepair (	unsigned char * xbeimage,
 		unsigned char * vmlinuzname,
 		unsigned char * initrdname,
 		unsigned char * configname
@@ -56,13 +56,14 @@ int xbebuild (	unsigned char * xbeimage,
         unsigned char *xbe;
         unsigned int xbesize = 0;
 
-    	unsigned char *vmlinuz;
+    	unsigned char vmlinuz[2048*1024];
     	unsigned int vmlinux_size = 0;
         unsigned int vmlinux_start=0;
         
         unsigned char *initrd;         
         unsigned int initrd_size = 0;
 	unsigned int initrd_start = 0;
+
 
         unsigned char *config;         
         unsigned int config_size = 0;
@@ -78,25 +79,19 @@ int xbebuild (	unsigned char * xbeimage,
 
        	printf("ImageBLD Hasher by XBL Project (c) hamtitampti\n");
        	printf("XBEBOOT Modus\n\n");
-
-#ifdef LOADXBE	
+	
 	f = fopen(vmlinuzname, "rb");
 	if (f!=NULL) 
     	{    
  		fseek(f, 0, SEEK_END); 
          	vmlinux_size	 = ftell(f);        
          	fseek(f, 0, SEEK_SET);
-    		vmlinuz = malloc(vmlinux_size);
     		memset(vmlinuz,0xff,sizeof(vmlinuz));
     		fread(vmlinuz, 1, vmlinux_size, f);
     		fclose(f);
     		printf("VMLinuz Existing, Linking it in\n");
-    	} else  {
-    		printf("VMLinuz not Existing     ----> ERROR \n");
-    		return 1;
-    		}
-#endif
-#ifdef LOADHDD_CFGFALLBACK
+    	} else  printf("VMLinuz not Existing Loading from Hdd then    ----> WARNING \n");
+
 	f = fopen(configname, "rb");
 	if (f!=NULL) 
     	{    
@@ -107,12 +102,8 @@ int xbebuild (	unsigned char * xbeimage,
     		fread(config, 1, config_size, f);
     		fclose(f);
 		printf("Linuxboot.cfg Existing, Linking it in\n");
-    	} else  {
-    		printf("Linuxboot.cfg not Existing ---> ERROR \n");
-    		return 1;
-    		}
-#endif
-#ifdef LOADXBE
+    	} else  printf("Linuxboot.cfg not Existing, Using Defaults    ---> WARNING \n");
+
 	f = fopen(initrdname, "rb");
 	if (f!=NULL) 
     	{    
@@ -122,11 +113,8 @@ int xbebuild (	unsigned char * xbeimage,
     		initrd = malloc(initrd_size);
     		fread(initrd, 1, initrd_size, f);
    		printf("Initrd Existing, Linking it in\n");
-    	} else  {
-    		printf("Initrd not Existing   ---> ERROR \n");
-    		return 1;
-    		}
-#endif    	
+    	} else  printf("Initrd not Existing, Using Defaults           ---> WARNING \n");
+    	
 	f = fopen(xbeimage, "rb");
     	if (f!=NULL) 
     	{   
@@ -136,9 +124,9 @@ int xbebuild (	unsigned char * xbeimage,
            	  
            	
 //           	xbe = malloc(xbesize+vmlinux_size+1024*1024);
-           	xbe = malloc(xbesize+vmlinux_size+3*1024*1024+initrd_size+config_size);
+           	xbe = malloc(xbesize+vmlinux_size+3*1024*1024+initrd_size);
            	    		
-    		memset(xbe,0x00,sizeof(xbesize+vmlinux_size+3*1024*1024+initrd_size+config_size));
+    		memset(xbe,0x00,sizeof(xbesize+vmlinux_size+1024*1024));
     		fread(xbe, 1, xbesize, f);
     		fclose(f);
 	      
@@ -149,28 +137,24 @@ int xbebuild (	unsigned char * xbeimage,
 	        	      
 	        //vmlinux_size = (vmlinux_size & 0xfffff800 ) + 0x400;
 	        
-#ifdef LOADXBE
 	        vmlinux_start = xbesize;
 	        memcpy(&xbe[0x1080],&vmlinux_start,4);
-		memcpy(&xbe[0x1084],&vmlinux_size,4);
-
+	        
+	        
 	        memcpy(&xbe[vmlinux_start],vmlinuz,vmlinux_size);
-	        		
-		// We tell the XBEBOOT loader, that the Paramter he should pass to the Kernel = 2MB for the Size
+		memcpy(&xbe[0x1084],&vmlinux_size,4);
 		
-		//temp= 2*1024*1024;
-		
-		temp = vmlinux_size;
-		temp = (temp & 0xffff0000) + 0xffff + 0xffff;
+		// We tell the XBEBOOT loader, that the Paramter he should pass to the Kernel = 1MB for the Size
+		temp= 1024*1024;
 		memcpy(&xbe[0x1088],&temp,4);		
 		
 		xbesize = xbesize + vmlinux_size;
+		
 		// Ok, we allign again
 		xbesize = (xbesize & 0xfffffff0) + 32;
-
-#endif
 		
-#ifdef LOADXBE		
+
+		
 		initrd_start = xbesize;
 		memcpy(&xbe[0x108C],&initrd_start,4);
 		memcpy(&xbe[0x1090],&initrd_size,4);
@@ -179,9 +163,8 @@ int xbebuild (	unsigned char * xbeimage,
 		
 		xbesize = xbesize + initrd_size;	
                 xbesize = (xbesize & 0xfffffff0) + 32;
-#endif                
+                
 
-#ifdef LOADHDD_CFGFALLBACK
                	config_start = xbesize;
 		memcpy(&xbe[0x1094],&config_start,4);
 		memcpy(&xbe[0x1098],&config_size,4);               	
@@ -190,20 +173,14 @@ int xbebuild (	unsigned char * xbeimage,
 
 		xbesize = xbesize + config_size;	
                 xbesize = (xbesize & 0xfffffff0) + 32;
-#endif
                 			        
 		#ifdef debug
-	 	printf("Linking Section\n");
-	 	#ifdef LOADXBE	
 	 	printf("Start of Linux Kernel    : 0x%08X\n", vmlinux_start);
 	 	printf("Size of Linux Kernel     : 0x%08X\n", vmlinux_size);
 		printf("Start of InitRD          : 0x%08X\n", initrd_start);
 	 	printf("Size of Initrd           : 0x%08X\n", initrd_size);
-		#endif		
-		#ifdef LOADHDD_CFGFALLBACK
 		printf("Start of Config          : 0x%08X\n", config_start);
 	 	printf("Size of config           : 0x%08X\n", config_size);
-	 	#endif
 		printf("----------------\n");
 		#endif	      
 	      
@@ -263,13 +240,11 @@ int xbebuild (	unsigned char * xbeimage,
         	 fclose(f);			
 		}	  	
 	        
-	        printf("\nXbeboot.xbe Created    : %s\n",xbeimage);
+	        printf("\nXRomwell File Created    : %s\n",xbeimage);
 	      	
 		free(initrd);         
         	free(config);   
-                free(vmlinuz);
-                free(xbe);
-                
+
 	} else return 1;
 
 
@@ -278,98 +253,12 @@ int xbebuild (	unsigned char * xbeimage,
 }
 
 
-int xbeextract (	unsigned char * xbeimage ) 
-{
-	FILE *f;
-
-        unsigned char *xbe;
-        unsigned int xbesize = 0;
-    	
-    	unsigned char *vmlinuz;
-    	unsigned int vmlinux_size = 0;
-        unsigned int vmlinux_start=0;
-        
-        unsigned char *initrd;         
-        unsigned int initrd_size = 0;
-	unsigned int initrd_start = 0;
-
-        unsigned char *config;         
-        unsigned int config_size = 0;
-	unsigned int config_start = 0;
-
-
-
-	f = fopen(xbeimage, "rb");
-    	if (f!=NULL) 
-    	{   
-  		fseek(f, 0, SEEK_END); 
-         	xbesize	 = ftell(f); 
-         	fseek(f, 0, SEEK_SET);
-           	xbe = malloc(xbesize);
-    		fread(xbe, 1, xbesize, f);
-    		fclose(f);
-
-		memcpy(&initrd_start, &xbe[0x108C],4);
-		memcpy(&initrd_size,  &xbe[0x1090],4);
-	        memcpy(&vmlinux_start,&xbe[0x1080],4);
-		memcpy(&vmlinux_size, &xbe[0x1084],4);
-		memcpy(&config_start, &xbe[0x1094],4);
-		memcpy(&config_size,  &xbe[0x1098],4);         		
-
-	 	printf("Linked Sections\n");
-	 	printf("Start of Linux Kernel    : 0x%08X\n", vmlinux_start);
-	 	printf("Size of Linux Kernel     : 0x%08X\n", vmlinux_size);
-		printf("Start of InitRD          : 0x%08X\n", initrd_start);
-	 	printf("Size of Initrd           : 0x%08X\n", initrd_size);
-		printf("Start of Config          : 0x%08X\n", config_start);
-	 	printf("Size of config           : 0x%08X\n", config_size);
-		printf("----------------\n");
-
-
-		printf("Extracting Kernel");
-		f = fopen("kernel", "wb");
-    		if (f!=NULL) 
-    		{   
-		 fwrite(&xbe[vmlinux_start], 1, vmlinux_size, f);
-        	 fclose(f);			
-		}	  
-		printf(" .. Done \n");
-
-
-		printf("Extracting Ramdisk");
-		f = fopen("ramdisk", "wb");
-    		if (f!=NULL) 
-    		{   
-		 fwrite(&xbe[initrd_start], 1, initrd_size, f);
-        	 fclose(f);			
-		}	  
-		printf(" .. Done \n");
-
-		printf("Extracting Config");
-		f = fopen("config.cfg", "wb");
-    		if (f!=NULL) 
-    		{   
-		 fwrite(&xbe[config_start], 1, config_size, f);
-        	 fclose(f);			
-		}	  
-		printf(" .. Done \n");
-    		
-    		free(xbe);
-    	}        
-	return 0;	
-}
-
 int main (int argc, const char * argv[])
 {
-	int error=0;
+	//if( argc < 3 ) 	return -1;
 	
-	if (strcmp(argv[1],"-build")==0) {
-	error = xbebuild((unsigned char*)argv[2],(unsigned char*)argv[3],(unsigned char*)argv[4],(unsigned char*)argv[5]);
-	}
-
-	if (strcmp(argv[1],"-extract")==0) {
-	error = xbeextract((unsigned char*)argv[2]);
-	}
-
-	return error;	
+	
+	xberepair((unsigned char*)argv[1],(unsigned char*)argv[2],(unsigned char*)argv[3],(unsigned char*)argv[4]);
+	
+	return 0;	
 }

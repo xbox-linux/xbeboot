@@ -8,7 +8,7 @@ LDFLAGS	= -s -S -T ldscript.ld
 OBJCOPY	= objcopy
 
 ### objects
-OBJECTS	= header.o load.o setup.o escape.o parse.o I2C_io.o BootParser.o BootString.o BootMemory.o VideoInitialization.o BootVgaInitialization.o
+OBJECTS	= header.o load.o setup.o escape.o parse.o I2C_io.o BootParser.o BootString.o BootMemory.o BootVgaInitialization.o
 
 RESOURCES = 
 TOPDIR  := $(shell /bin/pwd)
@@ -40,6 +40,6 @@ clean	:
 %.xbe : %.elf
 	${OBJCOPY} --output-target=binary --strip-all $< $@
 	#dd if=/dev/zero bs=1k count=30000 >> $@
-	$(TOPDIR)/imagebld/image -build $(TOPDIR)/default.xbe  $(TOPDIR)/vmlinuz $(TOPDIR)/initrd  $(TOPDIR)/linuxboot.cfg
+	$(TOPDIR)/imagebld/image $(TOPDIR)/default.xbe  $(TOPDIR)/vmlinuz $(TOPDIR)/initrd  $(TOPDIR)/linuxboot.cfg
 	cp default.xbe xbeboot.xbe
 	@ls -l $@

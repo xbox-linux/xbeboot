@@ -1,6 +1,3 @@
-#ifndef _XBOX_H_
-#define _XBOX_H_
-
 /* you can change this */
 //#define DEBUG
 
@@ -56,4 +53,3 @@
 /* Size of the read chunks to use when reading the kernel; bigger = a lot faster */
 #define READ_CHUNK_SIZE 128*1024
 
-#endif // _XBOX_H_

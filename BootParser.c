@@ -1,6 +1,6 @@
 #include "xbox.h"
-#include "xboxkrnl.h"
 #include "BootString.h"
+#include <string.h>
 #include "BootParser.h"
 
 enum {
@@ -13,23 +13,18 @@ enum {
 	VIDEO_MODE_COUNT
 };
 
+typedef unsigned char BYTE;
+
 int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
-	char *szLine;
-	char *szTmp;
-	char *szNorm;
+	static char szLine[MAX_LINE];
+	static char szTmp[MAX_LINE];
+	static char szNorm[MAX_LINE];
         int nRivaFB = 0;
         int nVesaFB = 0;
 	BYTE VideoStandard[4];
 	char *ptr,ptr1;
 	int i;
 	
-        szLine = (char *)MmAllocateContiguousMemoryEx(MAX_LINE,MIN_KERNEL,
-	                        MAX_KERNEL, 0, PAGE_READWRITE);
-        szTmp = (char *)MmAllocateContiguousMemoryEx(MAX_LINE,MIN_KERNEL,
-	                        MAX_KERNEL, 0, PAGE_READWRITE);
-        szNorm = (char *)MmAllocateContiguousMemoryEx(MAX_LINE,MIN_KERNEL,
-	                        MAX_KERNEL, 0, PAGE_READWRITE);
-
 	for(i = 0; i < 4 ; i++) {
 		VideoStandard[i] = I2CTransmitByteGetReturn(0x54, 0x58 + i);
 	}
@@ -118,11 +113,6 @@ int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
 	if(szNorm[0] != 0) {
 		sprintf(entry->szAppend,"%s%s",entry->szAppend,szNorm);
 	}
-
-	MmFreeContiguousMemory(szLine);
-	MmFreeContiguousMemory(szTmp);
-	MmFreeContiguousMemory(szNorm);
-
 	return entry->nValid;
 }
 
