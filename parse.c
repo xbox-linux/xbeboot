@@ -196,7 +196,6 @@ NTSTATUS ParseConfig(char *kernel, char *initrd, char *command_line) {
 	command_line_ptr = scan0(command_line_ptr);
 	*command_line_ptr = ' '; command_line_ptr++;
 	/* add HDKey and EEPROMKey to kernel command line */
-	command_line_ptr = scan0(command_line_ptr);
 	copyuntil(command_line_ptr, "xboxeepromkey=", 14);
 	command_line_ptr = scan0(command_line_ptr);
 	command_line_ptr = hex256(command_line_ptr, *XboxEEPROMKey);
