@@ -77,9 +77,13 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->ext_mem_k = RAMSIZE_USE/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
 
     /* initrd */
-    kernel_setup->ramdisk = (long)PhysInitrdPos;
-    kernel_setup->ramdisk_size = (long)InitrdSize;
-    kernel_setup->initrd_addr_max = RAMSIZE_USE;
+    /* ED : only if initrd */
+    
+    if((long)InitrdSize != 0) {
+	    kernel_setup->ramdisk = (long)PhysInitrdPos;
+	    kernel_setup->ramdisk_size = (long)InitrdSize;
+	    kernel_setup->initrd_addr_max = RAMSIZE_USE;
+    }
 
     /* Framebuffer setup */
     kernel_setup->orig_video_isVGA = 0x23;

@@ -3,6 +3,7 @@ Linux XBE Bootloader
 (C)2002 by Michael Steil <mist@c64.org>,
 based on code by M. Steil & Anonymous
 Linux VESA Framebuffer support by Milosch Meriac <xboxlinux@meriac.de>
+No-Initrd-Fix by Edgar Hucek <hostmaster@ed-soft.at>
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Features
@@ -57,7 +58,7 @@ KERNEL \vmlinuz-2.4.18 root=/dev/hda1 initrd=\initrd-2.4.18.gz
 
 INITRD
 ~~~~~~
-Relative path and filename of the initial ramdisk.
+Relative path and filename of the initial ramdisk. An Initrd is optional.
 Examples:
 INITRD boot\initrd-failsafe.gz
 INITRD initrd.gz
@@ -121,6 +122,9 @@ append root=/dev/hda1
 
 # minimal, all files in the directory of the bootloader
 kernel vmlinuz initrd=initrd root=/dev/hda1
+
+# minimal #2, no initrd
+kernel vmlinuz root=/dev/hda1
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO

@@ -135,7 +135,8 @@ append:
 	}
 
 	prepend(kernel, root);
-	prepend(initrd, root);
+	/* ED : only if initrd */
+	if(*initrd) prepend(initrd, root);
 }
 
 NTSTATUS ParseConfig(char *kernel, char *initrd, char *command_line) {

@@ -179,18 +179,24 @@ void boot() {
 
 	splash(2);
 
-	InitrdSize = MAX_INITRD_SIZE;
-	Error = LoadFile(initrd, &InitrdPos, &InitrdSize);
+	/* ED : only if initrd */
+	if(initrd[0]) {
+		InitrdSize = MAX_INITRD_SIZE;
+		Error = LoadFile(initrd, &InitrdPos, &InitrdSize);
 
-	if (!NT_SUCCESS(Error)) die("Error loading initrd!\n");
+		if (!NT_SUCCESS(Error)) die("Error loading initrd!\n");
+		PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos);
+		dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos);
+	} else {
+		InitrdSize = 0;
+		PhysInitrdPos = 0;
+	}
 
 	splash(3);
 
 	/* get physical addresses */
 	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
-	PhysInitrdPos = MmGetPhysicalAddress((PVOID)InitrdPos);
 	dprintf("PhysKernelPos = 0x%08x\n", PhysKernelPos);
-	dprintf("PhysInitrdPos = 0x%08x\n", PhysInitrdPos);
 
 	/* allocate memory for EscapeCode */
 	EscapeCodePos = MmAllocateContiguousMemoryEx(PAGE_SIZE, RAMSIZE /4, RAMSIZE / 2, 16, PAGE_READWRITE);
