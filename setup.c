@@ -1,5 +1,7 @@
 #include "xbox.h"
 
+extern int resolution;
+
 /* parameters to be passed to the kernel */
 struct kernel_setup_t {
 	unsigned char  orig_x;                  /* 0x00 */
@@ -74,15 +76,21 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->heap_end_ptr = 0xffff;	/* 64K heap */
     kernel_setup->flags = 0x81;			/* loaded high, heap existant */
     kernel_setup->start = PM_KERNEL_DEST;
-    kernel_setup->ext_mem_k = RAMSIZE_USE/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
+    if (resolution==480)
+		kernel_setup->ext_mem_k = RAMSIZE_USE_480/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
+	else
+		kernel_setup->ext_mem_k = RAMSIZE_USE_576/1024-1024; /* *extended* (minus first MB) memory in kilobytes */
 
     /* initrd */
     /* ED : only if initrd */
-    
+
     if((long)InitrdSize != 0) {
 	    kernel_setup->ramdisk = (long)PhysInitrdPos;
 	    kernel_setup->ramdisk_size = (long)InitrdSize;
-	    kernel_setup->initrd_addr_max = RAMSIZE_USE;
+	    if (resolution==480)
+	    	kernel_setup->initrd_addr_max = RAMSIZE_USE_480;
+		else
+	    	kernel_setup->initrd_addr_max = RAMSIZE_USE_576;
     }
 
     /* Framebuffer setup */
@@ -95,11 +103,17 @@ void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_
     kernel_setup->orig_video_lines = 30;
     kernel_setup->orig_video_ega_bx = 0;
     kernel_setup->orig_video_points = 16;
-    kernel_setup->lfb_width = SCREEN_WIDTH;
-    kernel_setup->lfb_height = SCREEN_HEIGHT;
     kernel_setup->lfb_depth = 32;
-    kernel_setup->lfb_base = 0xF0000000+NEW_FRAMEBUFFER;
-    kernel_setup->lfb_size = (FRAMEBUFFER_SIZE+0xFFFF)/0x10000;
+    kernel_setup->lfb_width = SCREEN_WIDTH;
+    if (resolution==480) {
+	    kernel_setup->lfb_height = SCREEN_HEIGHT_480;
+	    kernel_setup->lfb_base = 0xF0000000+NEW_FRAMEBUFFER_480;
+	    kernel_setup->lfb_size = (FRAMEBUFFER_SIZE_480+0xFFFF)/0x10000;
+	} else {
+    	kernel_setup->lfb_height = SCREEN_HEIGHT_576;
+    	kernel_setup->lfb_base = 0xF0000000+NEW_FRAMEBUFFER_576;
+	    kernel_setup->lfb_size = (FRAMEBUFFER_SIZE_576+0xFFFF)/0x10000;
+	}
     kernel_setup->lfb_linelength = SCREEN_WIDTH*4;
     kernel_setup->pages=1;
     kernel_setup->vesapm_seg = 0;

@@ -6,7 +6,7 @@ LDFLAGS	= -s -S -T ldscript.ld
 OBJCOPY	= objcopy
 
 ### objects
-OBJECTS	= header.o load.o setup.o escape.o parse.o splash.o
+OBJECTS	= header.o load.o setup.o escape.o parse.o splash.o i2c.o
 RESOURCES =
 
 # target:

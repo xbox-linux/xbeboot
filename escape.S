@@ -67,7 +67,7 @@ newloc:
 	mov	ebx, 0xFD600800
 	mov	esi, dword ptr[ebx]
 	mov	eax, edi
-	mov	ecx, SCREEN_SIZE / 4
+	mov	ecx, SCREEN_SIZE_576 / 4
 	.byte	0xF3, 0xA5  /* rep movsd */
 	mov	dword ptr [ebx], eax
 

@@ -11,6 +11,8 @@
 #include "xboxkrnl.h"
 #include "xbox.h"
 
+int resolution;
+
 void __inline * my_memcpy(void *dest, const void *src, int size) {
 	__asm__  (
 		"    push %%esi    \n"
@@ -62,6 +64,8 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 	ULONG ReadSize;
 
 	int i;
+	
+	PHYSICAL_ADDRESS max_kernel;
 
         /* move SMBUS IRQ from 0 to 7 */
 	outl(0x8000093c, 0xcf8);
@@ -96,10 +100,14 @@ static NTSTATUS LoadFile(PVOID Filename, int *FilePos, int *FileSize) {
 	   We need an address from 1 meg or above.
 	   NOTE: We CANNOT use the memory allocated here in most API calls,
 	   including ReadFile().*/
+	if (resolution == 480)
+		max_kernel = MAX_KERNEL_480;
+	else
+		max_kernel = MAX_KERNEL_576;
 	dprintf("MmAllocateContiguousMemoryEx(%08x, %08x, %08x, %08x, %08x) = ", (ULONG) TempKernelSize,
-		MIN_KERNEL, MAX_KERNEL, 0, PAGE_READWRITE);
+		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
 	VirtKernel = MmAllocateContiguousMemoryEx((ULONG) TempKernelSize,
-		MIN_KERNEL, MAX_KERNEL, 0, PAGE_READWRITE);
+		MIN_KERNEL, max_kernel, 0, PAGE_READWRITE);
 	dprintf("%08x\n", VirtKernel);
 	if (!VirtKernel)
 	{
@@ -142,6 +150,7 @@ void die(char *s) {
 	while(1);
 }
 
+extern int I2CTransmitByteGetReturn(char bPicAddressI2cFormat, char bDataToWrite);
 
 int NewFramebuffer;
 int KernelSize;
@@ -171,6 +180,9 @@ void boot() {
 	splash_init();
 	dprintf("\n");
 	dprintf("Framebuffer at: 0x%08x\n", framebuffer);
+
+	resolution = (I2CTransmitByteGetReturn(0x45, 0x94) == 0x40)? 576:480; // 0xe0 = 480; 0x40 = 576
+	dprintf("Resolution: 640x%i\n", resolution);
 
 	/* parse the configuration file */
 	Error = ParseConfig(kernel, initrd, command_line);
@@ -243,7 +255,11 @@ void boot() {
 	HalWriteSMBusValue(0x20, 0x08, FALSE, 0xff);
 	HalWriteSMBusValue(0x20, 0x07, FALSE, 0x01);
 
-	NewFramebuffer = NEW_FRAMEBUFFER + 0xF0000000;
+	if (resolution == 480)
+		NewFramebuffer = NEW_FRAMEBUFFER_480 + 0xF0000000;
+	else
+		NewFramebuffer = NEW_FRAMEBUFFER_576 + 0xF0000000;
+
 	__asm(
 		"mov	PhysEscapeCodePos, %edx\n"
 

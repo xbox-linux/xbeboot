@@ -132,9 +132,14 @@ kernel vmlinuz initrd=initrd root=/dev/hda1
 kernel vmlinuz root=/dev/hda1
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Video Resolution
+~~~~~~~~~~~~~~~~
+The bootloader detects whether the Xbox is in 640x480 or 640x576 (PAL box
+with Linux booted from the Dashboard) mode and tells Linux the resolution.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO
 ~~~~
-* The bootloader *needs* an initial RAM disk. It should also work without.
 * Xbox kernel calls should be abstracted to fopen/fread/fclose.
 * header.S is stille quite a mess
 
