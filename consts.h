@@ -20,7 +20,7 @@ extern "C" {
  *                                                                         *
  ***************************************************************************/
 
-#define VERSION "1.1d"
+#define VERSION "1.1dev"
 
 #define PCI_CFG_ADDR 0x0CF8
 #define PCI_CFG_DATA 0x0CFC
