@@ -11,12 +11,6 @@ typedef struct _CONFIGENTRY {
         char szAppend[MAX_LINE];
 } CONFIGENTRY, *LPCONFIGENTRY;
 
-typedef enum {
-	VID_INVALID	= 0x00000000,
-	NTSC_M		= 0x00400100,
-	PAL_I		= 0x00800300
-} VIDEO_STANDARD;
-
 int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry);
 void PrintConfig(CONFIGENTRY *entry);
 

@@ -14,6 +14,7 @@
 #include "BootString.h"
 #include "BootParser.h"
 #include "BootVideo.h"
+#include "BootEEPROM.h"
 #include "config.h"
 
 volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
@@ -21,6 +22,8 @@ int NewFramebuffer;
 long KernelSize;
 PHYSICAL_ADDRESS PhysKernelPos, PhysEscapeCodePos;
 PVOID EscapeCodePos;
+EEPROMDATA eeprom;
+
 
 static int ReadFile(HANDLE Handle, PVOID Buffer, ULONG Size);
 int WriteFile(HANDLE Handle, PVOID Buffer, ULONG Size);
@@ -143,10 +146,8 @@ void boot() {
 	NTSTATUS Error;
 	int data_PAGE_SIZE;
 	extern int EscapeCode;
-
-	//int i;
 	
-
+	//int i;
 	CONFIGENTRY entry;
 
 	currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
@@ -177,6 +178,17 @@ void boot() {
 		die();
 	}
 
+	memset(&eeprom, 0, sizeof(EEPROMDATA));
+	BootEepromReadEntireEEPROM(&eeprom);
+
+        {
+		volatile BYTE * pb=(BYTE *)0xfef000a8;  // Ethernet MMIO base + MAC register offset (<--thanks to Anders Gustafsson)
+		int n;
+		
+		for(n=5;n>=0;n--) { 
+			*pb++=	eeprom.MACAddress[n]; 
+		} // send it in backwards, its reversed by the driver
+	}
 
 #ifdef LOADHDD
 	Error = GetConfig(&entry);

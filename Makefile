@@ -1,5 +1,5 @@
 ### compilers and options
-CC	= gcc
+CC	= gcc-3.2
 CFLAGS	= -O2 -mcpu=pentium -Wall -Werror -DXBE
 LD	= ld
 LDFLAGS	= -s -S -T ldscript.ld
@@ -18,6 +18,7 @@ OBJECTS += $(TOPDIR)/I2C_io.o
 OBJECTS += $(TOPDIR)/BootParser.o 
 OBJECTS += $(TOPDIR)/BootString.o 
 OBJECTS += $(TOPDIR)/BootMemory.o 
+OBJECTS += $(TOPDIR)/BootEEPROM.o
 OBJECTS += $(TOPDIR)/VideoInitialization.o 
 OBJECTS += $(TOPDIR)/BootVgaInitialization.o
 

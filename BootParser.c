@@ -1,6 +1,7 @@
 #include "xbox.h"
 #include "xboxkrnl.h"
 #include "BootString.h"
+#include "BootEEPROM.h"
 #include "BootParser.h"
 #include "boot.h"
 
