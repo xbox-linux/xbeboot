@@ -2,6 +2,8 @@
 #undef DEBUG
 #define CONFIG_D
 
+//#define CONFIG_FILE "\\Device\\Harddisk0\\Partition1\\Apps\\Linux\\linuxboot.cfg"
+
 
 #ifdef CONFIG_C
 #define CONFIG_FILE "\\Device\\Harddisk0\\Partition2\\linuxboot.cfg"
@@ -32,6 +34,14 @@
 #define dprintf printf
 #else
 #define dprintf
+#endif
+
+#ifdef DEBUG
+#define splash
+#define splash_init
+#else
+#define splash show_splash
+#define splash_init do_splash_init
 #endif
 
 #define SCREEN_WIDTH 640

@@ -129,12 +129,18 @@ ErrorNothing:
 	return Error;
 }
 
+void die(char *s) {
+	printf(s);
+	while(1);
+}
+
+
 int NewFramebuffer;
 int KernelSize;
 PHYSICAL_ADDRESS PhysKernelPos, PhysEscapeCodePos;
 PVOID EscapeCodePos;
 
-void ParseConfig(char* kernel, char* initrd, char* command_line);
+NTSTATUS ParseConfig(char* kernel, char* initrd, char* command_line);
 
 void boot() {
 	int i;
@@ -154,18 +160,31 @@ void boot() {
 	cx = 0;
 	cy = 0;
 	framebuffer = (unsigned int*)(0xF0000000+*(unsigned int*)0xFD600800);
-
+	splash_init();
 	dprintf("\n");
 	dprintf("Framebuffer at: 0x%08x\n", framebuffer);
 
 	/* parse the configuration file */
-	ParseConfig(kernel, initrd, command_line);
+	Error = ParseConfig(kernel, initrd, command_line);
+
+	if (!NT_SUCCESS(Error)) die("Error loading configuration file!\n");
+
+	splash(1);
 
 	/* Load the kernel image into RAM */
 	KernelSize = MAX_KERNEL_SIZE;
 	Error = LoadFile(kernel, &KernelPos, &KernelSize);
+
+	if (!NT_SUCCESS(Error)) die("Error loading kernel!\n");
+
+	splash(2);
+
 	InitrdSize = MAX_INITRD_SIZE;
 	Error = LoadFile(initrd, &InitrdPos, &InitrdSize);
+
+	if (!NT_SUCCESS(Error)) die("Error loading initrd!\n");
+
+	splash(3);
 
 	/* get physical addresses */
 	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);

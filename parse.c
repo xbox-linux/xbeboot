@@ -115,7 +115,7 @@ append:
 	}
 }
 
-void ParseConfig(char* kernel, char* initrd, char* command_line) {
+NTSTATUS ParseConfig(char* kernel, char* initrd, char* command_line) {
 	char config[CONFIG_BUFFERSIZE];
 	ANSI_STRING ConfigFileString;
 	HANDLE ConfigFile;
@@ -134,11 +134,13 @@ void ParseConfig(char* kernel, char* initrd, char* command_line) {
 		&IoStatusBlock, NULL, 0, 7 /* FILE_SHARE_READ | FILE_SHARE_WRITE |
 		FILE_SHARE_DELETE*/, 1 /* FILE_OPEN */, 0x60 /* FILE_NON_DIRECTORY_FILE |
 		FILE_SYNCHRONOUS_IO_NONALERT */);
+	if (!NT_SUCCESS(Error)) return Error;
 	dprintf("NtCreateFile() = %08x\n", Error);
 	dprintf("HANDLE ConfigFile = %08x\n", ConfigFile);
 
-	NtReadFile(ConfigFile, NULL, NULL, NULL, &IoStatusBlock,
+	Error = NtReadFile(ConfigFile, NULL, NULL, NULL, &IoStatusBlock,
 			config, CONFIG_BUFFERSIZE, NULL);
+	if (!NT_SUCCESS(Error)) return Error;
 	dprintf("Read.\n");
 
 	parse(config, kernel, initrd, command_line);
@@ -146,4 +148,6 @@ void ParseConfig(char* kernel, char* initrd, char* command_line) {
 	dprintf("kernel \"%s\"\n", kernel);
 	dprintf("initrd \"%s\"\n", initrd);
 	dprintf("command line: \"%s\"\n", command_line);
+
+	return STATUS_SUCCESS;
 }
