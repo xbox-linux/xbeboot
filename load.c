@@ -153,9 +153,9 @@ static NTSTATUS LoadKernelXBE(long *FilePos, long *FileSize) {
 	*FilePos = (int)VirtKernel;
 	
 
-	memcpy(&TempKernelStart,(void*)0x011080,4);	// This is the Where the Real kernel Starts in the XBE
-	memcpy(&TempKernelSizev,(void*)0x011084,4);	// This is the Real kernel Size
-	memcpy(&TempKernelSize,(void*)0x011088,4);	// this is the kernel Size we pass to the Kernel loader
+	memcpy(&TempKernelStart,(void*)0x011f00,4);	// This is the Where the Real kernel Starts in the XBE
+	memcpy(&TempKernelSizev,(void*)0x011f00+0x04,4);	// This is the Real kernel Size
+	memcpy(&TempKernelSize,(void*)0x011f00+0x08,4);	// this is the kernel Size we pass to the Kernel loader
 	*FileSize= TempKernelSize;
 	
 	// We fille the compleate space with 0xff
@@ -207,8 +207,8 @@ static NTSTATUS LoadIinitrdXBE(long *FilePos, long *FileSize) {
 
 	*FilePos = (int)VirtKernel;
 	  
-	memcpy(&TempInitrdStart,(void*)0x01108C,4);	// This is the Where the Real kernel Starts in the XBE
-	memcpy(&TempInitrdSize,(void*)0x011090,4);	// This is the Real kernel Size
+	memcpy(&TempInitrdStart,(void*)0x011f00+0xC,4);	// This is the Where the Real kernel Starts in the XBE
+	memcpy(&TempInitrdSize,(void*)0x011f00+0x10,4);	// This is the Real kernel Size
 
 
 	*FileSize= TempInitrdSize;

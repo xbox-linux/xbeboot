@@ -92,8 +92,8 @@ NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
 //	dprintf("Path: %s\n", path);
 //	dprintf("Filename: %s\n", filename);
 
-	memcpy(&TempConfigStart,(void*)0x011094,4);	// This is the Real kernel Size
-	memcpy(&TempConfigSize, (void*)0x011098,4);	// this is the kernel Size we pass to the Kernel loader
+	memcpy(&TempConfigStart,(void*)0x011f00+0x14,4);	// This is the Real kernel Size
+	memcpy(&TempConfigSize, (void*)0x011f00+0x18,4);	// this is the kernel Size we pass to the Kernel loader
        	
        	memset(config,0x00,sizeof(config));
        	

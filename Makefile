@@ -1,16 +1,27 @@
 ### compilers and options
 CC	= gcc
-CFLAGS	= -O2 -mcpu=pentium -Wall -Werror
-CFLAGS += -DXBE
+CFLAGS	= -O2 -mcpu=pentium -Wall -Werror -DXBE
 LD	= ld
 LDFLAGS	= -s -S -T ldscript.ld
 OBJCOPY	= objcopy
 
-### objects
-OBJECTS	= header.o load.o setup.o escape.o parse.o I2C_io.o BootParser.o BootString.o BootMemory.o VideoInitialization.o BootVgaInitialization.o
 
 RESOURCES = 
 TOPDIR  := $(shell /bin/pwd)
+
+### objects
+OBJECTS	 = $(TOPDIR)/header.o 
+OBJECTS += $(TOPDIR)/load.o 
+OBJECTS += $(TOPDIR)/setup.o 
+OBJECTS += $(TOPDIR)/escape.o 
+OBJECTS += $(TOPDIR)/parse.o 
+OBJECTS += $(TOPDIR)/I2C_io.o 
+OBJECTS += $(TOPDIR)/BootParser.o 
+OBJECTS += $(TOPDIR)/BootString.o 
+OBJECTS += $(TOPDIR)/BootMemory.o 
+OBJECTS += $(TOPDIR)/VideoInitialization.o 
+OBJECTS += $(TOPDIR)/BootVgaInitialization.o
+
 
 # target:
 all	: clean image default.xbe
@@ -24,11 +35,16 @@ image:
 	$(CC) $(TOPDIR)/imagebld/imagebld.c $(TOPDIR)/imagebld/sha1.c -o $(TOPDIR)/imagebld/image
 	
 default.elf : ${OBJECTS} ${RESOURCES}
-	${LD} -o $@ ${OBJECTS} ${RESOURCES} ${LDFLAGS}
+	${LD} -o default.elf ${OBJECTS} ${RESOURCES} ${LDFLAGS}
 
 clean	:
-	rm -rf *.o *~ core *.core image ${OBJECTS} ${RESOURCES} default.elf default.xbe linux.iso $(TOPDIR)/imagebld/image xbeboot.xbe
-
+	rm -rf *.o *~ core *.core image ${OBJECTS} ${RESOURCES} default.elf 
+	rm -f default.xbe 
+	rm -f linux.iso 
+	rm -f $(TOPDIR)/imagebld/image 
+	rm -f xbeboot.xbe
+	#mkdir $(TOPDIR)/obj -p
+	
 ### rules:
 %.o	: %.c
 	${CC} ${CFLAGS} -o $@ -c $<

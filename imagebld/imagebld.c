@@ -151,8 +151,8 @@ int xbebuild (	unsigned char * xbeimage,
 	        
 #ifdef LOADXBE
 	        vmlinux_start = xbesize;
-	        memcpy(&xbe[0x1080],&vmlinux_start,4);
-		memcpy(&xbe[0x1084],&vmlinux_size,4);
+	        memcpy(&xbe[0x1f00+0x00],&vmlinux_start,4);
+		memcpy(&xbe[0x1f00+0x04],&vmlinux_size,4);
 
 	        memcpy(&xbe[vmlinux_start],vmlinuz,vmlinux_size);
 	        		
@@ -162,7 +162,7 @@ int xbebuild (	unsigned char * xbeimage,
 		
 		temp = vmlinux_size;
 		temp = (temp & 0xffff0000) + 0xffff + 0xffff;
-		memcpy(&xbe[0x1088],&temp,4);		
+		memcpy(&xbe[0x1f00+0x08],&temp,4);		
 		
 		xbesize = xbesize + vmlinux_size;
 		// Ok, we allign again
@@ -172,8 +172,8 @@ int xbebuild (	unsigned char * xbeimage,
 		
 #ifdef LOADXBE		
 		initrd_start = xbesize;
-		memcpy(&xbe[0x108C],&initrd_start,4);
-		memcpy(&xbe[0x1090],&initrd_size,4);
+		memcpy(&xbe[0x1f00+0x0C],&initrd_start,4);
+		memcpy(&xbe[0x1f00+0x10],&initrd_size,4);
 		
 		memcpy(&xbe[initrd_start],initrd,initrd_size);
 		
@@ -183,8 +183,8 @@ int xbebuild (	unsigned char * xbeimage,
 
 #ifdef LOADHDD_CFGFALLBACK
                	config_start = xbesize;
-		memcpy(&xbe[0x1094],&config_start,4);
-		memcpy(&xbe[0x1098],&config_size,4);               	
+		memcpy(&xbe[0x1f00+0x14],&config_start,4);
+		memcpy(&xbe[0x1f00+0x18],&config_size,4);               	
 		
 		memcpy(&xbe[config_start],config,config_size);               	
 
@@ -317,12 +317,12 @@ int xbeextract (	unsigned char * xbeimage )
     		fread(xbe, 1, xbesize, f);
     		fclose(f);
 
-		memcpy(&initrd_start, &xbe[0x108C],4);
-		memcpy(&initrd_size,  &xbe[0x1090],4);
-	        memcpy(&vmlinux_start,&xbe[0x1080],4);
-		memcpy(&vmlinux_size, &xbe[0x1084],4);
-		memcpy(&config_start, &xbe[0x1094],4);
-		memcpy(&config_size,  &xbe[0x1098],4);         		
+		memcpy(&initrd_start, &xbe[0x1f00+0x0C],4);
+		memcpy(&initrd_size,  &xbe[0x1f00+0x10],4);
+	        memcpy(&vmlinux_start,&xbe[0x1f00+0x00],4);
+		memcpy(&vmlinux_size, &xbe[0x1f00+0x04],4);
+		memcpy(&config_start, &xbe[0x1f00+0x14],4);
+		memcpy(&config_size,  &xbe[0x1f00+0x18],4);         		
 
 	 	printf("Linked Sections\n");
 	 	printf("Start of Linux Kernel    : 0x%08X\n", vmlinux_start);
