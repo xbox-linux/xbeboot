@@ -80,3 +80,10 @@ char * strcpy(char *sz, const char *szc)
         return szStart;
 }
 
+char * _strncpy (char * dest,char * src, int n)
+{
+	char *szStart=dest;
+	while((*src) && (n--)) *dest++=*src++;
+	*dest='\0';
+	return szStart;
+}

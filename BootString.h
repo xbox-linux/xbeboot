@@ -9,5 +9,6 @@ char *HelpCopyUntil(char* d, char* s, int max);
 char *HelpScan0(char* s);
 int HelpStrncmp(const char *sz1, const char *sz2, int nMax);
 char * strcpy(char *sz, const char *szc);
+char * _strncpy (char * dest,char * src, size_t n);
 
 #endif // _BootString_H_

@@ -44,8 +44,11 @@ int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
 	ptr = HelpGetToken(szBuffer,10);
 	entry->nValid = 1;
 	HelpCopyUntil(entry->szPath,szPath,MAX_LINE);
+	entry->szPath[MAX_LINE-1]=0;
 	while(1) {
-		memcpy(szLine,ptr,HelpStrlen(ptr));
+		_strncpy(szLine,ptr,MAX_LINE);
+		szLine[MAX_LINE-1]=0;
+		
 		if(HelpStrlen(ptr) < MAX_LINE) {
 			if(HelpStrncmp(ptr,"kernel",HelpStrlen("kernel")) == 0)  {
 				HelpGetParm(szTmp, ptr);

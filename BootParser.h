@@ -1,7 +1,7 @@
 #ifndef _BootParser_H_
 #define _BootParesr_H_
 
-#define MAX_LINE 1024
+#define MAX_LINE 2048
 
 typedef struct _CONFIGENTRY {
         int  nValid;
