@@ -1,7 +1,6 @@
 ### compilers and options
 CC	= gcc
-CFLAGS	= -O2 
-#-mcpu=pentium -Wall -Werror 
+CFLAGS	= -O2 -mcpu=pentium -Wall -Werror
 CFLAGS += -DXBE
 LD	= ld
 LDFLAGS	= -s -S -T ldscript.ld
@@ -39,7 +38,6 @@ clean	:
 
 %.xbe : %.elf
 	${OBJCOPY} --output-target=binary --strip-all $< $@
-	#dd if=/dev/zero bs=1k count=30000 >> $@
 	$(TOPDIR)/imagebld/image -build $(TOPDIR)/default.xbe  $(TOPDIR)/vmlinuz $(TOPDIR)/initrd  $(TOPDIR)/linuxboot.cfg
 	cp default.xbe xbeboot.xbe
 	@ls -l $@

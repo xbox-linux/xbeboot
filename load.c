@@ -21,6 +21,7 @@ volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 
 volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 
+#ifdef LOADHDD
 /* Loads the kernel image file into contiguous physical memory */
 static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 	HANDLE KernelFile;
@@ -42,8 +43,6 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 	/* Size of the kernel file */
 	ULONGLONG TempKernelSize;
-	/* Temporary size */
-	ULONG TempSize;
 	/* Read pointer to the kernel file */
 	PUCHAR ReadPtr;
 
@@ -113,7 +112,7 @@ static NTSTATUS LoadFile(PVOID Filename, long *FilePos, long *FileSize) {
 
 
 /* Undoes the allocations and returns an error code */
-ErrorFreeMemory:
+//ErrorFreeMemory:
 	MmFreeContiguousMemory(ReadBuffer);
 	MmFreeContiguousMemory(VirtKernel);
 
@@ -124,6 +123,9 @@ ErrorNothing:
 	return Error;
 }
 
+#endif
+
+#ifdef LOADXBE
 static NTSTATUS LoadKernelXBE(long *FilePos, long *FileSize) {
 
 	PVOID VirtKernel;
@@ -229,6 +231,8 @@ static NTSTATUS LoadIinitrdXBE(long *FilePos, long *FileSize) {
         return STATUS_SUCCESS;
 }
 
+#endif
+
 void die() {
 	while(1);
 }
@@ -242,20 +246,20 @@ NTSTATUS GetConfig(CONFIGENTRY *entry);
 NTSTATUS GetConfigXBE(CONFIGENTRY *entry);
 
 void boot() {
-	BYTE bAvPackType;
-	int xres,yres;
-	int i;
-	unsigned char* s;
+
+	int xres = 0;
+	int yres = 0;
+
 	long KernelPos;
 	long InitrdSize, InitrdPos;
 	PHYSICAL_ADDRESS PhysInitrdPos;
 	NTSTATUS Error;
 	int data_PAGE_SIZE;
-	extern int EscapeCode, EscapeCodeEnd;
-	extern void* newloc, ptr_newloc;
+	extern int EscapeCode;
+	//extern int EscapeCodeEnd;
+
 	CONFIGENTRY entry;
-	unsigned char tempstr[10];
-	unsigned int temp;
+	
 	
 	currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
         currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
@@ -365,7 +369,7 @@ void boot() {
 			break;
 	}
 
-	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend,xres,yres);
+//	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend,xres,yres);
 	
 	currentvideomodedetails.m_nVideoModeIndex=entry.vmode;
         currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
@@ -374,7 +378,8 @@ void boot() {
 //	dprintf("Video mode %d x:%d y:%d\n",entry.vmode,xres,yres);
 	
 //	dprintf("Setup...");
-	setup(KernelPos, PhysInitrdPos, InitrdSize, entry.szAppend,xres,yres);
+
+	setup((void*)KernelPos, (void*)PhysInitrdPos, (void*)InitrdSize, entry.szAppend,xres,yres);
 //	dprintf("done.");
 
 //	dprintf("Starting kernel...");

@@ -98,6 +98,8 @@ static __inline DWORD IoInputDword(WORD wAds) {
   return _v;
 }
 
+void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_cmdline, int xres, int yres);
+
 int I2cSetFrontpanelLed(BYTE b);
 
 int I2CTransmitWord(BYTE bPicAddressI2cFormat, WORD wDataToWrite);
@@ -115,5 +117,8 @@ void HelpGetParm(char *szBuffer, char *szOrig);
 char *HelpStrrchr(const char *string, int ch);
 char *HelpCopyUntil(char* d, char* s, int max);
 char *HelpScan0(char* s);
+
+
+int printk(const char *fmt, ...);
 
 #endif // _Boot_H_

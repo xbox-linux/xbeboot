@@ -64,11 +64,11 @@ NTSTATUS GetConfigXBE(CONFIGENTRY *entry) {
 	char *path;
 	char *filename;
 	char *config;
-	ANSI_STRING ConfigFileString;
-	HANDLE ConfigFile;
-	OBJECT_ATTRIBUTES ConfigFileAttributes;
-	IO_STATUS_BLOCK IoStatusBlock;
-	NTSTATUS Error;
+	//ANSI_STRING ConfigFileString;
+	//HANDLE ConfigFile;
+	//OBJECT_ATTRIBUTES ConfigFileAttributes;
+	//IO_STATUS_BLOCK IoStatusBlock;
+	//NTSTATUS Error;
         unsigned int TempConfigStart;
         unsigned int TempConfigSize;
         

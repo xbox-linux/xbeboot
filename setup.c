@@ -66,7 +66,6 @@ struct kernel_setup_t {
 extern void* framebuffer;
 
 void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_cmdline, int xres, int yres) {
-    int i;
     int cmd_line_ptr;
     struct kernel_setup_t *kernel_setup = (struct kernel_setup_t*)KernelPos;
 

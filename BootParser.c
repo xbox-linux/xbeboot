@@ -13,6 +13,10 @@ enum {
 	VIDEO_MODE_COUNT
 };
 
+int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWrite);
+int printk(const char *fmt, ...);                              
+int sprintf(char * buf, const char *fmt, ...);
+
 int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
 	char *szLine;
 	char *szTmp;
@@ -20,7 +24,8 @@ int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
         int nRivaFB = 0;
         int nVesaFB = 0;
 	BYTE VideoStandard[4];
-	char *ptr,ptr1;
+	char *ptr;
+	//,ptr1;
 	int i;
 	
         szLine = (char *)MmAllocateContiguousMemoryEx(MAX_LINE,MIN_KERNEL,
@@ -72,7 +77,7 @@ int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
 			if(HelpStrncmp(ptr,"append",HelpStrlen("append")) == 0)
 				HelpGetParm(entry->szAppend, ptr);
 		} else {
-			entry->nValid == 0;
+			entry->nValid = 0;
 		}
 		ptr = HelpGetToken(0,10);
 		if(*ptr == 0) break;

@@ -264,12 +264,20 @@ int xbebuild (	unsigned char * xbeimage,
 		}	  	
 	        
 	        printf("\nXbeboot.xbe Created    : %s\n",xbeimage);
-	      /*	
+	      	
+		#ifdef LOADXBE
 		free(initrd);         
+		#endif
+        	
+        	#ifdef LOADHDD_CFGFALLBACK
         	free(config);   
-                free(vmlinuz);
+        	#endif
+           	
+           	#ifdef LOADXBE	
+                free(vmlinuz);  
+           	#endif
                 free(xbe);
-                */
+              
 	} else return 1;
 
 

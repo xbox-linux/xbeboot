@@ -29,7 +29,7 @@ void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pcurrentvideomod
 	TV_MODE_PARAMETER parameter;
 	BYTE b;
 	RIVA_HW_INST riva;
-	int maxcounter;
+	//int maxcounter;
 
 	videoStd = DetectVideoStd();
 
