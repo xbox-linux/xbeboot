@@ -2,7 +2,7 @@
 #include "xboxkrnl.h"
 #include "BootString.h"
 #include "BootParser.h"
-#include <string.h>
+#include "boot.h"
 
 NTSTATUS GetConfig(CONFIGENTRY *entry) {
 	char *path;

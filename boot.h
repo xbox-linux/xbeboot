@@ -30,9 +30,9 @@ static inline double max (double a, double b)
         if (a > b) return a; else return b;
 }
 
-#include "BootVideo.h"
+//#include "BootVideo.h"
 
-extern volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
+//extern volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 
 /////////////////////////////////
 // LED-flashing codes

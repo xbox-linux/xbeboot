@@ -1,5 +1,5 @@
 #include "xbox.h"
-#include <string.h>
+#include "boot.h"
 
 /* parameters to be passed to the kernel */
 struct kernel_setup_t {

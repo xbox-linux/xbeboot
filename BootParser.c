@@ -2,7 +2,7 @@
 #include "xboxkrnl.h"
 #include "BootString.h"
 #include "BootParser.h"
-#include <string.h>
+#include "boot.h"
 
 enum {
 	VIDEO_MODE_UNKNOWN=-1,
@@ -14,8 +14,6 @@ enum {
 	VIDEO_MODE_COUNT
 };
 
-int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWrite);
-int printk(const char *fmt, ...);                              
 int sprintf(char * buf, const char *fmt, ...);
 
 int ParseConfig(char *szPath,char *szBuffer, CONFIGENTRY *entry) {
