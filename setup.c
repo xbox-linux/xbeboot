@@ -1,7 +1,5 @@
 #include "xbox.h"
 
-const char kernel_cmdline[]="booted=xbe";
-
 /* parameters to be passed to the kernel */
 struct kernel_setup_t {
 	unsigned char  orig_x;                  /* 0x00 */
@@ -66,7 +64,7 @@ struct kernel_setup_t {
 
 extern void* framebuffer;
 
-void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize) {
+void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_cmdline) {
     int i;
     int cmd_line_ptr;
     struct kernel_setup_t *kernel_setup = (struct kernel_setup_t*)KernelPos;

@@ -1,4 +1,7 @@
+/* configuration */
+#undef DEBUG
 #define CONFIG_D
+
 
 #ifdef CONFIG_C
 #define CONFIG_FILE "\\Device\\Harddisk0\\Partition2\\linuxboot.cfg"
@@ -20,6 +23,15 @@
 #endif
 #ifdef CONFIG_Z
 #define CONFIG_FILE "\\Device\\Harddisk0\\Partition5\\linuxboot.cfg"
+#endif
+
+#define BUFFERSIZE 512
+#define CONFIG_BUFFERSIZE (BUFFERSIZE*16)
+
+#ifdef DEBUG
+#define dprintf printf
+#else
+#define dprintf
 #endif
 
 #define SCREEN_WIDTH 640
@@ -56,4 +68,7 @@
 #define CR0_ENABLE_PAGING		0x80000000
 /* Size of a page on x86 */
 #define PAGE_SIZE			4096
+
+/* Size of the read chunks to use when reading the kernel; bigger = a lot faster */
+#define READ_CHUNK_SIZE 128*1024
 

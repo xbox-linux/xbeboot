@@ -1,0 +1,121 @@
+Linux XBE Bootloader
+~~~~~~~~~~~~~~~~~~~~
+(C)2002 by Michael Steil <mist@c64.org>,
+based on code by M. Steil & Anonymous
+Linux VESA Framebuffer support by Milosch Meriac <xboxlinux@meriac.de>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Features
+~~~~~~~~~
+The Linux XBE Bootloader is an Xbox XBE file that boots the Linux kernel.
+It supports configuration files, standard i386 bzImage kernels (no zImage)
+initial RAM disks, and a kernel command line.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Location of the Configuration File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The bootloader executable can be started from hard disk or CD/DVD. It first
+reads the file "linuxboot.cfg" from hard disk or CD/DVD, depending on some
+compile-time parameters (CONFIG_C, CONFIG_D, CONFIG_E, CONFIG_F, CONFIG_X,
+CONFIG_Y, CONFIG_Z). Just #define the corresponging symbol to make the
+bootloader read the configuration file from the root directory of the Xbox
+drive with the given drive letter. For instance, #define CONFIG_C makes
+the bootloader read linuxboot.cfg from the root directory of the Xbox drive
+C:.
+You can also make the bootloader read from subdirectories of any drive; just
+#define CONFIG_FILE as you wish in "xbox.h".
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Configuration File Commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The configuration file is a plaintext file containing one or more lines each
+with a command, and sepatated with a space or tab, the command's parameters.
+The bootloader knows the following commands (note that the case of the commands
+does not matter):
+
+{TITLE|LABEL}
+~~~~~~~~~~~~~
+Reserved keywords. Will be important for multiple configurations.
+Example:
+TITLE linux
+
+ROOT
+~~~~
+NT namespace base path. This path will be prepended to the paths of the
+kernel image and the initial RAM disk.
+Examples:
+ROOT \Device\Harddisk0\Partition1                  (the system partition)
+ROOT \Device\CdRom0                                (the CD/DVD)
+ROOT \??\D:                                        (also the CD/DVD)
+
+KERNEL
+~~~~~~
+Absolue or relative path and filename of the kernel image. Optionally, you can
+supply a kernel command line after the kernel path and filename. The parameter
+"initrd=" gets recognized as the initial RAM disk filename (see below); this
+parameter won't be passed to the kernel.
+Examples:
+KERNEL \??\D:\vmlinuz  (loads the kernel from the root directory of the CD/DVD)
+KERNEL \vmlinuz         (ROOT must be defined!)
+KERNEL \vmlinuz-2.4.18 root=/dev/hda1 initrd=\initrd-2.4.18.gz
+
+INITRD
+~~~~~~
+Absolute or relative path and filename of the initial ramdisk.
+Examples:
+INITRD \??\D:\initrd-failsafe.gz
+INITRD \initrd.gz                  (ROOT must be defined!)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Note that the syntax of the configuration file is very similar to GRUB's and
+SYSLINUX'. You have two possibilities to pass the bootloader the path
+and filename of the configuartion file, one is "the GRUB way" and the other
+one is 'the SYSLINUX way". There are also two ways to pass the kernel command
+line.
+If the same command is read multiple times, only the last one is preserved
+for ROOT, KERNEL and INITRD. For the kernel command line, all command line
+parts defined through the different commands are concatenated.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The NT Object Namespace
+~~~~~~~~~~~~~~~~~~~~~~~
+All paths and filenames are passed to the Xbox kernel, so you have to use the
+NT object namespace for all paths. Here is a short table with all drives
+known to the Xbox kernel.
+
+Symbolic Link	Device Object			Description
+~~~~~~~~~~~~    ~~~~~~~~~~~~~                   ~~~~~~~~~~~
+\??\C:		\Device\Harddisk0\Partition2	System Partition (500 MB)
+\??\D:		\Device\CdRom0			CD/DVD
+\??\E:		\Device\Harddisk0\Partition1	Data Partition (4895 GB)
+\??\F:		\Device\Harddisk0\Partition6	???
+\??\X:		\Device\Harddisk0\Partition3	Game Cache A (750 MB)
+\??\Y:		\Device\Harddisk0\Partition4	Game Cache B (750 MB)
+\??\Z:		\Device\Harddisk0\Partition5	Game Cache C (750 MB)
+
+The subdirectory and the filename are added to the volume base, so that
+for example \Device\Harddisk0\Partition2\Linux\vmlinuz and \\??\D:\vmlinuz
+are both valid absolute paths. Note that all subdirectory and file names
+are case insensitive.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example Configuration Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# GRUB style
+root \Device\Hardisk0\Partion1\Linux\
+kernel vmlinuz hdb=ide-scsi root=/dev/hda1
+initrd initrd
+
+# SYSLINUX style
+kernel \Device\Hardisk0\Partion1\Linux\vmlinuz
+append initrd=\Device\Hardisk0\Partion1\Linux\initrd hdb=ide-scsi
+append root=/dev/hda1
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO
+~~~~
+* The bootloader *needs* an initial RAM disk. It should also work without.
+* Xbox kernel calls should be abtracted to fopen/fread/fclose.
+* header.S is stille quite a mess
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -7,15 +7,15 @@ OBJCOPY	= objcopy
 
 ### objects
 #OBJECTS	= header.o load.o escape.o boot.o
-OBJECTS	= header.o load.o setup.o escape.o
+OBJECTS	= header.o load.o setup.o escape.o parse.o
 RESOURCES =
 
 # target:
 all	: linux.iso
 
 
-linux.iso: default.xbe vmlinuz initrd
-	mkisofs -f -udf $< vmlinuz initrd > $@
+linux.iso: default.xbe
+	mkisofs -udf $< linuxboot.cfg vmlinuz initrd > $@
 
 default.elf : ${OBJECTS} ${RESOURCES}
 	${LD} -o $@ ${OBJECTS} ${RESOURCES} ${LDFLAGS}

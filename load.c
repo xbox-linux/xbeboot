@@ -1,26 +1,16 @@
-/* 
+/*
    Xbox XBE bootloader
 
     by Michael Steil & anonymous
     VESA Framebuffer code by Milosch Meriac
-    
+
 */
 
 #include "printf.c"
 #include "xboxkrnl.h"
 #include "xbox.h"
 
-#ifdef DEBUG
-#define dprintf printf
-#else
-#define dprintf
-#endif
-
-
-/* Size of the read chunks to use when reading the kernel; bigger = a lot faster */
-#define READ_CHUNK_SIZE 128*1024
-
-void __inline * memcpy(void *dest, const void *src,  size_t size) {
+void __inline * memcpy(void *dest, const void *src, size_t size) {
 	__asm__  (
 		"    push %%esi    \n"
 		"    push %%edi    \n"
@@ -139,11 +129,12 @@ ErrorNothing:
 	return Error;
 }
 
-
 int NewFramebuffer;
 int KernelSize;
 PHYSICAL_ADDRESS PhysKernelPos, PhysEscapeCodePos;
 PVOID EscapeCodePos;
+
+void ParseConfig(char* kernel, char* initrd, char* command_line);
 
 void boot() {
 	int i;
@@ -151,14 +142,14 @@ void boot() {
 	int KernelPos;
 	int InitrdSize, InitrdPos;
 	PHYSICAL_ADDRESS PhysInitrdPos;
-
 	NTSTATUS Error;
-
 	int data_PAGE_SIZE;
-
 	extern int EscapeCode, EscapeCodeEnd;
 	extern void* newloc, ptr_newloc;
 
+	char kernel[BUFFERSIZE];
+	char initrd[BUFFERSIZE];
+	char command_line[BUFFERSIZE];
 
 	cx = 0;
 	cy = 0;
@@ -167,11 +158,14 @@ void boot() {
 	dprintf("\n");
 	dprintf("Framebuffer at: 0x%08x\n", framebuffer);
 
+	/* parse the configuration file */
+	ParseConfig(kernel, initrd, command_line);
+
 	/* Load the kernel image into RAM */
 	KernelSize = MAX_KERNEL_SIZE;
-	Error = LoadFile("\\??\\D:\\vmlinuz", &KernelPos, &KernelSize);
+	Error = LoadFile(kernel, &KernelPos, &KernelSize);
 	InitrdSize = MAX_INITRD_SIZE;
-	Error = LoadFile("\\??\\D:\\initrd", &InitrdPos, &InitrdSize);
+	Error = LoadFile(initrd, &InitrdPos, &InitrdSize);
 
 	/* get physical addresses */
 	PhysKernelPos = MmGetPhysicalAddress((PVOID)KernelPos);
@@ -194,7 +188,7 @@ void boot() {
 	memcpy((void*)PhysEscapeCodePos, &EscapeCode, PAGE_SIZE);
 
 	dprintf("Setup...");
-	setup(KernelPos, PhysInitrdPos, InitrdSize);
+	setup(KernelPos, PhysInitrdPos, InitrdSize, command_line);
 	dprintf("done.");
 
 	dprintf("Starting kernel...");
