@@ -1,5 +1,5 @@
-#ifndef _XBOX_H_   
-#define _XBOX_H_   
+#ifndef _XBOX_H_
+#define _XBOX_H_
 
 /* you can change this */
 //#define DEBUG

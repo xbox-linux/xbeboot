@@ -71,11 +71,12 @@ int HelpStrncmp(const char *sz1, const char *sz2, int nMax) {
 	        if((*sz1) || (*sz2)) return 0;
         return 0; // used up nMax
 }
-char * strcpy(char *sz, const char *szc)   
-{   
-         char *szStart=sz;   
-         while(*szc) *sz++=*szc++;   
-         *sz='\0';   
-         return szStart;   
-} 
+
+char * strcpy(char *sz, const char *szc)
+{
+        char *szStart=sz;
+        while(*szc) *sz++=*szc++;
+        *sz='\0';
+        return szStart;
+}
 

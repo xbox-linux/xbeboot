@@ -6,6 +6,18 @@
  * and work by Johan Rydberg and Daniel Kahlin.
  *
  * $Log$
+ * Revision 1.5  2003/05/16 18:36:50  huceke
+ * Updated xbeboot to use the new videocode from cromwell and
+ * also added the posabillity to link in the kernel, initrd and
+ * linuxboot.cfg file.
+ *
+ * If you wanna do this copy the the files vmlinuf, initrd and linuxboot.cfg
+ * to the build directory and edit the config.h file.
+ *
+ * Set the defines to :
+ * #undef LOADHDD
+ * #define LOADXBE
+ *
  * Revision 1.2  2003/05/16 11:54:00  franz
  * Updates
  *

@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include "types.h"
+
 /* partially based on RectOS source code */
 
 #define OBJ_CASE_INSENSITIVE		0x00000040L
@@ -16,22 +17,14 @@ extern "C" {
 #define MEM_RESERVE			0x00002000
 #define MEM_COMMIT			0x00001000
 
-
-
 /* NT Data Types */
-
-
-
 
 typedef VOID
 (*PIO_APC_ROUTINE)(PVOID ApcContext,
                    struct _IO_STATUS_BLOCK* IoStatusBlock,
                    ULONG Reserved);
 
-
-
 /* Xbox Kernel Functions */
-
 extern VOID __attribute__((__stdcall__))
 (*RtlInitAnsiString)(PANSI_STRING, PCSZ);
 extern NTSTATUS __attribute__((__stdcall__))
