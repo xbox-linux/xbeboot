@@ -2,6 +2,7 @@
 #include "xboxkrnl.h"
 #include "BootString.h"
 #include "BootParser.h"
+#include <string.h>
 
 enum {
 	VIDEO_MODE_UNKNOWN=-1,
