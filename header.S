@@ -294,6 +294,9 @@ XboxEEPROMKey:
 .globl XboxHDKey
 XboxHDKey:
 	.long	0x80000000 + 323
+.globl HalWriteSMBusValue
+HalWriteSMBusValue:
+	.long	0x80000000 + 50
 
 	.long	0		// end of table
 

@@ -216,7 +216,24 @@ void boot() {
 	setup(KernelPos, PhysInitrdPos, InitrdSize, command_line);
 	dprintf("done.");
 
+#if 0
+	/* move USB IRQ from 1 to 3 */
+	/* too bad it doesn't work! */
+	__asm(
+	"mov $0xcf8, %dx\n"
+	"mov $0x8000103c, %eax\n" /* PCI 0:2:0/3c */
+	"out %eax, %dx\n"
+	"add $4, %edx\n"
+	"mov $3, %ax\n" /* set IRQ 3 */
+	"out %ax, %dx\n"
+	);
+#endif
+
 	dprintf("Starting kernel...");
+
+	/* orange LED */
+	HalWriteSMBusValue(0x20, 0x08, FALSE, 0xff);
+	HalWriteSMBusValue(0x20, 0x07, FALSE, 0x01);
 
 	NewFramebuffer = NEW_FRAMEBUFFER + 0xF0000000;
 	__asm(

@@ -8,6 +8,8 @@
 #define MEM_RESERVE			0x00002000
 #define MEM_COMMIT			0x00001000
 
+#define FALSE 0
+
 /* NT Data Types */
 
 typedef void VOID;
@@ -94,3 +96,5 @@ extern NTSTATUS __attribute__((__stdcall__))
 extern PANSI_STRING XeImageFileName;
 extern PUCHAR XboxEEPROMKey[16];
 extern PUCHAR XboxHDKey[16];
+extern NTSTATUS __attribute__((__stdcall__))
+(*HalWriteSMBusValue)(UCHAR, UCHAR, BOOLEAN, UCHAR);
