@@ -13,17 +13,15 @@
 #include "boot.h"
 #include "BootString.h"
 #include "BootParser.h"
-#include "BootVideo.h"
 #include "BootEEPROM.h"
 #include "config.h"
 
-volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
 int NewFramebuffer;
 long KernelSize;
 PHYSICAL_ADDRESS PhysKernelPos, PhysEscapeCodePos;
 PVOID EscapeCodePos;
+int xbox_ram = 64;
 EEPROMDATA eeprom;
-
 
 static int ReadFile(HANDLE Handle, PVOID Buffer, ULONG Size);
 int WriteFile(HANDLE Handle, PVOID Buffer, ULONG Size);
@@ -58,14 +56,14 @@ long LoadFile(PVOID Filename, long *lFileSize) {
 		die();
 	}
 
-	Buffer = MmAllocateContiguousMemoryEx(FileSize,
+	Buffer = MmAllocateContiguousMemoryEx(FileSize + 0x1000,
 			MIN_KERNEL, MAX_KERNEL, 0, PAGE_READWRITE);
 	if (!Buffer) {
 		dprintf("Error alloc memory for File %s\n",Filename);
 		die();
 	}
 
-	memset(Buffer,0xff,FileSize);
+	memset(Buffer,0xff,FileSize + 0x1000);
 	if (!ReadFile(hFile, Buffer, FileSize)) {
 		dprintf("Error loading file %s\n",Filename);
 		die();
@@ -73,7 +71,7 @@ long LoadFile(PVOID Filename, long *lFileSize) {
 
 	NtClose(hFile);
 
-	*lFileSize = FileSize;
+	*lFileSize = FileSize + 0x1000;
 
 	return (long)Buffer;
 }
@@ -146,16 +144,12 @@ void boot() {
 	NTSTATUS Error;
 	int data_PAGE_SIZE;
 	extern int EscapeCode;
-	
+
 	//int i;
+	
+
 	CONFIGENTRY entry;
 
-	currentvideomodedetails.m_nVideoModeIndex=VIDEO_MODE_640x480;
-        currentvideomodedetails.m_pbBaseAddressVideo=(BYTE *)0xfd000000;
-	currentvideomodedetails.m_dwFrameBufferStart = FRAMEBUFFER_START;
-
-        BootVgaInitializationKernelNG((CURRENT_VIDEO_MODE_DETAILS *)&currentvideomodedetails);
-	
 	framebuffer = (unsigned int*)(0xF0000000+*(unsigned int*)0xFD600800);
 	memset(framebuffer,0,SCREEN_WIDTH*SCREEN_HEIGHT*4);
 

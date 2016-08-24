@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "boot.h"
+#include "types.h"
 
 typedef VOID
 (*PIO_APC_ROUTINE)(PVOID ApcContext,

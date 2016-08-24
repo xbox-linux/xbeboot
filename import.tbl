@@ -889,9 +889,9 @@ RtlInitAnsiString:
 //.globl RtlMapGenericMask
 //RtlMapGenericMask:
 //   .long 0x80000000 + 297
-//.globl RtlMoveMemory
-//RtlMoveMemory:
-//   .long 0x80000000 + 298
+.globl RtlMoveMemory
+RtlMoveMemory:
+   .long 0x80000000 + 298
 //.globl RtlMultiByteToUnicodeN
 //RtlMultiByteToUnicodeN:
 //   .long 0x80000000 + 299
@@ -955,9 +955,9 @@ RtlInitAnsiString:
 //.globl RtlWalkFrameChain
 //RtlWalkFrameChain:
 //   .long 0x80000000 + 319
-//.globl RtlZeroMemory
-//RtlZeroMemory:
-//   .long 0x80000000 + 320
+.globl RtlZeroMemory
+RtlZeroMemory:
+   .long 0x80000000 + 320
 .globl XboxEEPROMKey
 XboxEEPROMKey:
    .long 0x80000000 + 321

@@ -67,7 +67,8 @@ int xbebuild (	unsigned char * xbeimage,
         unsigned int config_size = 0;
 	unsigned int config_start = 0;
 
-	
+	unsigned int FileSize = 0;
+
         unsigned int xbeloader_size=0;
 	
 	unsigned int temp;
@@ -131,6 +132,7 @@ int xbebuild (	unsigned char * xbeimage,
     	{   
   		fseek(f, 0, SEEK_END); 
          	xbesize	 = ftell(f); 
+		FileSize = xbesize;
          	fseek(f, 0, SEEK_SET);
            	  
            	
@@ -164,6 +166,7 @@ int xbebuild (	unsigned char * xbeimage,
 		memcpy(&xbe[ValueDumps + 0x88],&temp,4);		
 		
 		xbesize = xbesize + vmlinux_size;
+		FileSize += vmlinux_size;
 		// Ok, we allign again
 		xbesize = (xbesize & 0xffffff00) + 0x100;
 
@@ -177,6 +180,7 @@ int xbebuild (	unsigned char * xbeimage,
 		memcpy(&xbe[initrd_start],initrd,initrd_size);
 		
 		xbesize = xbesize + initrd_size;	
+		FileSize += initrd_size;
                 xbesize = (xbesize & 0xffffff00) + 0x100;
 #endif                
 
@@ -188,6 +192,7 @@ int xbebuild (	unsigned char * xbeimage,
 		memcpy(&xbe[config_start],config,config_size);               	
 
 		xbesize = xbesize + config_size;	
+		FileSize += config_size;
                 xbesize = (xbesize & 0xffffff00) + 0x100;
 #endif
                 			        
@@ -216,7 +221,7 @@ int xbebuild (	unsigned char * xbeimage,
 		
 		xbesize = (xbesize & 0xffffff00) + 0x100;
 		
-	        header->ImageSize = xbesize; 
+	        header->ImageSize = FileSize; 
 		
 		//printf("%08x",sechdr->FileSize);                    
 		

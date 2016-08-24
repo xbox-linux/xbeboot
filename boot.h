@@ -16,12 +16,9 @@
 /////////////////////////////////
 // configuration
 
-#define VIDEO_CONEXANT	0
-#define VIDEO_FOCUS	1
 
-
+#include <linux/types.h>
 #include "types.h"
-#include "I2C.h"
 
 static inline double min (double a, double b)
 {
@@ -33,8 +30,41 @@ static inline double max (double a, double b)
         if (a > b) return a; else return b;
 }
 
+//#include "BootVideo.h"
+
+//extern volatile CURRENT_VIDEO_MODE_DETAILS currentvideomodedetails;
+
+extern int xbox_ram;
+
+/////////////////////////////////
+// LED-flashing codes
+// or these together as argument to I2cSetFrontpanelLed
+
+enum {
+	I2C_LED_RED0 = 0x80,
+	I2C_LED_RED1 = 0x40,
+	I2C_LED_RED2 = 0x20,
+	I2C_LED_RED3 = 0x10,
+	I2C_LED_GREEN0 = 0x08,
+	I2C_LED_GREEN1 = 0x04,
+	I2C_LED_GREEN2 = 0x02,
+	I2C_LED_GREEN3 = 0x01
+};
+
 ///////////////////////////////
 /* BIOS-wide error codes		all have b31 set  */
+
+enum {
+	ERR_SUCCESS = 0,  // completed without error
+
+	ERR_I2C_ERROR_TIMEOUT = 0x80000001,  // I2C action failed because it did not complete in a reasonable time
+	ERR_I2C_ERROR_BUS = 0x80000002, // I2C action failed due to non retryable bus error
+
+	ERR_BOOT_PIC_ALG_BROKEN = 0x80000101 // PIC algorithm did not pass its self-test
+};
+
+/* ----------------------------  IO primitives -----------------------------------------------------------
+*/
 
 static __inline void IoOutputByte(WORD wAds, BYTE bValue) {
     __asm__ __volatile__ ("outb %b0,%w1": :"a" (bValue), "Nd" (wAds));
@@ -72,6 +102,12 @@ static __inline DWORD IoInputDword(WORD wAds) {
 
 void setup(void* KernelPos, void* PhysInitrdPos, void* InitrdSize, char* kernel_cmdline);
 
+int I2cSetFrontpanelLed(BYTE b);
+
+int I2CTransmitWord(BYTE bPicAddressI2cFormat, WORD wDataToWrite);
+int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWrite);
+bool I2CGetTemperature(int *, int *);
+
 void * memcpy(void *dest, const void *src,  size_t size);
 void * memset(void *dest, int data,  size_t size);
 int _memcmp(const BYTE *pb, const BYTE *pb1, int n);
@@ -86,9 +122,5 @@ char *HelpScan0(char* s);
 
 
 int printk(const char *fmt, ...);
-
-#define wait_ms(x) wait_us(x);
-
-void wait_us(DWORD ticks);
 
 #endif // _Boot_H_

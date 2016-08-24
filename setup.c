@@ -54,7 +54,7 @@ struct kernel_setup_t {
 	unsigned char loader;       /* 528: loader type */
 	unsigned char flags;        /* 529: loader flags */
 	unsigned short a;           /* 530: more LOADLIN hacks */
-	unsigned long code32_start;        /* 532: kernel start, filled in by loader */
+	unsigned long code32_start; /* 532: kernel start, filled in by loader */
 	unsigned long ramdisk;      /* 536: RAM disk start address */
 	unsigned long ramdisk_size; /* 540: RAM disk size */
 	unsigned short b,c;         /* 544: bzImage hacks */

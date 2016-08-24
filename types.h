@@ -29,9 +29,7 @@ typedef unsigned int u32;
 typedef unsigned char u8;
 typedef signed int s32;
 typedef unsigned short u16;
-typedef unsigned int size_t;
-typedef unsigned int SIZE_T;
-
+typedef unsigned long SIZE_T;
 
 typedef BYTE* PBYTE;
 typedef void VOID;

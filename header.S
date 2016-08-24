@@ -46,12 +46,12 @@ header_start:
   .long certificate                     // certificate address
   .long 1                               // number of section headers
   .long section_headers                 // section headers address
-  .long 0                               // initialization flags
+  .long 0				// initialization flags
   .long 0x11100 ^ 0xA8FC57AB            // entry point address XOR key **GAS ISSUE: "entry" won't work**
   .long 0x18000                         // thread local storage address
-  .long 0                               // size of stack commit (PE copy)  *unimportant*
-  .long 0                               // size of heap reserve (PE copy)  *unimportant*
-  .long 0                               // size of heap commit (PE copy)   *unimportant*
+  .long 0x00010000                      // size of stack commit (PE copy)  *unimportant*
+  .long 0x00100000                      // size of heap reserve (PE copy)  *unimportant*
+  .long 0x00001000                      // size of heap commit (PE copy)   *unimportant*
   .long 0                               // original base address (PE copy) *unimportant*
   .long 0                               // original size of image (PE copy)*unimportant*
   .long 0                               // original checksum (PE copy)     *unimportant*
@@ -72,7 +72,7 @@ header_end:
 certificate:
   .long certificate_end - certificate   // size of certificate
   .long 0                               // time date stamp                 *unimportant*
-  .long 0                               // title id                        *unimportant?*
+  .long 0x21585554                         // title id                        *unimportant?*
 
   // title name (unicode string, 40 chars) *unimportant, but beautiful*
 unicodename:
@@ -84,11 +84,7 @@ normalname:
   // alternate title ids
   .long 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
   
-#ifdef DEBUG
-  .long 0x40000005   // allowed media types: HD or any CD/DVD; no panic of HDD unlocked
-#else
-  .long 0xC0000005   // allowed media types: HD or any CD/DVD; no panic of HDD unlocked; don't reboot on eject
-#endif
+  .long 0xC00003FF   // allowed media types: HD or any CD/DVD; no panic of HDD unlocked; don't reboot on ejec
   .long 0x80000007   // game regions: all; don't delete eepromkey
   .long -1  // game ratings
   .long 0   // disk number

@@ -1,6 +1,8 @@
 #include "boot.h"
+#include "xboxkrnl.h"
 
 void __inline * memcpy(void *dest, const void *src, size_t size) {
+
 	__asm__  (
 		"    push %%esi    \n"
 		"    push %%edi    \n"
@@ -24,12 +26,21 @@ void __inline * memcpy(void *dest, const void *src, size_t size) {
 
 void * memset(void *dest, int data,  size_t size)
 {
-  
   	char *p = dest;
 	while (size -- > 0)
 	{
 		*p ++ = data;
 	}
- 	return dest;
-} 
-
+	return dest;
+}
+/*
+void * memset(void *dest, int data,  size_t size)
+{
+  	char *p = dest;
+	while (size -- > 0)
+	{
+		*p ++ = data;
+	}
+	return dest;
+}
+*/

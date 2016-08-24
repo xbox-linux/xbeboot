@@ -11,17 +11,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "boot.h"
-#include "I2C.h"
 
-#include "I2C.h"
+#include "boot.h"
+#include "consts.h"
+
 
 // ----------------------------  I2C -----------------------------------------------------------
 //
 // get a value from a given device address
 // errors will have b31 set, ie, will be negative, otherwise fetched byte in LSB of return
 
-unsigned int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWrite)
+int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWrite)
 {
 	DWORD dwRetriesToLive=4;
 
@@ -69,7 +69,7 @@ unsigned int I2CTransmitByteGetReturn(BYTE bPicAddressI2cFormat, BYTE bDataToWri
 
 // transmit a word, no returned data from I2C device
 
-unsigned int I2CTransmitWord(BYTE bPicAddressI2cFormat, WORD wDataToWrite)
+int I2CTransmitWord(BYTE bPicAddressI2cFormat, WORD wDataToWrite)
 {
 	DWORD dwRetriesToLive=4;
 __asm __volatile__ ( "pushf; cli" );
@@ -111,8 +111,13 @@ __asm __volatile__ ( "pushf; cli" );
 	return ERR_I2C_ERROR_BUS;
 }
 
-unsigned int I2CWriteBytetoRegister(BYTE bPicAddressI2cFormat, BYTE bRegister, BYTE wDataToWrite)
+extern int I2cSetFrontpanelLed(BYTE b)
 {
-	return I2CTransmitWord(bPicAddressI2cFormat, (bRegister<<8) | wDataToWrite );
+	__asm __volatile__ ( "pushf ; cli" );
+	I2CTransmitWord( 0x10, 0x800 | b);  // sequencing thanks to Jarin the Penguin!
+	I2CTransmitWord( 0x10, 0x701);
+	__asm __volatile__ ( "popf" );
+
+	return ERR_SUCCESS;
 }
 

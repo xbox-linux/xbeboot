@@ -1,6 +1,6 @@
 ### compilers and options
 CC	= gcc
-CFLAGS	= -O2 -mcpu=pentium -Wall -Werror -DXBE
+CFLAGS	= -O2 -mcpu=pentium -Werror -DXBE $(EXTRA_CFLAGS)
 LD	= ld
 LDFLAGS	= -s -S -T ldscript.ld
 OBJCOPY	= objcopy
@@ -17,11 +17,8 @@ OBJECTS += $(TOPDIR)/escape.o
 OBJECTS += $(TOPDIR)/I2C_io.o 
 OBJECTS += $(TOPDIR)/BootParser.o 
 OBJECTS += $(TOPDIR)/BootString.o 
+OBJECTS += $(TOPDIR)/BootEEPROM.o 
 OBJECTS += $(TOPDIR)/BootMemory.o 
-OBJECTS += $(TOPDIR)/BootEEPROM.o
-OBJECTS += $(TOPDIR)/VideoInitialization.o 
-OBJECTS += $(TOPDIR)/BootVgaInitialization.o
-
 
 # target:
 all	: clean image default.xbe
@@ -32,7 +29,7 @@ linux.iso: default.xbe
 	mkisofs -udf $< linuxboot.cfg vmlinuz initrd > $@
 
 image:
-	$(CC) $(TOPDIR)/imagebld/imagebld.c $(TOPDIR)/imagebld/sha1.c -o $(TOPDIR)/imagebld/image
+	$(CC) $(EXTRA_CFLAGS) $(TOPDIR)/imagebld/imagebld.c $(TOPDIR)/imagebld/sha1.c -o $(TOPDIR)/imagebld/image
 	
 default.elf : ${OBJECTS} ${RESOURCES}
 	${LD} -o default.elf ${OBJECTS} ${RESOURCES} ${LDFLAGS}

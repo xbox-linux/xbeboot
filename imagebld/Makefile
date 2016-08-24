@@ -9,10 +9,10 @@ THINGS =  imagebld.o sha1.o
 all: clean image
 
 %.o	: %.c
-	${CXX} ${FLAGS} -o $@ -c $<
+	${CXX} ${FLAGS} $(EXTRA_CFLAGS) -o $@ -c $<
 
 image: ${THINGS} 
-	gcc -o $@ ${THINGS} 
+	gcc $(EXTRA_CFLAGS) -o $@ ${THINGS} 
 	
 clean:
 	-rm -f *.o  image core
